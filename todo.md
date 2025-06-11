@@ -1,3 +1,4 @@
 -   Autenticação basica (x)
 -   Customizar views de autenticação ()
--   Começar o ERP ()
+-   Começar o ERP (x)
+-   CRUD ATIVOS TI ()
