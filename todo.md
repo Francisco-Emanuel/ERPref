@@ -1,4 +1,7 @@
 -   Autenticação basica (x)
 -   Customizar views de autenticação ()
 -   Começar o ERP (x)
--   CRUD ATIVOS TI ()
+-   CRUD ATIVOS TI (andamento)
+    -   terminar repaginação do header ()
+    -   alterar o sistema de rotas para "/Ativos/criar", "/Ativos/editar", "/Ativos/deletar" ()
+-   Começar CRUD dos chamados ()
