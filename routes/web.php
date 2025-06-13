@@ -13,13 +13,35 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/criarAtivo', function () {
-    return view('registrarAtivo');
-})->name('criarAtivo');
 
-Route::post('/registrarAtivo', [AtivoTIController::class, 'store'])->name('registrarAtivo');
 
-Route::get('/Ativos', [AtivoTIController::class, 'showAll'])->name('Ativos');
+Route::prefix('Ativos')->group(function () {
+
+    // Listar todos os ativos
+    Route::get('/', [AtivoTIController::class, 'showAll'])->name('Ativos.index');
+    
+    Route::get('/hidden', [AtivoTIController::class, 'showHidden'])->name('Ativos.hidden');
+
+    // Formulário para criar um novo ativo
+    Route::get('/criar', function () {
+        return view('ativos.create');
+    })->name('Ativos.criar');
+
+    // Registrar um novo ativo (envio do formulário)
+    Route::post('/criar', [AtivoTIController::class, 'store'])->name('Ativos.store');
+
+    // Formulário para editar um ativo específico
+    Route::get('/{id}/editar', [AtivoTIController::class, 'edit'])->name('Ativos.edit');
+
+    // Atualizar o ativo
+    Route::put('/{id}', [AtivoTIController::class, 'update'])->name('Ativos.update');
+
+    // Ocultar o ativo
+    Route::delete('/{id}', [AtivoTIController::class, 'delete'])->name('Ativos.delete');
+    
+    // Desocultar o ativo
+    Route::put('/hidden/{id}', [AtivoTIController::class, 'redo'])->name('Ativos.redo');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -27,4 +49,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('ativos_ti', function (Blueprint $table) {
             $table->id();
             $table->string('identificacao')->unique();
-            $table->string('descricao_problema');
+            $table->text('descricao_problema');
             $table->string('tipo_ativo');
             $table->string('setor');
             $table->string('usuario_responsavel');
             $table->boolean('status');
+            $table->boolean('visible')->default(true);
             $table->timestamps();
         });
     }

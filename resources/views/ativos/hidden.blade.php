@@ -1,16 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight mr-5">
             {{ __('Ativos') }}
         </h2>
+        <x-nav-link :href="route('Ativos.index')" :active="request()->routeIs('Ativos.index')">
+            {{ __('Voltar aos ativos') }}
+        </x-nav-link>
     </x-slot>
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg px-6 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex flex-col items-center">
+            <div
+                class="bg-white shadow-sm sm:rounded-lg px-6 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
                 @foreach ($ativos as $ativo)
                     <div class="bg-gray-100 text-gray-900 shadow-md rounded-xl p-6 w-full max-w-sm flex flex-col gap-4">
-
-                        <!-- Status -->
                         <div class="flex items-center justify-between">
                             <h2 class="font-semibold text-lg">Status</h2>
                             @if ($ativo->status)
@@ -19,8 +21,6 @@
                                 <span class="text-red-500 font-medium">Defeituoso</span>
                             @endif
                         </div>
-
-                        <!-- Informações principais -->
                         <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                             <div>
                                 <p class="font-semibold">Identificação</p>
@@ -39,17 +39,26 @@
                                 <p>{{ $ativo['usuario_responsavel'] }}</p>
                             </div>
                         </div>
-
-                        <!-- Descrição -->
                         <div>
                             <p class="font-semibold text-sm mb-1">Descrição do problema</p>
                             <p class="text-sm text-gray-700">{{ $ativo['descricao_problema'] }}</p>
                         </div>
-
+                        <div>
+                            <!-- Botão de Ocultar -->
+                            <form action="{{ route('Ativos.redo', $ativo->id) }}" method="POST" class="mt-4"
+                                onsubmit="return confirm('Tem certeza que deseja desocultar este ativo?');">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit"
+                                    class="w-full md:w-auto px-6 py-2.5 bg-blue-500 text-white text-sm font-medium rounded-lg focus:outline-none">
+                                    Desocultar Ativo
+                                </button>
+                            </form>
+                        </div>
                     </div>
-
                 @endforeach
             </div>
+            {{ $ativos->links() }}
         </div>
     </div>
 </x-app-layout>

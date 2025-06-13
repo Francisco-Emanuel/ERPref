@@ -12,13 +12,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('criarAtivo')" :active="request()->routeIs('criarAtivo')">
-                        {{ __('Registrar Ativo') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('Ativos')" :active="request()->routeIs('Ativos')">
+                    <x-nav-link :href="route('Ativos.index')" :active="request()->routeIs('Ativos.index')">
                         {{ __('Ativos') }}
                     </x-nav-link>
                 </div>

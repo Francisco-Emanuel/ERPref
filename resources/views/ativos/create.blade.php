@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-md sm:rounded-lg px-8 py-6">
-                <form method="POST" action="{{ route('registrarAtivo') }}">
+                <form method="POST" action="{{ route('Ativos.store') }}">
                     @csrf
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

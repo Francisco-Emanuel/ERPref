@@ -16,6 +16,7 @@ class AtivoTI extends Model
         'tipo_ativo',
         'setor',
         'usuario_responsavel',
-        'status'
+        'status',
+        'visible'
     ];
 }
