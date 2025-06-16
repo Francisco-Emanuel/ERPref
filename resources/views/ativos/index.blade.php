@@ -9,7 +9,8 @@
     </x-slot>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex flex-col items-center">
-            <div class="bg-white shadow-sm sm:rounded-lg px-6 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+            <div
+                class="bg-white shadow-sm sm:rounded-lg px-6 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
                 @foreach ($ativos as $ativo)
                     <div class="bg-gray-100 text-gray-900 shadow-md rounded-xl p-6 w-full max-w-sm flex flex-col gap-4">
                         <div class="flex items-center justify-between">
@@ -38,12 +39,18 @@
                                 <p>{{ $ativo['usuario_responsavel'] }}</p>
                             </div>
                         </div>
+                        @if ($ativo['status'])
+                            <div></div>
+                        @else
+                            <div>
+                                <p class="font-semibold text-sm mb-1">Descrição do problema</p>
+                                <p class="text-sm text-gray-700">{{ $ativo['descricao_problema'] }}</p>
+                            </div>
+
+                        @endif
                         <div>
-                            <p class="font-semibold text-sm mb-1">Descrição</p>
-                            <p class="text-sm text-gray-700">{{ $ativo['descricao_problema'] }}</p>
-                        </div>
-                        <div>
-                            <a  href="{{ route('Ativos.edit', $ativo->id) }}" class="w-full md:w-auto px-6 py-2.5 bg-blue-700 text-white text-sm font-medium rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 transition">Editar</a>
+                            <a href="{{ route('Ativos.edit', $ativo->id) }}"
+                                class="w-full md:w-auto px-6 py-2.5 bg-blue-700 text-white text-sm font-medium rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 transition">Editar</a>
                         </div>
                     </div>
                 @endforeach
