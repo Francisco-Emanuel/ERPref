@@ -6,9 +6,9 @@
     -   alterar o sistema de rotas para "/Ativos/criar", "/Ativos/editar", "/Ativos/ocultar" (x)
     -   Arrumar o registro de ativo()
         - Tirar descrição de problema para ativos "OK" (x)
-        - Mudar campos tipo, setor, responsavel para select ()
--   Começar CRUD dos chamados ()
+        - Mudar campos tipo, setor, responsavel para select (x)
+            -   Criar as devidas tabelas no banco de dados para que funcione corretamente ()
 -   CRUD CHAMADOS TI
     - começar ()
 -   Melhorar o visual ()
--   Fazer o CRUD dos ativos do ti conforme instrução do Rogerio ()
+-   Refatorar o CRUD dos ativos do ti conforme instrução do Rogerio ()

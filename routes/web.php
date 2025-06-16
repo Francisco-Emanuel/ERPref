@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AtivoTIController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,7 +25,8 @@ Route::prefix('Ativos')->group(function () {
 
     // Formulário para criar um novo ativo
     Route::get('/criar', function () {
-        return view('ativos.create');
+        $usuarios = User::orderBy('name')->get();
+        return view('ativos.create', compact('usuarios'));
     })->name('Ativos.criar');
 
     // Registrar um novo ativo (envio do formulário)

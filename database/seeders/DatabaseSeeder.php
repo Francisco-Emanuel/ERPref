@@ -17,9 +17,6 @@ class DatabaseSeeder extends Seeder
             AtivoTISeeder::class,
         ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::factory()->count(5)->create();
     }
 }

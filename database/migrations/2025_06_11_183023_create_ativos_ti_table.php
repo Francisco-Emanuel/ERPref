@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ativos_ti', function (Blueprint $table) {
             $table->id();
             $table->string('identificacao')->unique();
-            $table->text('descricao_problema');
+            $table->text('descricao_problema')->nullable();
             $table->string('tipo_ativo');
             $table->string('setor');
             $table->string('usuario_responsavel');

@@ -9,9 +9,11 @@ class AtivoTIController extends Controller
 {
     public function store(Request $request)
     {
+        //dd($request->all());
+
         $validatedData = $request->validate([
             'identificacao' => 'required|string|unique:ativos_ti,identificacao|max:255',
-            'descricao_problema' => 'required|string',
+            'descricao_problema' => 'nullable|string',
             'tipo_ativo' => 'required|string|max:255',
             'setor' => 'required|string|max:255',
             'usuario_responsavel' => 'required|string|max:255',
@@ -49,7 +51,7 @@ class AtivoTIController extends Controller
 
         $validatedData = $request->validate([
             'identificacao' => 'required|string|max:255|unique:ativos_ti,identificacao,' . $ativo->id,
-            'descricao_problema' => 'required|string',
+            'descricao_problema' => 'string',
             'tipo_ativo' => 'required|string|max:255',
             'setor' => 'required|string|max:255',
             'usuario_responsavel' => 'required|string|max:255',
