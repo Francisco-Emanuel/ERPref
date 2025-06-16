@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AtivoTIController;
+use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +45,10 @@ Route::prefix('Ativos')->group(function () {
     // Desocultar o ativo
     Route::put('/hidden/{id}', [AtivoTIController::class, 'redo'])->name('Ativos.redo');
 });
+
+//GPT 
+Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
+Route::get('/api/users/{user}', [UserController::class, 'show'])->name('api.users.show'); // Para pegar o usuário pelo ID
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
