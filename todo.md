@@ -11,4 +11,8 @@
 -   CRUD CHAMADOS TI
     - começar ()
 -   Melhorar o visual ()
--   Refatorar o CRUD dos ativos do ti conforme instrução do Rogerio ()
+-   Refatorar as classes e banco de dados seguindo instrução do gemni (x)
+    -   migrations (x)
+    -   models ()
+    -   views ()
+    -   controllers ()

@@ -13,13 +13,21 @@ return new class extends Migration
     {
         Schema::create('ativos_ti', function (Blueprint $table) {
             $table->id();
-            $table->string('identificacao')->unique();
+            $table->string('nome_ativo');
+            $table->string('numero_serie')->unique();
+            $table->string('tipo_ativo', 50);
+            $table->string('status_condicao', 50);
             $table->text('descricao_problema')->nullable();
-            $table->string('tipo_ativo');
-            $table->string('setor');
-            $table->string('usuario_responsavel');
-            $table->boolean('status');
+           $table->foreignId('user_id')
+                  ->nullable() 
+                  ->constrained('users') 
+                  ->onDelete('set null');
+                  $table->foreignId('setor_id')
+                  ->nullable() 
+                  ->constrained('setores') 
+                  ->onDelete('set null');
             $table->boolean('visible')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

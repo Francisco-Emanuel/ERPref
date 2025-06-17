@@ -12,17 +12,12 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $searchTerm = $request->input('term');
-        if (strlen($searchTerm) < 2) { // Opcional: Garante que a pesquisa só ocorra com pelo menos 2 caracteres
-            return response()->json([]);
-        }
 
         $users = User::where('name', 'LIKE', '%' . $searchTerm . '%')
             ->orWhere('email', 'LIKE', '%' . $searchTerm . '%')
             ->limit(10) // Limite o número de resultados
             ->get(['id', 'name', 'email']);
 
-        // Mapear para o formato que seu Alpine component espera (value/key ou id/text)
-        // O seu JS exemplo usa 'value' para o label e 'key' para o ID
         $formattedUsers = $users->mapWithKeys(function ($user) {
             return [$user->id => $user->name . ' (' . $user->email . ')'];
         });

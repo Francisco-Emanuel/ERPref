@@ -2,80 +2,120 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\AtivoTI;
+use App\Models\Setor;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
-class AtivoTIController extends Controller
+class AtivoTiController extends Controller
 {
-    public function store(Request $request)
+    /**
+     * Exibe uma lista de todos os ativos (não deletados).
+     */
+    public function index()
     {
-        //dd($request->all());
-
-        $validatedData = $request->validate([
-            'identificacao' => 'required|string|unique:ativos_ti,identificacao|max:255',
-            'descricao_problema' => 'nullable|string',
-            'tipo_ativo' => 'required|string|max:255',
-            'setor' => 'required|string|max:255',
-            'usuario_responsavel' => 'required|string|max:255',
-            'status' => 'boolean',
-        ]);
-        $validatedData['status'] = $request->has('status');
-
-        AtivoTI::create($validatedData);
-
-        return redirect()->route('Ativos.index')->with('success','Ativo criado');
-    }
-
-    public function showAll()
-    {
-        $ativos = AtivoTI::where('visible', true)->orderBy('id', 'desc')->paginate(6);
-
+        // Eager Loading com 'with()' para evitar múltiplas consultas ao banco
+        $ativos = AtivoTI::with(['responsavel', 'setor'])->orderBy('id', 'desc')->paginate(10);
         return view('ativos.index', compact('ativos'));
     }
 
-    public function showHidden()
+    /**
+     * Mostra o formulário para criar um novo ativo.
+     */
+    public function create()
     {
-        $ativos = AtivoTI::where('visible', false)->orderBy('id', 'desc')->paginate(6);
-
-        return view('ativos.hidden', compact('ativos'));
+        $users = User::orderBy('name')->get();
+        $setores = Setor::orderBy('name')->get();
+        return view('ativos.create', compact('users', 'setores'));
     }
 
-    public function edit($id)
+    /**
+     * Salva o novo ativo no banco de dados.
+     */
+    public function store(Request $request)
     {
-        $ativo = AtivoTI::findOrFail($id);
-        return view('ativos.edit', compact('ativo'));
-    }
-    public function update(Request $request, $id)
-    {
-        $ativo = AtivoTI::findOrFail($id);
-
+        // Validação com base na sua nova estrutura de tabela
         $validatedData = $request->validate([
-            'identificacao' => 'required|string|max:255|unique:ativos_ti,identificacao,' . $ativo->id,
-            'descricao_problema' => 'string',
-            'tipo_ativo' => 'required|string|max:255',
-            'setor' => 'required|string|max:255',
-            'usuario_responsavel' => 'required|string|max:255',
-            'status' => 'boolean',
+            'nome_ativo' => 'required|string|max:255',
+            'numero_serie' => 'required|string|max:255|unique:ativos_ti,numero_serie',
+            'tipo_ativo' => 'required|string|max:50',
+            'status_condicao' => 'required|string|max:50',
+            'descricao_problema' => 'nullable|string',
+            'user_id' => 'required|exists:users,id',
+            'setor_id' => 'required|exists:setores,id',
         ]);
 
-        $validatedData['status'] = $request->has('status');
+        AtivoTI::create($validatedData);
+
+        return redirect()->route('ativos.index')->with('success', 'Ativo cadastrado com sucesso!');
+    }
+
+    /**
+     * Mostra o formulário para editar um ativo existente.
+     * O Laravel automaticamente encontra o ativo pelo ID na URL (Route-Model Binding).
+     */
+    public function edit(AtivoTI $ativo)
+    {
+        $users = User::orderBy('name')->get();
+        $setores = Setor::orderBy('name')->get();
+        return view('ativos.edit', compact('ativo', 'users', 'setores'));
+    }
+
+    /**
+     * Atualiza o ativo no banco de dados.
+     */
+    public function update(Request $request, AtivoTI $ativo)
+    {
+        $validatedData = $request->validate([
+            'nome_ativo' => 'required|string|max:255',
+            // Regra 'unique' ajustada para ignorar o próprio ativo na verificação
+            'numero_serie' => ['required', 'string', 'max:255', Rule::unique('ativos_ti')->ignore($ativo->id)],
+            'tipo_ativo' => 'required|string|max:50',
+            'status_condicao' => 'required|string|max:50',
+            'descricao_problema' => 'nullable|string',
+            'user_id' => 'required|exists:users,id',
+            'setor_id' => 'required|exists:setores,id',
+        ]);
 
         $ativo->update($validatedData);
 
-        return redirect()->route('Ativos.index')->with('success','Ativo editado');
+        return redirect()->route('ativos.index')->with('success', 'Ativo atualizado com sucesso!');
     }
 
-    public function delete($id) {
-        $ativo = AtivoTI::findOrFail($id);
-        $ativo->visible = false;
-        $ativo->save();
-        return redirect()->route('Ativos.index')->with('success','Ativo ocultado');
+    /**
+     * Move o ativo para a lixeira (soft delete).
+     */
+    public function destroy(AtivoTI $ativo)
+    {
+        $ativo->delete(); // Laravel automaticamente preenche 'deleted_at'
+        return redirect()->route('ativos.index')->with('success', 'Ativo movido para a lixeira!');
     }
 
-    public function redo($id) {
-        $ativo = AtivoTI::findOrFail($id);
-        $ativo->visible = true;
-        $ativo->save();
-        return redirect()->route('Ativos.index')->with('success','Ativo desocultado');
+    public function show(AtivoTI $ativo)
+    {
+        // Apenas precisamos retornar uma view e passar o ativo para ela.
+        return view('ativos.show', compact('ativo'));
+    }
+
+    // --- MÉTODOS ADICIONAIS PARA GERENCIAR A LIXEIRA ---
+
+    /**
+     * Exibe os ativos que estão na lixeira.
+     */
+    public function trash()
+    {
+        $ativos = AtivoTI::onlyTrashed()->with(['responsavel', 'setor'])->orderBy('id', 'desc')->paginate(10);
+        return view('ativos.trash', compact('ativos')); // Você precisará criar a view trash.blade.php
+    }
+
+    /**
+     * Restaura um ativo da lixeira.
+     */
+    public function restore($id)
+    {
+        $ativo = AtivoTI::onlyTrashed()->findOrFail($id);
+        $ativo->restore(); // Laravel automaticamente define 'deleted_at' como NULL
+        return redirect()->route('ativos.trash')->with('success', 'Ativo restaurado com sucesso!');
     }
 }
