@@ -16,7 +16,7 @@ class SetorController extends Controller
     {
         // 'withCount' é um método eficiente para contar registros em relacionamentos
         $setores = Setor::withCount(['users', 'ativos'])
-                        ->orderBy('name')
+                        ->orderBy('nome')
                         ->paginate(10);
                         
         return view('setores.index', compact('setores'));
@@ -36,7 +36,7 @@ class SetorController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:100|unique:setores,name',
+            'nome' => 'required|string|max:100|unique:setores,nome',
         ]);
 
         Setor::create($validatedData);
@@ -58,7 +58,7 @@ class SetorController extends Controller
     public function update(Request $request, Setor $setor)
     {
         $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:100', Rule::unique('setores')->ignore($setor->id)],
+            'nome' => ['required', 'string', 'max:100', Rule::unique('setores')->ignore($setor->id)],
         ]);
 
         $setor->update($validatedData);

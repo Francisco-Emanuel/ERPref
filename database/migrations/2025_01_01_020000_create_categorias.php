@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('categorias', function (Blueprint $table) {
             $table->id();
             $table->string('nome_amigavel', 100);
-            $table->string('tipo_interno', 100);
+            $table->string('tipo_interno', 100)->nullable();
             $table->timestamps();
         });
     }

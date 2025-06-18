@@ -13,10 +13,10 @@
 @endif
 
 <div>
-    <x-input-label for="name" value="Nome do Setor" />
-    <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" 
-                  :value="old('name', $setor->name ?? '')" required autofocus />
-    <x-input-error :messages="$errors->get('name')" class="mt-2" />
+    <x-input-label for="nome" value="Nome do Setor" />
+    <x-text-input id="nome" name="nome" type="text" class="mt-1 block w-full" 
+                  :value="old('nome', $setor->nome ?? '')" required autofocus />
+    <x-input-error :messages="$errors->get('nome')" class="mt-2" />
 </div>
 
 <div class="mt-6 flex justify-end">

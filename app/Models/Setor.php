@@ -11,7 +11,7 @@ class Setor extends Model
     use HasFactory;
     protected $table = 'setores';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['nome'];
 
     // Um Setor tem muitos Usuários
     public function users(): HasMany

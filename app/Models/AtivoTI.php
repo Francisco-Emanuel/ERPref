@@ -2,44 +2,34 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+// 1. IMPORTAÇÃO NECESSÁRIA PARA O SOFT DELETES
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AtivoTI extends Model
 {
+    // 2. USO DO SOFT DELETES E DO HASFACTORY
     use HasFactory, SoftDeletes;
+
     /**
      * O nome da tabela associada com o model.
-     * Laravel tentaria 'ativo_t_i_s', então especificamos o nome correto.
-     * @var string
      */
     protected $table = 'ativos_ti';
 
     /**
      * Os atributos que podem ser atribuídos em massa.
-     * (Todos os campos do seu formulário)
-     * @var array<int, string>
+     * A coluna 'descricao_problema' foi removida daqui.
      */
     protected $fillable = [
         'nome_ativo',
         'numero_serie',
         'tipo_ativo',
         'status_condicao',
-        'descricao_problema',
-        'user_id', 
+        'user_id', // Renomeado de 'responsavel_id' para seguir a convenção do Laravel
         'setor_id',
-        'visible',
-    ];
-
-    /**
-     * Os atributos que devem ser convertidos para tipos nativos.
-     * Garante que 'visible' seja sempre true/false.
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'visible' => 'boolean',
     ];
 
     /**
@@ -47,7 +37,6 @@ class AtivoTI extends Model
      */
     public function responsavel(): BelongsTo
     {
-        // O segundo argumento ('user_id') é a chave estrangeira nesta tabela (ativos_ti)
         return $this->belongsTo(User::class, 'user_id');
     }
 
@@ -56,7 +45,15 @@ class AtivoTI extends Model
      */
     public function setor(): BelongsTo
     {
-        // Laravel assume a chave 'setor_id' por convenção, então não precisamos especificá-la
         return $this->belongsTo(Setor::class);
+    }
+
+    /**
+     * 3. NOVO RELACIONAMENTO: Um Ativo de TI pode ter muitos Problemas.
+     * Isso nos permitirá acessar o histórico de problemas de um ativo.
+     */
+    public function problemas(): HasMany
+    {
+        return $this->hasMany(Problema::class, 'ativo_ti_id');
     }
 }

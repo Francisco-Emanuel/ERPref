@@ -1,73 +1,63 @@
-{{-- resources/views/ativos/show.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Detalhes do Ativo: {{ $ativo->nome_ativo }}
             </h2>
-            <x-nav-link :href="route('ativos.index')">
-                &larr; Voltar para a lista
-            </x-nav-link>
+            <a href="{{ route('ativos.edit', $ativo) }}">
+                <x-primary-button>Editar Ativo</x-primary-button>
+            </a>
         </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
-                        <div>
-                            <h3 class="font-semibold text-gray-500">Nome do Ativo</h3>
-                            <p class="text-lg text-gray-900">{{ $ativo->nome_ativo }}</p>
-                        </div>
-                        
-                        <div>
-                            <h3 class="font-semibold text-gray-500">Nº de Série</h3>
-                            <p class="text-lg text-gray-900">{{ $ativo->numero_serie }}</p>
-                        </div>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
-                        <div>
-                            <h3 class="font-semibold text-gray-500">Tipo</h3>
-                            <p class="text-lg text-gray-900">{{ $ativo->tipo_ativo }}</p>
-                        </div>
-
-                        <div>
-                            <h3 class="font-semibold text-gray-500">Status (Condição)</h3>
-                            <p class="text-lg font-bold {{ $ativo->status_condicao == 'Defeituoso' ? 'text-red-600' : 'text-green-600' }}">
-                                {{ $ativo->status_condicao }}
-                            </p>
-                        </div>
-
-                        <div>
-                            <h3 class="font-semibold text-gray-500">Responsável</h3>
-                            <p class="text-lg text-gray-900">{{ $ativo->responsavel->name ?? 'Nenhum' }}</p>
-                        </div>
-
-                        <div>
-                            <h3 class="font-semibold text-gray-500">Setor</h3>
-                            <p class="text-lg text-gray-900">{{ $ativo->setor->name ?? 'Nenhum' }}</p>
-                        </div>
-
-                        @if($ativo->descricao_problema)
-                        <div class="md:col-span-2">
-                            <h3 class="font-semibold text-gray-500">Descrição do Problema</h3>
-                            <p class="text-gray-800 whitespace-pre-wrap">{{ $ativo->descricao_problema }}</p>
-                        </div>
-                        @endif
-
-                    </div>
-
-                    <div class="mt-8 border-t pt-6 flex justify-end">
-                        <a href="{{ route('ativos.edit', $ativo) }}">
-                           <x-primary-button>
-                               Editar Ativo
-                           </x-primary-button>
-                        </a>
-                    </div>
-
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Informações Gerais</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                    <div><p class="font-semibold text-gray-500">Nº de Série</p><p>{{ $ativo->numero_serie }}</p></div>
+                    <div><p class="font-semibold text-gray-500">Tipo</p><p>{{ $ativo->tipo_ativo }}</p></div>
+                    <div><p class="font-semibold text-gray-500">Status</p><p>{{ $ativo->status_condicao }}</p></div>
+                    <div><p class="font-semibold text-gray-500">Responsável</p><p>{{ $ativo->responsavel->name ?? 'N/A' }}</p></div>
+                    <div><p class="font-semibold text-gray-500">Setor</p><p>{{ $ativo->setor->nome ?? 'N/A' }}</p></div>
                 </div>
             </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Histórico de Problemas</h3>
+                    {{-- Precisaremos criar esta rota depois --}}
+                    <a href="{{-- route('problemas.create', ['ativo_ti_id' => $ativo->id]) --}}" class="text-sm">
+                        <x-secondary-button>+ Registrar Novo Problema</x-secondary-button>
+                    </a>
+                </div>
+
+                <div class="space-y-4">
+                    @forelse ($ativo->problemas as $problema)
+                        <div class="border p-4 rounded-lg flex justify-between items-center">
+                            <div>
+                                <p class="text-gray-800">{{ $problema->descricao }}</p>
+                                <p class="text-xs text-gray-500">Reportado por: {{ $problema->autor->name ?? 'N/A' }} em {{ $problema->created_at->format('d/m/Y') }}</p>
+                            </div>
+                            <div>
+                                @if ($problema->chamado)
+                                    <a href="{{ route('chamados.show', $problema->chamado) }}" class="text-sm font-semibold text-indigo-600 hover:underline">
+                                        Ver Chamado #{{ $problema->chamado->id }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('chamados.create', ['problema_id' => $problema->id]) }}" class="text-sm">
+                                        <x-primary-button>Abrir Chamado</x-primary-button>
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-center text-gray-500">Nenhum problema registrado para este ativo.</p>
+                    @endforelse
+                </div>
+            </div>
+
         </div>
     </div>
 </x-app-layout>
