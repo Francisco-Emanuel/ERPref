@@ -13,6 +13,6 @@ class AtivoTISeeder extends Seeder
      */
     public function run(): void
     {
-        AtivoTI::factory()->count(5)->create();
+        //AtivoTI::factory()->count(5)->create();
     }
 }

@@ -1,14 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight mr-5">
-            Ativos
-        </h2>
-        <x-nav-link :href="route('ativos.create')" :active="request()->routeIs('ativos.create')">
-            Cadastrar Ativo
-        </x-nav-link>
-        <x-nav-link :href="route('ativos.trash')" :active="request()->routeIs('ativos.trash')">
-            Lixeira
-        </x-nav-link>
+        <div class="flex items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight mr-5">
+                Ativos
+            </h2>
+            {{-- Botão só aparece se o usuário puder criar ativos --}}
+            @can('create-ativos')
+                <x-nav-link :href="route('ativos.create')" :active="request()->routeIs('ativos.create')">
+                    Cadastrar Ativo
+                </x-nav-link>
+            @endcan
+            {{-- Botão só aparece se o usuário puder deletar ativos --}}
+            @can('delete-ativos')
+                <x-nav-link :href="route('ativos.trash')" :active="request()->routeIs('ativos.trash')" class="ml-4">
+                    Lixeira
+                </x-nav-link>
+            @endcan
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -26,8 +34,9 @@
                         {{-- ... (conteúdo do card continua o mesmo) ... --}}
                         <div class="flex items-center justify-between">
                             <h2 class="font-semibold text-lg">{{ $ativo->nome_ativo }}</h2>
-                            <span class="text-sm font-medium px-2 py-1 rounded-full 
-                                {{ $ativo->status_condicao == 'Defeituoso' ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800' }}">
+                            <span
+                                class="text-sm font-medium px-2 py-1 rounded-full 
+                                    {{ $ativo->status_condicao == 'Defeituoso' ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800' }}">
                                 {{ $ativo->status_condicao }}
                             </span>
                         </div>
@@ -44,7 +53,7 @@
                     <p class="col-span-full text-center text-gray-500">Nenhum ativo encontrado.</p>
                 @endforelse
             </div>
-            
+
             <div class="mt-6">
                 {{ $ativos->links() }}
             </div>

@@ -15,15 +15,21 @@
                         @include('ativos._form', ['ativo' => $ativo])
                     </form>
 
-                    <div class="mt-6 border-t pt-6">
-                        <form method="POST" action="{{ route('ativos.destroy', $ativo) }}" onsubmit="return confirm('Tem certeza que deseja mover este ativo para a lixeira?');">
-                            @csrf
-                            @method('DELETE')
-                            <x-danger-button>
-                                Mover para Lixeira
-                            </x-danger-button>
-                        </form>
-                    </div>
+                    @can('delete-ativos')
+                        <div class="mt-6 border-t pt-6">
+                            <h3 class="text-lg font-semibold text-red-700 mb-2">Mover para Lixeira</h3>
+                            <p class="text-sm text-gray-600 mb-4">Esta ação moverá o ativo para a lixeira, de onde ele
+                                poderá ser restaurado ou excluído permanentemente.</p>
+                            <form method="POST" action="{{ route('ativos.destroy', $ativo) }}"
+                                onsubmit="return confirm('Tem certeza que deseja mover este ativo para a lixeira?');">
+                                @csrf
+                                @method('DELETE')
+                                <x-danger-button>
+                                    Mover para Lixeira
+                                </x-danger-button>
+                            </form>
+                        </div>
+                    @endcan
                 </div>
             </div>
         </div>

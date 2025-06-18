@@ -11,11 +11,12 @@ use Illuminate\Validation\Rule;
 class AtivoTiController extends Controller
 {
     /**
-     * Exibe a lista de ativos.
-     * Graças ao Trait SoftDeletes no Model, esta busca já ignora os "deletados".
+     * Exibe a lista de ativos não deletados.
      */
     public function index()
     {
+        $this->authorize('view-ativos');
+        
         $ativos = AtivoTI::with(['responsavel', 'setor'])->orderBy('id', 'desc')->paginate(10);
         return view('ativos.index', compact('ativos'));
     }
@@ -25,16 +26,21 @@ class AtivoTiController extends Controller
      */
     public function create()
     {
+        $this->authorize('create-ativos');
+
         $users = User::orderBy('name')->get();
         $setores = Setor::orderBy('nome')->get();
         return view('ativos.create', compact('users', 'setores'));
     }
 
     /**
-     * Salva o novo ativo. A validação foi limpa.
+     * Salva o novo ativo no banco de dados.
+     * (LÓGICA COMPLETA ADICIONADA AQUI)
      */
     public function store(Request $request)
     {
+        $this->authorize('create-ativos');
+
         $validatedData = $request->validate([
             'nome_ativo' => 'required|string|max:150',
             'numero_serie' => 'required|string|max:100|unique:ativos_ti,numero_serie',
@@ -45,6 +51,7 @@ class AtivoTiController extends Controller
         ]);
 
         AtivoTI::create($validatedData);
+
         return redirect()->route('ativos.index')->with('success', 'Ativo cadastrado com sucesso!');
     }
 
@@ -53,7 +60,8 @@ class AtivoTiController extends Controller
      */
     public function show(AtivoTI $ativo)
     {
-        // Carrega o relacionamento com os problemas para exibir na view
+        $this->authorize('view-ativos');
+
         $ativo->load(['responsavel', 'setor', 'problemas.autor']);
         return view('ativos.show', compact('ativo'));
     }
@@ -63,16 +71,21 @@ class AtivoTiController extends Controller
      */
     public function edit(AtivoTI $ativo)
     {
+        $this->authorize('edit-ativos');
+
         $users = User::orderBy('name')->get();
         $setores = Setor::orderBy('nome')->get();
         return view('ativos.edit', compact('ativo', 'users', 'setores'));
     }
 
     /**
-     * Atualiza um ativo existente. A validação foi limpa.
+     * Atualiza um ativo existente.
+     * (LÓGICA COMPLETA ADICIONADA AQUI)
      */
     public function update(Request $request, AtivoTI $ativo)
     {
+        $this->authorize('edit-ativos');
+
         $validatedData = $request->validate([
             'nome_ativo' => 'required|string|max:150',
             'numero_serie' => ['required', 'string', 'max:100', Rule::unique('ativos_ti')->ignore($ativo->id)],
@@ -83,15 +96,17 @@ class AtivoTiController extends Controller
         ]);
 
         $ativo->update($validatedData);
+
         return redirect()->route('ativos.index')->with('success', 'Ativo atualizado com sucesso!');
     }
 
     /**
-     * Move o ativo para a lixeira usando Soft Deletes.
+     * Move o ativo para a lixeira (soft delete).
      */
     public function destroy(AtivoTI $ativo)
     {
-        // O Laravel agora cuida de tudo com este simples comando
+        $this->authorize('delete-ativos');
+
         $ativo->delete();
         return redirect()->route('ativos.index')->with('success', 'Ativo movido para a lixeira!');
     }
@@ -101,18 +116,24 @@ class AtivoTiController extends Controller
      */
     public function trash()
     {
-        // O método onlyTrashed() só é possível por causa do Trait SoftDeletes
+        $this->authorize('delete-ativos');
+
         $ativos = AtivoTI::onlyTrashed()->with(['responsavel', 'setor'])->orderBy('id', 'desc')->paginate(10);
         return view('ativos.trash', compact('ativos'));
     }
 
     /**
      * Restaura um ativo da lixeira.
+     * O Laravel automaticamente encontrará o ativo na lixeira por causa do Route Model Binding.
      */
-    public function restore(AtivoTI $ativo)
+    public function restore($id)
     {
-        // O método restore() também vem do Trait SoftDeletes
+        $this->authorize('delete-ativos');
+
+        // Busca o ativo na lixeira ou falha
+        $ativo = AtivoTI::onlyTrashed()->findOrFail($id);
         $ativo->restore();
+
         return redirect()->route('ativos.trash')->with('success', 'Ativo restaurado com sucesso!');
     }
 }

@@ -1,24 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
+
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Gerenciar Categorias
+            Gerenciar Usuários
         </h2>
-        <x-nav-link :href="route('categorias.create')" :active="request()->routeIs('categorias.create')">
-            Registrar categoria
+        <x-nav-link :href="route('users.create')" :active="request()->routeIs('users.create')">
+            Criar novo usuário
         </x-nav-link>
+
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            {{-- Alertas de sucesso ou erro --}}
+            {{-- Alerta para exibir mensagens de sucesso --}}
             @if(session('success'))
                 <div class="mb-4 p-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
                     {{ session('success') }}
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
-                    {{ session('error') }}
                 </div>
             @endif
 
@@ -30,50 +27,58 @@
                                 <tr>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        ID</th>
+                                        Nome</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Nome da Categoria</th>
+                                        Email</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Tipo Interno</th>
+                                        Setor</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Nº de Chamados</th>
+                                        Cargos</th>
                                     <th
                                         class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Ações</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($categorias as $categoria)
+                                @forelse ($users as $user)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $categoria->id }}
-                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $categoria->nome_amigavel }}</td>
+                                            {{ $user->name }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->email }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $categoria->tipo_interno ?? 'N/A' }}</td>
+                                            {{ $user->setor->nome ?? 'Nenhum' }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $categoria->chamados_count }}</td>
+                                            {{-- Loop para exibir cada cargo como uma "badge" --}}
+                                            @foreach ($user->getRoleNames() as $roleName)
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                    {{ $roleName }}
+                                                </span>
+                                            @endforeach
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('categorias.edit', $categoria) }}"
+                                            <a href="{{ route('users.edit', $user) }}"
                                                 class="text-indigo-600 hover:text-indigo-900">Editar</a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhuma categoria
-                                            cadastrada.</td>
+                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum usuário
+                                            encontrado.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-
                     {{-- Links de paginação --}}
                     <div class="mt-4">
-                        {{ $categorias->links() }}
+                        {{ $users->links() }}
                     </div>
                 </div>
             </div>

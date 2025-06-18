@@ -6,30 +6,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+// Adicione a importação para o relacionamento
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'nivel_hierarquico',
-        'especialidade',
-        'is_admin',
+        'setor_id',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -46,7 +46,16 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
         ];
+    }
+
+    /**
+     * Define o relacionamento: Um Usuário PERTENCE A um Setor.
+     * ESTA É A FUNÇÃO QUE ESTAVA FALTANDO.
+     */
+    public function setor(): BelongsTo
+    {
+        // O Laravel vai procurar pela chave estrangeira 'setor_id' nesta tabela (users)
+        return $this->belongsTo(Setor::class);
     }
 }

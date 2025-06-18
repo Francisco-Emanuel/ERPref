@@ -17,9 +17,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             // Opcional: define onde as novas colunas devem ser inseridas
             $table->after('password', function ($table) {
-                $table->string('nivel_hierarquico', 50);
                 $table->string('especialidade', 50)->nullable();
-                $table->boolean('is_admin')->default(false);
                 
                 // Agora é o momento certo para adicionar a chave estrangeira,
                 // pois a tabela 'setores' já terá sido criada por sua própria migration.
@@ -41,7 +39,7 @@ return new class extends Migration
             // Remove a chave estrangeira primeiro
             $table->dropForeign(['setor_id']);
             // Depois remove as colunas
-            $table->dropColumn(['setor_id', 'nivel_hierarquico', 'especialidade', 'is_admin']);
+            $table->dropColumn(['setor_id', 'especialidade']);
         });
     }
 };
