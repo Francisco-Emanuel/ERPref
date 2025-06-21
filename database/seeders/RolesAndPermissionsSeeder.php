@@ -35,6 +35,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
 
         // --- CRIAR CARGOS ---
+        $funcionario = Role::create(['name' => 'Funcionário']);
         $estagiario = Role::create(['name' => 'Estagiário']);
         $tecnico = Role::create(['name' => 'Técnico de TI']);
         $supervisor = Role::create(['name' => 'Supervisor']);
@@ -42,6 +43,11 @@ class RolesAndPermissionsSeeder extends Seeder
 
 
         // --- ATRIBUIR PERMISSÕES AOS CARGOS ---
+
+        // Permissões do Funcionário
+        $funcionario->givePermissionTo([
+            'view-chamados', 'create-chamados', 'edit-chamados'
+        ]);
         
         // Permissões do Estagiário
         $estagiario->givePermissionTo([

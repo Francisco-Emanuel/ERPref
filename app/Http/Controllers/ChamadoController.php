@@ -19,10 +19,14 @@ class ChamadoController extends Controller
     public function index()
     {
         $this->authorize('view-chamados');
+        $user = Auth::user();
 
-        $chamados = Chamado::with(['problema.ativo', 'solicitante', 'tecnico', 'categoria'])
-                            ->latest()
-                            ->paginate(15);
+        $query = Chamado::with(['problema.ativo', 'solicitante', 'tecnico', 'categoria']);
+
+        if (! $user->hasAnyRole(['admin', 'supervisor', 'tecnico', 'estagiario'])) {
+            $query->where('solicitante_id', $user->id);
+        }
+        $chamados = $query->latest()->paginate(15);
 
         return view('chamados.index', compact('chamados'));
     }
