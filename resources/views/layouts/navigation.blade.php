@@ -26,6 +26,12 @@
                         </x-nav-link>
                     @endcan
 
+                    @can('edit-chamados') {{-- Apenas técnicos verão este link --}}
+                        <x-nav-link :href="route('chamados.my')" :active="request()->routeIs('chamados.my')">
+                            Meus Chamados
+                        </x-nav-link>
+                    @endcan
+
                     @hasanyrole('Admin|Supervisor')
                         <x-nav-link :href="route('setores.index')" :active="request()->routeIs('setores.*')">
                             {{ __('Setores') }}

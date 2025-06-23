@@ -23,6 +23,11 @@ class AtualizacaoChamado extends Model
         'texto',
         'chamado_id',
         'autor_id',
+        'is_system_log',
+    ];
+
+    protected $casts = [
+        'is_system_log' => 'boolean', 
     ];
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ChamadoStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,15 @@ class Chamado extends Model
      * mas é uma boa prática especificar.
      */
     protected $table = 'chamados';
+
+    /**
+     * Os atributos que devem ser convertidos para tipos nativos.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => ChamadoStatus::class, // <-- ADICIONE ESTA LINHA
+    ];
 
     /**
      * Os atributos que podem ser preenchidos em massa.

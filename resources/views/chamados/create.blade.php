@@ -70,18 +70,7 @@
                                     <x-input-error :messages="$errors->get('prioridade')" class="mt-2" />
                                 </div>
 
-                                <div>
-                                    <x-input-label for="tecnico_id" value="Atribuir ao Técnico" />
-                                    <select id="tecnico_id" name="tecnico_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
-                                        <option value="">Não atribuir agora</option>
-                                        @foreach($tecnicos as $tecnico)
-                                            <option value="{{ $tecnico->id }}" @selected(old('tecnico_id') == $tecnico->id)>
-                                                {{ $tecnico->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <x-input-error :messages="$errors->get('tecnico_id')" class="mt-2" />
-                                </div>
+                                
 
                             </div>
                         </div>

@@ -36,7 +36,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // --- MÓDULOS PRINCIPAIS ---
 
     // Rotas de Chamados (acessível a mais usuários)
+    Route::get('meus-chamados', [ChamadoController::class, 'myChamados'])->name('chamados.my');
     Route::post('chamados/{chamado}/updates', [ChamadoController::class, 'addUpdate'])->name('chamados.updates.store');
+    Route::patch('chamados/{chamado}/status', [ChamadoController::class, 'updateStatus'])->name('chamados.updateStatus');
+    Route::patch('chamados/{chamado}/assign', [ChamadoController::class, 'assignToSelf'])->name('chamados.assign');
+    Route::patch('chamados/{chamado}/attend', [ChamadoController::class, 'attend'])->name('chamados.attend');
+    Route::patch('chamados/{chamado}/resolve', [ChamadoController::class, 'resolve'])->name('chamados.resolve');
+    Route::patch('chamados/{chamado}/escalate', [ChamadoController::class, 'escalate'])->name('chamados.escalate');
+    Route::patch('chamados/{chamado}/close', [ChamadoController::class, 'close'])->name('chamados.close');
+    Route::patch('chamados/{chamado}/reopen', [ChamadoController::class, 'reopen'])->name('chamados.reopen');
     Route::resource('chamados', ChamadoController::class)->only(['index', 'create', 'store', 'show']);
 
     // Rotas de Problemas

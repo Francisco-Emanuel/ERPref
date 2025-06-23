@@ -47,34 +47,51 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($chamados as $chamado)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{{ $chamado->id }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $chamado->titulo }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{-- Acessando o ativo através do problema --}}
-                                            {{ $chamado->problema->ativo->nome_ativo ?? 'N/A' }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            {{-- Exemplo de status com cor --}}
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                    @if($chamado->status == 'Aberto') bg-green-100 text-green-800 @endif
-                                                    @if($chamado->status == 'Em Andamento') bg-yellow-100 text-yellow-800 @endif
-                                                    @if($chamado->status == 'Resolvido' || $chamado->status == 'Fechado') bg-gray-100 text-gray-800 @endif
-                                                ">
-                                                {{ $chamado->status }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $chamado->tecnico->name ?? 'Não atribuído' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $chamado->created_at->format('d/m/Y H:i') }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('chamados.show', $chamado) }}"
-                                                class="text-indigo-600 hover:text-indigo-900">Ver Detalhes</a>
-                                        </td>
-                                    </tr>
+                                                            <tr>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{{ $chamado->id }}
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                                    {{ $chamado->titulo }}
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                    {{-- Acessando o ativo através do problema --}}
+                                                                    {{ $chamado->problema->ativo->nome_ativo ?? 'N/A' }}
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        {{-- ALTERAÇÕES AQUI --}}
+                                        @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
+                                        @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
+                                        @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO || $chamado->status == \App\Enums\ChamadoStatus::FECHADO) bg-gray-100 text-gray-800 @endif
+                                    ">
+                                                                        {{-- Esta linha não precisa mudar, pois o cast no modelo já converte para a
+                                                                        string --}}
+                                                                        {{ $chamado->status->value }}
+                                                                    </span>
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                    {{ $chamado->tecnico->name ?? 'Não atribuído' }}
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                                    {{ $chamado->created_at->format('d/m/Y H:i') }}
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                                    <a href="{{ route('chamados.show', $chamado) }}"
+                                                                        class="text-indigo-600 hover:text-indigo-900">Ver Detalhes</a>
+                                                                        {{-- Lógica para o botão de Atribuição --}}
+                                                                    @can('edit-chamados')
+                                                                        @if (!$chamado->tecnico_id)
+                                                                            <form method="POST" action="{{ route('chamados.assign', $chamado) }}" class="inline-block">
+                                                                                @csrf
+                                                                                @method('PATCH')
+                                                                                <button type="submit" class="font-semibold text-green-600 hover:text-green-900">
+                                                                                    Atribuir a mim
+                                                                                </button>
+                                                                            </form>
+                                                                        @endif
+                                                                    @endcan
+                                                                </td>
+                                                            </tr>
                                 @empty
                                     <tr>
                                         <td colspan="7" class="px-6 py-4 text-center text-gray-500">Nenhum chamado
