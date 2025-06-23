@@ -22,9 +22,10 @@ class ChamadoController extends Controller
     {
         $this->authorize('view-chamados');
 
+        // A query agora é muito mais limpa!
         $chamados = Chamado::with(['problema.ativo', 'solicitante', 'tecnico', 'categoria'])
-                            ->latest()
-                            ->paginate(15);
+            ->filtroPrincipal() // <-- APLICA TODA A LÓGICA
+            ->paginate(15);
 
         return view('chamados.index', compact('chamados'));
     }
@@ -64,7 +65,7 @@ class ChamadoController extends Controller
             'categoria_id' => 'nullable|exists:categorias,id',
             'tecnico_id' => 'nullable|exists:users,id',
         ]);
-        
+
         $problema = Problema::create([
             'descricao' => $validatedData['descricao_problema'],
             'ativo_ti_id' => $validatedData['ativo_id'],
@@ -84,46 +85,46 @@ class ChamadoController extends Controller
         ]);
 
         AtualizacaoChamado::create([
-        'chamado_id' => $chamado->id, // Assumindo que o resultado do create está em $chamado
-        'autor_id' => Auth::id(),
-        'texto' => 'Chamado aberto.',
-        'is_system_log' => true,
-    ]);
+            'chamado_id' => $chamado->id, // Assumindo que o resultado do create está em $chamado
+            'autor_id' => Auth::id(),
+            'texto' => 'Chamado aberto.',
+            'is_system_log' => true,
+        ]);
 
         return redirect()->route('chamados.index')->with('success', 'Chamado aberto com sucesso!');
     }
 
-   /**
-    * Exibe os detalhes de um chamado específico.
-    */
+    /**
+     * Exibe os detalhes de um chamado específico.
+     */
     public function show(Chamado $chamado)
-{
-    $this->authorize('view-chamados');
+    {
+        $this->authorize('view-chamados');
 
-    // Carrega as relações principais do chamado
-    $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria']);
-    
-    // Busca o chat (mensagens de usuários)
-    $chatMessages = $chamado->atualizacoes()->where('is_system_log', false)->get();
-    
-    // Busca o histórico (logs de sistema)
-    $historyLogs = $chamado->atualizacoes()->where('is_system_log', true)->get();
+        // Carrega as relações principais do chamado
+        $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria']);
 
-    // Busca os técnicos disponíveis para escalação
-    $tecnicosDisponiveis = User::whereHas('roles', fn($q) => $q->whereIn('name', ['Técnico de TI', 'Supervisor', 'Admin']))
-                                ->when($chamado->tecnico_id, fn($q) => $q->where('id', '!=', $chamado->tecnico_id))
-                                ->orderBy('name')->get();
-    
-    return view('chamados.show', compact('chamado', 'chatMessages', 'historyLogs', 'tecnicosDisponiveis'));
-}
-    
-   /**
-    * Adiciona uma nova atualização a um chamado existente.
-    */
+        // Busca o chat (mensagens de usuários)
+        $chatMessages = $chamado->atualizacoes()->where('is_system_log', false)->get();
+
+        // Busca o histórico (logs de sistema)
+        $historyLogs = $chamado->atualizacoes()->where('is_system_log', true)->get();
+
+        // Busca os técnicos disponíveis para escalação
+        $tecnicosDisponiveis = User::whereHas('roles', fn($q) => $q->whereIn('name', ['Técnico de TI', 'Supervisor', 'Admin']))
+            ->when($chamado->tecnico_id, fn($q) => $q->where('id', '!=', $chamado->tecnico_id))
+            ->orderBy('name')->get();
+
+        return view('chamados.show', compact('chamado', 'chatMessages', 'historyLogs', 'tecnicosDisponiveis'));
+    }
+
+    /**
+     * Adiciona uma nova atualização a um chamado existente.
+     */
     public function addUpdate(Request $request, Chamado $chamado)
     {
         $this->authorize('view-chamados');
-        
+
         $request->validate(['texto' => 'required|string']);
 
         AtualizacaoChamado::create([
@@ -214,22 +215,17 @@ class ChamadoController extends Controller
      * Exibe a lista de chamados atribuídos ao usuário logado.
      */
     public function myChamados()
-    {
-        $this->authorize('view-chamados');
+{
+    $this->authorize('view-chamados');
 
-        $userId = Auth::id();
+    // Adicionamos nosso filtro à query que já existia
+    $meusChamados = Chamado::with(['problema.ativo', 'solicitante'])
+                        ->where('tecnico_id', Auth::id()) // Primeiro filtra por técnico
+                        ->filtroPrincipal() // Depois aplica a lógica de status e ordenação
+                        ->paginate(15);
 
-        // Busca os chamados onde o tecnico_id é o do usuário logado
-        // E o status é diferente de 'Fechado'
-        $meusChamados = Chamado::with(['problema.ativo', 'solicitante'])
-                            ->where('tecnico_id', $userId)
-                            ->where('status', '!=', \App\Enums\ChamadoStatus::FECHADO)
-                            ->latest()
-                            ->paginate(15);
-
-        // Retorna uma nova view que criaremos no próximo passo
-        return view('chamados.my-chamados', ['chamados' => $meusChamados]);
-    }
+    return view('chamados.my-chamados', ['chamados' => $meusChamados]);
+}
     public function attend(Chamado $chamado)
     {
         // Garante que apenas o técnico atribuído possa atender o chamado
@@ -378,7 +374,7 @@ class ChamadoController extends Controller
             'texto' => "Motivo da Reabertura: " . $validated['motivo_reabertura'],
             'is_system_log' => false, // Mensagem de chat
         ]);
-        
+
         // Adiciona um log no histórico
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
@@ -388,5 +384,19 @@ class ChamadoController extends Controller
         ]);
 
         return redirect()->route('chamados.show', $chamado)->with('success', 'Chamado reaberto e enviado para a fila de atendimento!');
+    }
+    /**
+     * Exibe a lista de chamados fechados.
+     */
+    public function closedIndex()
+    {
+        $this->authorize('view-chamados');
+
+        $chamadosFechados = Chamado::with(['problema.ativo', 'solicitante', 'tecnico'])
+            ->where('status', \App\Enums\ChamadoStatus::FECHADO)
+            ->latest('data_fechamento') // Ordena pelos mais recentemente fechados
+            ->paginate(15);
+
+        return view('chamados.closed', ['chamados' => $chamadosFechados]);
     }
 }

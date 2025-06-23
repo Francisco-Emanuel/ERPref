@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class Chamado extends Model
 {
@@ -45,6 +47,41 @@ class Chamado extends Model
         'categoria_id',
         'ativo_id', // Mantivemos para acesso rápido
     ];
+
+    /**
+     * Escopo para filtrar e ordenar a lista principal de chamados.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFiltroPrincipal(Builder $query): Builder
+    {
+        $user = Auth::user();
+
+        return $query
+            // 1. Exclui chamados FECHADOS
+            ->where('status', '!=', ChamadoStatus::FECHADO)
+
+            // 2. Lógica para chamados RESOLVIDOS (só aparece para o solicitante)
+            ->where(function ($subQuery) use ($user) {
+                $subQuery->where('status', '!=', ChamadoStatus::RESOLVIDO)
+                    ->orWhere(function ($q) use ($user) {
+                        $q->where('status', '=', ChamadoStatus::RESOLVIDO)
+                            ->where('solicitante_id', '=', $user->id);
+                    });
+            })
+
+            // 3. Ordenação customizada por status e depois por data
+            ->orderByRaw("
+                CASE
+                    WHEN status = 'Aberto' THEN 1
+                    WHEN status = 'Em Andamento' THEN 2
+                    WHEN status = 'Resolvido' THEN 3
+                    ELSE 4
+                END
+            ")
+            ->orderBy('updated_at', 'desc');
+    }
 
     /**
      * Define o relacionamento: Um Chamado PERTENCE A um Problema.

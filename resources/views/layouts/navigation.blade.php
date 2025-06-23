@@ -24,6 +24,10 @@
                         <x-nav-link :href="route('chamados.index')" :active="request()->routeIs('chamados.*')">
                             {{ __('Chamados') }}
                         </x-nav-link>
+
+                        <x-nav-link :href="route('chamados.closed')" :active="request()->routeIs('chamados.closed')">
+                            Chamados Fechados
+                        </x-nav-link>
                     @endcan
 
                     @can('edit-chamados') {{-- Apenas técnicos verão este link --}}
