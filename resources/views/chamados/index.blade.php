@@ -64,6 +64,9 @@
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Última Atualização</th>
+                                        <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        Local</th>
                                     <th scope="col"
                                         class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Ações</th>
@@ -94,6 +97,9 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">
                                             {{ $chamado->updated_at->format('d/m/Y H:i') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">
+                                            {{ $chamado->local }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold">
                                             <div class="flex items-center justify-end gap-4">

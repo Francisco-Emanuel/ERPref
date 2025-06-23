@@ -21,6 +21,14 @@
                 </div>
                 <x-input-error :messages="$errors->get('descricao_problema')" class="mt-2" />
             </div>
+            <div class="sm:col-span-3">
+                <x-input-label for="local" value="Local do Atendimento (Sala, Setor)" />
+                <div class="mt-1">
+                    <x-text-input id="local" name="local" type="text" class="block w-full" :value="old('local')" required />
+                </div>
+                <x-input-error :messages="$errors->get('local')" class="mt-2" />
+            </div>
+
         </div>
     </div>
 

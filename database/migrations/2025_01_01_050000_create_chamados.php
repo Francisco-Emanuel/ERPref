@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('titulo');
             $table->text('descricao_inicial');
             $table->string('status', 50);
+            $table->string('local');
             $table->string('prioridade', 50);
             $table->text('solucao_final')->nullable();
             $table->timestamp('data_resolucao')->nullable();

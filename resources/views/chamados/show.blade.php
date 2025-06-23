@@ -107,6 +107,12 @@
                                 </dd>
                             </div>
                             <div>
+                                <dt class="text-sm font-medium text-slate-500">Local do Atendimento</dt>
+                                <dd class="mt-1 text-base font-semibold text-slate-800">
+                                    {{ $chamado->local }}
+                                </dd>
+                            </div>
+                            <div>
                                 <dt class="text-sm font-medium text-slate-500">Descrição do Problema</dt>
                                 <dd class="mt-2 text-sm text-slate-700 bg-slate-50 p-4 rounded-lg">
                                     {{-- A função nl2br() preserva as quebras de linha do texto original --}}

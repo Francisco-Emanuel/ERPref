@@ -60,6 +60,7 @@ class ChamadoController extends Controller
         $validatedData = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao_problema' => 'required|string',
+            'local' => 'required|string|max:255',
             'ativo_id' => 'nullable|exists:ativos_ti,id',
             'prioridade' => 'required|string|max:50',
             'categoria_id' => 'nullable|exists:categorias,id',
@@ -76,6 +77,7 @@ class ChamadoController extends Controller
             'titulo' => $validatedData['titulo'],
             'descricao_inicial' => $validatedData['descricao_problema'],
             'problema_id' => $problema->id,
+            'local' => $validatedData['local'],
             'solicitante_id' => Auth::id(),
             'status' => ChamadoStatus::ABERTO,
             'prioridade' => $validatedData['prioridade'],

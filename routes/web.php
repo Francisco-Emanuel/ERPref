@@ -58,7 +58,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     ->only(['index', 'create', 'store', 'edit', 'update']);
         
         // CRUD de Setores
-        Route::resource('setores', SetorController::class);
+        Route::resource('setores', SetorController::class)->parameters(['setores' => 'setor']);
 
         // CRUD de Categorias
         Route::resource('categorias', CategoriaController::class);

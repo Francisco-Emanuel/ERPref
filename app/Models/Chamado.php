@@ -38,6 +38,7 @@ class Chamado extends Model
         'titulo',
         'descricao_inicial',
         'problema_id',
+        'local',
         'status',
         'prioridade',
         'solucao_final',
