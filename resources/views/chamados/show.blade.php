@@ -224,7 +224,7 @@
                 <x-input-label for="solucao_final" value="Descrição da Solução" />
                 <textarea id="solucao_final" name="solucao_final" rows="5"
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                    required>{{ old('solucao_final') }}</textarea>
+                    required minlength="10">{{ old('solucao_final') }}</textarea>
                 <x-input-error :messages="$errors->get('solucao_final')" class="mt-2" />
             </div>
 
