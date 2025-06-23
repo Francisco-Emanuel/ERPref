@@ -209,7 +209,7 @@ class ChamadoController extends Controller
             'is_system_log' => true,
         ]);
 
-        return redirect()->route('chamados.index')->with('success', "Chamado #{$chamado->id} atribuído a você com sucesso!");
+        return redirect()->route('chamados.show', $chamado)->with('success', "Chamado atribuído a você! Agora você pode iniciar o atendimento.");
     }
     /**
      * Exibe a lista de chamados atribuídos ao usuário logado.
@@ -372,7 +372,7 @@ class ChamadoController extends Controller
             'chamado_id' => $chamado->id,
             'autor_id' => Auth::id(),
             'texto' => "Motivo da Reabertura: " . $validated['motivo_reabertura'],
-            'is_system_log' => false, // Mensagem de chat
+            'is_system_log' => true, 
         ]);
 
         // Adiciona um log no histórico

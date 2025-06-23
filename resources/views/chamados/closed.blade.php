@@ -4,7 +4,7 @@
         <header class="bg-white shadow-sm">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <h1 class="text-2xl font-bold text-slate-900">
-                    Meus Chamados
+                    Chamados Fechados
                 </h1>
             </div>
         </header>
@@ -19,8 +19,9 @@
                                 <tr>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">ID</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Título</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Solicitante</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Técnico Responsável</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Data de Fechamento</th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Ações</th>
                                 </tr>
                             </thead>
@@ -28,36 +29,19 @@
                                 @forelse ($chamados as $chamado)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">
-                                            <span class="font-semibold text-blue-600">#{{ $chamado->id }}</span>
+                                            <span class="font-semibold text-slate-600">#{{ $chamado->id }}</span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-800">{{ $chamado->titulo }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
-                                                @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
-                                                @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO) bg-blue-100 text-blue-800 @endif
-                                            ">
-                                                {{ $chamado->status->value }}
-                                            </span>
-                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $chamado->solicitante->name ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $chamado->tecnico->name ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $chamado->data_fechamento ? $chamado->data_fechamento->format('d/m/Y H:i') : 'N/A' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold">
-                                            @if ($chamado->status !== \App\Enums\ChamadoStatus::EM_ANDAMENTO && $chamado->status !== \App\Enums\ChamadoStatus::RESOLVIDO)
-                                                <form method="POST" action="{{ route('chamados.attend', $chamado) }}" class="inline-block">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" class="text-blue-600 hover:text-blue-800">
-                                                        Atender
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <a href="{{ route('chamados.show', $chamado) }}" class="text-indigo-600 hover:text-indigo-800">Ver Detalhes</a>
-                                            @endif
+                                            <a href="{{ route('chamados.show', $chamado) }}" class="text-blue-600 hover:text-blue-800">Ver Detalhes</a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-slate-500">Nenhum chamado atribuído a você no momento.</td>
+                                        <td colspan="6" class="px-6 py-4 text-center text-slate-500">Nenhum chamado fechado encontrado.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

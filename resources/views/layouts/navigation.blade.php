@@ -19,22 +19,15 @@
                         </x-nav-link>
                     @endcan
                     
-                    {{-- A diretiva @can foi adicionada aqui --}}
                     @can('view-chamados')
                         <x-nav-link :href="route('chamados.index')" :active="request()->routeIs('chamados.*')">
                             {{ __('Chamados') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('chamados.closed')" :active="request()->routeIs('chamados.closed')">
-                            Chamados Fechados
-                        </x-nav-link>
+                        
                     @endcan
 
-                    @can('edit-chamados') {{-- Apenas técnicos verão este link --}}
-                        <x-nav-link :href="route('chamados.my')" :active="request()->routeIs('chamados.my')">
-                            Meus Chamados
-                        </x-nav-link>
-                    @endcan
+                    
 
                     @hasanyrole('Admin|Supervisor')
                         <x-nav-link :href="route('setores.index')" :active="request()->routeIs('setores.*')">

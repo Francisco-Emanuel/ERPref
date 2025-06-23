@@ -14,13 +14,13 @@ class CategoriaSeeder extends Seeder
     public function run(): void
     {
         Categoria::firstOrCreate(
-            ['tipo_interno' => 'ti'],
-            ['nome_amigavel' => 'Suporte de TI']
+            ['tipo_interno' => 'Hardware'],
+            ['nome_amigavel' => 'Computador/impressora/internet']
         );
 
         Categoria::firstOrCreate(
-            ['tipo_interno' => 'rh'],
-            ['nome_amigavel' => 'Recursos Humanos']
+            ['tipo_interno' => 'Software'],
+            ['nome_amigavel' => 'Programa específico/Office']
         );
     }
 }

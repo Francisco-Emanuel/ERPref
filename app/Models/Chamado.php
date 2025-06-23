@@ -26,7 +26,9 @@ class Chamado extends Model
      * @var array
      */
     protected $casts = [
-        'status' => ChamadoStatus::class, // <-- ADICIONE ESTA LINHA
+        'status' => ChamadoStatus::class,
+        'data_resolucao' => 'datetime',  // <-- ADICIONE ESTA LINHA
+        'data_fechamento' => 'datetime', // <-- ADICIONE ESTA LINHA
     ];
 
     /**
