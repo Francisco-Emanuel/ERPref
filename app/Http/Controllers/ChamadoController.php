@@ -57,9 +57,9 @@ class ChamadoController extends Controller
         $validatedData = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao_problema' => 'required|string',
-            'ativo_ti_id' => 'required|exists:ativos_ti,id',
+            'ativo_ti_id' => 'nullable|exists:ativos_ti,id',
             'prioridade' => 'required|string|max:50',
-            'categoria_id' => 'required|exists:categorias,id',
+            'categoria_id' => 'nullable|exists:categorias,id',
             'tecnico_id' => 'nullable|exists:users,id',
         ]);
         

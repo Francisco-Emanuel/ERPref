@@ -13,60 +13,76 @@
                     <form method="POST" action="{{ route('chamados.store') }}">
                         @csrf
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="md:col-span-2">
-                                <x-input-label for="titulo" value="Título do Chamado (Ex: Computador não liga, Impressora com erro)" />
+                        {{-- SEÇÃO 1: INFORMAÇÕES ESSENCIAIS (OBRIGATÓRIAS) --}}
+                        <div class="space-y-6">
+                            <div>
+                                <x-input-label for="titulo" value="Título do Chamado (Ex: Computador não liga)" />
                                 <x-text-input id="titulo" name="titulo" type="text" class="mt-1 block w-full" :value="old('titulo')" required autofocus />
-                            </div>
-                            
-                             <div>
-                                <x-input-label for="ativo_ti_id" value="Qual equipamento está com problema?" />
-                                <select id="ativo_ti_id" name="ativo_ti_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" required>
-                                    <option value="">Selecione um ativo</option>
-                                    @foreach($ativos as $ativo)
-                                        <option value="{{ $ativo->id }}" @selected(old('ativo_ti_id') == $ativo->id)>
-                                            {{ $ativo->nome_ativo }} (Nº Série: {{ $ativo->numero_serie }})
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <x-input-error :messages="$errors->get('titulo')" class="mt-2" />
                             </div>
 
                             <div>
-                                <x-input-label for="prioridade" value="Prioridade" />
-                                <select id="prioridade" name="prioridade" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" required>
-                                    <option value="Baixa" @selected(old('prioridade') == 'Baixa')>Baixa</option>
-                                    <option value="Média" @selected(old('prioridade') == 'Média')>Média</option>
-                                    <option value="Alta" @selected(old('prioridade') == 'Alta')>Alta</option>
-                                    <option value="Urgente" @selected(old('prioridade') == 'Urgente')>Urgente</option>
-                                </select>
+                                <x-input-label for="descricao" value="Descreva o problema ou solicitação em detalhes" />
+                                <textarea id="descricao" name="descricao" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" rows="5" required>{{ old('descricao') }}</textarea>
+                                <x-input-error :messages="$errors->get('descricao')" class="mt-2" />
                             </div>
+                        </div>
 
-                            <div class="md:col-span-2">
-                                <x-input-label for="descricao_problema" value="Descreva o problema em detalhes" />
-                                <textarea id="descricao_problema" name="descricao_problema" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" rows="5" required>{{ old('descricao_problema') }}</textarea>
-                            </div>
+                        {{-- SEÇÃO 2: DETALHES ADICIONAIS (OPCIONAIS) --}}
+                        <div class="mt-6 border-t pt-6">
+                            <h3 class="text-lg font-medium text-gray-900">Detalhes Adicionais (Opcional)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                
+                                <div>
+                                    <x-input-label for="ativo_id" value="Equipamento Relacionado" />
+                                    <select id="ativo_id" name="ativo_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
+                                        <option value="">Nenhum / Não se aplica</option>
+                                        @foreach($ativos as $ativo)
+                                            <option value="{{ $ativo->id }}" @selected(old('ativo_id') == $ativo->id)>
+                                                {{ $ativo->nome_ativo }} (Nº Série: {{ $ativo->numero_serie }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <x-input-error :messages="$errors->get('ativo_id')" class="mt-2" />
+                                </div>
 
-                            <div class="md:col-span-2 border-t pt-6">
-                                <h3 class="font-semibold text-gray-700">Atribuição (Opcional)</h3>
-                            </div>
-                           
-                            <div>
-                                <x-input-label for="categoria_id" value="Categoria" />
-                                <select id="categoria_id" name="categoria_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" required>
-                                     @foreach($categorias as $categoria)
-                                        <option value="{{ $categoria->id }}" @selected(old('categoria_id') == $categoria->id)>{{ $categoria->nome_amigavel }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                                <div>
+                                    <x-input-label for="categoria_id" value="Categoria" />
+                                    <select id="categoria_id" name="categoria_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
+                                        <option value="">Não definido</option>
+                                        @foreach($categorias as $categoria)
+                                            <option value="{{ $categoria->id }}" @selected(old('categoria_id') == $categoria->id)>
+                                                {{ $categoria->nome_amigavel }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <x-input-error :messages="$errors->get('categoria_id')" class="mt-2" />
+                                </div>
 
-                            <div>
-                                <x-input-label for="tecnico_id" value="Atribuir a um Técnico" />
-                                <select id="tecnico_id" name="tecnico_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
-                                    <option value="">Não atribuir agora</option>
-                                    @foreach($tecnicos as $tecnico)
-                                        <option value="{{ $tecnico->id }}" @selected(old('tecnico_id') == $tecnico->id)>{{ $tecnico->name }}</option>
-                                    @endforeach
-                                </select>
+                                <div>
+                                    <x-input-label for="prioridade" value="Prioridade" />
+                                    <select id="prioridade" name="prioridade" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" required>
+                                        <option value="Baixa" @selected(old('prioridade', 'Baixa') == 'Baixa')>Baixa</option>
+                                        <option value="Média" @selected(old('prioridade', 'Média') == 'Média')>Média</option>
+                                        <option value="Alta" @selected(old('prioridade', 'Alta') == 'Alta')>Alta</option>
+                                        <option value="Urgente" @selected(old('prioridade', 'Urgente') == 'Urgente')>Urgente</option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('prioridade')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <x-input-label for="tecnico_id" value="Atribuir ao Técnico" />
+                                    <select id="tecnico_id" name="tecnico_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
+                                        <option value="">Não atribuir agora</option>
+                                        @foreach($tecnicos as $tecnico)
+                                            <option value="{{ $tecnico->id }}" @selected(old('tecnico_id') == $tecnico->id)>
+                                                {{ $tecnico->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <x-input-error :messages="$errors->get('tecnico_id')" class="mt-2" />
+                                </div>
+
                             </div>
                         </div>
 

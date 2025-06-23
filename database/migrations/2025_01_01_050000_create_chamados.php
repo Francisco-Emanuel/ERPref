@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -22,20 +21,25 @@ return new class extends Migration
             $table->timestamp('data_fechamento')->nullable();
             $table->integer('avaliacao')->nullable();
             // --- CHAVES ESTRANGEIRAS ---
+            $table->foreignId('problema_id')
+                ->unique() // Garante que um problema só possa ter um chamado
+                ->constrained('problemas')
+                ->after('titulo');
             $table->foreignId('solicitante_id')
-                  ->constrained('users')
-                  ->onDelete('cascade'); // Se o usuário for deletado, seus chamados também são
+                ->constrained('users')
+                ->onDelete('cascade'); // Se o usuário for deletado, seus chamados também são
             $table->foreignId('tecnico_id')
-                  ->nullable()
-                  ->constrained('users')
-                  ->onDelete('set null'); // Se o técnico for deletado, o campo fica nulo
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null'); // Se o técnico for deletado, o campo fica nulo
             $table->foreignId('categoria_id')
-                  ->constrained('categorias')
-                  ->onDelete('restrict'); // Impede que uma categoria com chamados seja deletada
+                ->nullable()
+                ->constrained('categorias')
+                ->onDelete('restrict'); // Impede que uma categoria com chamados seja deletada
             $table->foreignId('ativo_id')
-                  ->nullable()
-                  ->constrained('ativos_ti')
-                  ->onDelete('set null'); // Se o ativo for deletado, o campo fica nulo
+                ->nullable()
+                ->constrained('ativos_ti')
+                ->onDelete('set null'); // Se o ativo for deletado, o campo fica nulo
             $table->timestamps();
         });
     }
