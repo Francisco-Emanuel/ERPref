@@ -22,9 +22,9 @@
                             </div>
 
                             <div>
-                                <x-input-label for="descricao" value="Descreva o problema ou solicitação em detalhes" />
-                                <textarea id="descricao" name="descricao" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" rows="5" required>{{ old('descricao') }}</textarea>
-                                <x-input-error :messages="$errors->get('descricao')" class="mt-2" />
+                                <x-input-label for="descricao_problema" value="Descreva o problema ou solicitação em detalhes" />
+                                <textarea id="descricao_problema" name="descricao_problema" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" rows="5" required>{{ old('descricao_problema') }}</textarea>
+                                <x-input-error :messages="$errors->get('descricao_problema')" class="mt-2" />
                             </div>
                         </div>
 

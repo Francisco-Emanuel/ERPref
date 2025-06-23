@@ -22,6 +22,7 @@ class Chamado extends Model
      */
     protected $fillable = [
         'titulo',
+        'descricao_inicial',
         'problema_id',
         'status',
         'prioridade',

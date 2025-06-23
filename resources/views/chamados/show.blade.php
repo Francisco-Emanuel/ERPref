@@ -86,7 +86,9 @@
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Categoria</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $chamado->categoria->nome_amigavel }}</dd>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                {{ $chamado->categoria?->nome_amigavel ?? 'Não definida' }}
+                            </dd>
                         </div>
                     </dl>
                 </div>
@@ -95,16 +97,23 @@
                     <dl class="space-y-4">
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Ativo</dt>
-                            <dd class="mt-1 text-sm text-indigo-600 hover:underline">
-                                <a href="{{ route('ativos.show', $chamado->problema->ativo) }}">
-                                    {{ $chamado->problema->ativo->nome_ativo }}
-                                </a>
+                            <dd class="mt-1 text-sm">
+                                {{-- Verifica se o ativo existe antes de tentar usá-lo --}}
+                                @if ($chamado->problema->ativo)
+                                    <a href="{{ route('ativos.show', $chamado->problema->ativo) }}"
+                                        class="text-indigo-600 hover:underline">
+                                        {{ $chamado->problema->ativo->nome_ativo }}
+                                    </a>
+                                @else
+                                    <span class="text-gray-500">Nenhum ativo vinculado</span>
+                                @endif
                             </dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Descrição do Problema</dt>
                             <dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap">
-                                {{ $chamado->problema->descricao }}</dd>
+                                {{ $chamado->problema->descricao }}
+                            </dd>
                         </div>
                     </dl>
                 </div>

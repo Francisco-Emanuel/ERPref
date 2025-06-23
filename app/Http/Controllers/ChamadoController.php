@@ -57,7 +57,7 @@ class ChamadoController extends Controller
         $validatedData = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao_problema' => 'required|string',
-            'ativo_ti_id' => 'nullable|exists:ativos_ti,id',
+            'ativo_id' => 'nullable|exists:ativos_ti,id',
             'prioridade' => 'required|string|max:50',
             'categoria_id' => 'nullable|exists:categorias,id',
             'tecnico_id' => 'nullable|exists:users,id',
@@ -65,19 +65,20 @@ class ChamadoController extends Controller
         
         $problema = Problema::create([
             'descricao' => $validatedData['descricao_problema'],
-            'ativo_ti_id' => $validatedData['ativo_ti_id'],
+            'ativo_ti_id' => $validatedData['ativo_id'],
             'autor_id' => Auth::id(),
         ]);
 
         Chamado::create([
             'titulo' => $validatedData['titulo'],
+            'descricao_inicial' => $validatedData['descricao_problema'],
             'problema_id' => $problema->id,
             'solicitante_id' => Auth::id(),
             'status' => 'Aberto',
             'prioridade' => $validatedData['prioridade'],
             'categoria_id' => $validatedData['categoria_id'],
             'tecnico_id' => $validatedData['tecnico_id'],
-            'ativo_id' => $validatedData['ativo_ti_id'],
+            'ativo_id' => $validatedData['ativo_id'],
         ]);
 
         return redirect()->route('chamados.index')->with('success', 'Chamado aberto com sucesso!');
