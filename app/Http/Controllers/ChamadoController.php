@@ -28,7 +28,11 @@ class ChamadoController extends Controller
             ->filtroPrincipal() // <-- APLICA TODA A LÓGICA
             ->paginate(15);
 
-        return view('chamados.index', compact('chamados'));
+        $tecnicosDisponiveis = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['Técnico de TI', 'Supervisor', 'Admin']);
+        })->orderBy('name')->get();
+
+        return view('chamados.index', compact('chamados', 'tecnicosDisponiveis'));
     }
 
     /**
@@ -218,17 +222,17 @@ class ChamadoController extends Controller
      * Exibe a lista de chamados atribuídos ao usuário logado.
      */
     public function myChamados()
-{
-    $this->authorize('view-chamados');
+    {
+        $this->authorize('view-chamados');
 
-    // Adicionamos nosso filtro à query que já existia
-    $meusChamados = Chamado::with(['problema.ativo', 'solicitante'])
-                        ->where('tecnico_id', Auth::id()) // Primeiro filtra por técnico
-                        ->filtroPrincipal() // Depois aplica a lógica de status e ordenação
-                        ->paginate(15);
+        // Adicionamos nosso filtro à query que já existia
+        $meusChamados = Chamado::with(['problema.ativo', 'solicitante'])
+            ->where('tecnico_id', Auth::id()) // Primeiro filtra por técnico
+            ->filtroPrincipal() // Depois aplica a lógica de status e ordenação
+            ->paginate(15);
 
-    return view('chamados.my-chamados', ['chamados' => $meusChamados]);
-}
+        return view('chamados.my-chamados', ['chamados' => $meusChamados]);
+    }
     public function attend(Chamado $chamado)
     {
         // Garante que apenas o técnico atribuído possa atender o chamado
@@ -375,7 +379,7 @@ class ChamadoController extends Controller
             'chamado_id' => $chamado->id,
             'autor_id' => Auth::id(),
             'texto' => "Motivo da Reabertura: " . $validated['motivo_reabertura'],
-            'is_system_log' => true, 
+            'is_system_log' => true,
         ]);
 
         // Adiciona um log no histórico
@@ -423,5 +427,5 @@ class ChamadoController extends Controller
         // Define o nome do arquivo e força o download
         return $pdf->download("relatorio-chamado-{$chamado->id}.pdf");
     }
-    
+
 }

@@ -10,13 +10,13 @@
                 </h1>
                 <div>
                     <x-nav-link :href="route('chamados.closed')" :active="request()->routeIs('chamados.closed')">
-                    Chamados Fechados
-                </x-nav-link>
-                @can('edit-chamados') {{-- Apenas técnicos verão este link --}}
-                    <x-nav-link :href="route('chamados.my')" :active="request()->routeIs('chamados.my')">
-                        Meus Chamados
+                        Chamados Fechados
                     </x-nav-link>
-                @endcan
+                    @can('edit-chamados') {{-- Apenas técnicos verão este link --}}
+                        <x-nav-link :href="route('chamados.my')" :active="request()->routeIs('chamados.my')">
+                            Meus Chamados
+                        </x-nav-link>
+                    @endcan
                 </div>
                 @can('create-chamados')
                     <a href="{{ route('chamados.create') }}"
@@ -64,7 +64,7 @@
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Última Atualização</th>
-                                        <th scope="col"
+                                    <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Local</th>
                                     <th scope="col"
@@ -85,10 +85,10 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{-- Tags de status com cores atualizadas --}}
                                             <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                    @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
-                                                    @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
-                                                    @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO) bg-blue-100 text-blue-800 @endif
-                                                ">
+                                                                @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
+                                                                @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
+                                                                @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO) bg-blue-100 text-blue-800 @endif
+                                                            ">
                                                 {{ $chamado->status->value }}
                                             </span>
                                         </td>
@@ -107,15 +107,35 @@
                                                     class="text-blue-600 hover:text-blue-800">Ver Detalhes</a>
 
                                                 @can('edit-chamados')
-                                                    @if (!$chamado->tecnico_id)
-                                                        <form method="POST" action="{{ route('chamados.assign', $chamado) }}"
-                                                            class="inline-block">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit" class="text-slate-500 hover:text-slate-700">
-                                                                Atribuir a mim
+                                                    @if (!$chamado->tecnico_id) {{-- Se o chamado não tiver técnico --}}
+                                                        @if (Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
+                                                            {{-- Para Admins: Botão que abre o modal para atribuir a qualquer técnico
+                                                            --}}
+                                                            <button x-data=""
+                                                                x-on:click.prevent="$dispatch('open-modal', 'escalate-chamado-modal')"
+                                                                class="flex-1 inline-flex items-center justify-center gap-2 bg-white text-slate-700 font-semibold py-2 px-4 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200">
+                                                                Atribuir
                                                             </button>
-                                                        </form>
+                                                        @else
+                                                            {{-- Para Técnicos: Botão para se auto-atribuir --}}
+                                                            <form method="POST" action="{{ route('chamados.assign', $chamado) }}"
+                                                                class="inline-block" @click.stop>
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <button type="submit" class="text-slate-500 hover:text-slate-700">
+                                                                    Atribuir a mim
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    @else {{-- Se o chamado JÁ tiver um técnico --}}
+                                                        @if (Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
+                                                            {{-- Apenas Admins podem escalar um chamado já atribuído --}}
+                                                            <button x-data
+                                                                @click.stop="$dispatch('open-modal', 'escalate-chamado-{{ $chamado->id }}')"
+                                                                class="text-red-600 hover:text-red-800">
+                                                                Escalar
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                 @endcan
                                             </div>
@@ -141,4 +161,6 @@
             </div>
         </main>
     </div>
+
+    @include('chamados.partials.modal-escalate')
 </x-app-layout>
