@@ -334,15 +334,24 @@ class ChamadoController extends Controller
             'new_tecnico_id' => 'required|exists:users,id',
         ]);
 
-        $oldTechnicianName = $chamado->tecnico->name;
         $newTechnician = User::find($validated['new_tecnico_id']);
+        $logTexto = '';
+        
+        // Verifica se o chamado JÁ TINHA um técnico.
+        if ($chamado->tecnico) {
+            // Se sim, é uma ESCALAÇÃO. Registra o nome do técnico antigo.
+            $oldTechnicianName = $chamado->tecnico->name;
+            $logTexto = "Chamado escalado de {$oldTechnicianName} para {$newTechnician->name} por " . Auth::user()->name . ".";
+        } else {
+            // Se não, é uma ATRIBUIÇÃO inicial.
+            $logTexto = "Chamado atribuído a {$newTechnician->name} por " . Auth::user()->name . ".";
+        }
 
         // Atualiza o chamado com o ID do novo técnico
         $chamado->tecnico_id = $newTechnician->id;
         $chamado->save();
 
         // Cria a entrada no histórico
-        $logTexto = "Chamado escalado de {$oldTechnicianName} para {$newTechnician->name} por " . Auth::user()->name . ".";
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
             'autor_id' => Auth::id(),
