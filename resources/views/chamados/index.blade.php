@@ -85,10 +85,10 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{-- Tags de status com cores atualizadas --}}
                                             <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                                @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
-                                                                @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
-                                                                @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO) bg-blue-100 text-blue-800 @endif
-                                                            ">
+                                                                            @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
+                                                                            @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
+                                                                            @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO) bg-blue-100 text-blue-800 @endif
+                                                                        ">
                                                 {{ $chamado->status->value }}
                                             </span>
                                         </td>
@@ -107,17 +107,17 @@
                                                     class="text-blue-600 hover:text-blue-800">Ver Detalhes</a>
 
                                                 @can('edit-chamados')
-                                                    @if (!$chamado->tecnico_id) {{-- Se o chamado não tiver técnico --}}
+                                                    @if (!$chamado->tecnico_id) {{-- Se o chamado não tem técnico --}}
                                                         @if (Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
                                                             {{-- Para Admins: Botão que abre o modal para atribuir a qualquer técnico
                                                             --}}
-                                                            <button x-data=""
-                                                                x-on:click.prevent="$dispatch('open-modal', 'escalate-chamado-modal')"
-                                                                class="flex-1 inline-flex items-center justify-center gap-2 bg-white text-slate-700 font-semibold py-2 px-4 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200">
+                                                            <button x-data
+                                                                @click.stop="$dispatch('open-modal', 'escalate-chamado-{{ $chamado->id }}')"
+                                                                class="text-slate-500 hover:text-slate-700">
                                                                 Atribuir
                                                             </button>
                                                         @else
-                                                            {{-- Para Técnicos: Botão para se auto-atribuir --}}
+                                                            {{-- Para Técnicos normais: Botão para se auto-atribuir --}}
                                                             <form method="POST" action="{{ route('chamados.assign', $chamado) }}"
                                                                 class="inline-block" @click.stop>
                                                                 @csrf
@@ -127,7 +127,7 @@
                                                                 </button>
                                                             </form>
                                                         @endif
-                                                    @else {{-- Se o chamado JÁ tiver um técnico --}}
+                                                    @else {{-- Se o chamado JÁ tem um técnico --}}
                                                         @if (Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
                                                             {{-- Apenas Admins podem escalar um chamado já atribuído --}}
                                                             <button x-data
@@ -148,6 +148,7 @@
                                     </tr>
                                 @endforelse
                             </tbody>
+
                         </table>
                     </div>
 
@@ -161,6 +162,32 @@
             </div>
         </main>
     </div>
+    @foreach ($chamados as $chamado)
+        <x-modal :name="'escalate-chamado-' . $chamado->id" focusable>
+            <form method="post" action="{{ route('chamados.atribuir', $chamado) }}" class="p-6">
+                @csrf
+                @method('patch')
+                <h2 class="text-lg font-medium text-gray-900">Atribuir / Escalar Chamado #{{ $chamado->id }}</h2>
+                <p class="mt-1 text-sm text-gray-600">Selecione o técnico para quem você deseja transferir este chamado.</p>
+                <div class="mt-6">
+                    <x-input-label for="new_tecnico_id_{{ $chamado->id }}" value="Atribuir Para" />
+                    <select id="new_tecnico_id_{{ $chamado->id }}" name="new_tecnico_id"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                        <option value="">Selecione um técnico...</option>
+                        @foreach ($tecnicosDisponiveis as $tecnico)
+                            @if($chamado->tecnico_id !== $tecnico->id)
+                                <option value="{{ $tecnico->id }}">{{ $tecnico->name }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mt-6 flex justify-end">
+                    <x-secondary-button x-on:click="$dispatch('close')">Cancelar</x-secondary-button>
+                    <x-danger-button class="ms-3">Confirmar</x-danger-button>
+                </div>
+            </form>
+        </x-modal>
+    @endforeach
 
     @include('chamados.partials.modal-escalate')
 </x-app-layout>

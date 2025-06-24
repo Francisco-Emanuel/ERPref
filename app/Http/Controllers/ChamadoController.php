@@ -29,7 +29,7 @@ class ChamadoController extends Controller
             ->paginate(15);
 
         $tecnicosDisponiveis = User::whereHas('roles', function ($query) {
-            $query->whereIn('name', ['Técnico de TI', 'Supervisor', 'Admin']);
+            $query->whereIn('name', ['Técnico de TI', 'Supervisor', 'Admin', 'Estagiário']);
         })->orderBy('name')->get();
 
         return view('chamados.index', compact('chamados', 'tecnicosDisponiveis'));
@@ -295,6 +295,38 @@ class ChamadoController extends Controller
         $this->authorize('edit-chamados');
         if ($chamado->tecnico_id !== Auth::id()) {
             abort(403, 'Apenas o técnico responsável pode escalar este chamado.');
+        }
+
+        // Valida se um novo técnico foi selecionado
+        $validated = $request->validate([
+            'new_tecnico_id' => 'required|exists:users,id',
+        ]);
+
+        $oldTechnicianName = $chamado->tecnico->name;
+        $newTechnician = User::find($validated['new_tecnico_id']);
+
+        // Atualiza o chamado com o ID do novo técnico
+        $chamado->tecnico_id = $newTechnician->id;
+        $chamado->save();
+
+        // Cria a entrada no histórico
+        $logTexto = "Chamado escalado de {$oldTechnicianName} para {$newTechnician->name} por " . Auth::user()->name . ".";
+        AtualizacaoChamado::create([
+            'chamado_id' => $chamado->id,
+            'autor_id' => Auth::id(),
+            'texto' => $logTexto,
+            'is_system_log' => true,
+        ]);
+
+        return redirect()->route('chamados.show', $chamado)->with('success', "Chamado escalado para {$newTechnician->name}!");
+    }
+    public function atribuir(Request $request, Chamado $chamado)
+    {
+        // Garante que apenas o técnico atual pode escalar o chamado
+        $this->authorize('edit-chamados');
+        $user = Auth::user();
+        if (!$user->hasrole('Admin')) {
+            abort(403, 'Apenas administradores podem atribuir chamados.');
         }
 
         // Valida se um novo técnico foi selecionado

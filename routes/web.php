@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('chamados/{chamado}/attend', [ChamadoController::class, 'attend'])->name('chamados.attend');
     Route::patch('chamados/{chamado}/resolve', [ChamadoController::class, 'resolve'])->name('chamados.resolve');
     Route::patch('chamados/{chamado}/escalate', [ChamadoController::class, 'escalate'])->name('chamados.escalate');
+    Route::patch('chamados/{chamado}/atribuir', [ChamadoController::class, 'atribuir'])->name('chamados.atribuir');
     Route::patch('chamados/{chamado}/close', [ChamadoController::class, 'close'])->name('chamados.close');
     Route::patch('chamados/{chamado}/reopen', [ChamadoController::class, 'reopen'])->name('chamados.reopen');
     Route::resource('chamados', ChamadoController::class)->only(['index', 'create', 'store', 'show']);
