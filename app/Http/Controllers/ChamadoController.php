@@ -9,6 +9,7 @@ use App\Models\Chamado;
 use App\Models\Problema;
 use App\Models\Categoria;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -401,4 +402,26 @@ class ChamadoController extends Controller
 
         return view('chamados.closed', ['chamados' => $chamadosFechados]);
     }
+    public function generateReport(Chamado $chamado)
+    {
+        $this->authorize('view-chamados');
+
+        // Carrega todas as informações necessárias
+        $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor']);
+
+        // Separa as atualizações entre chat e histórico
+        $chatMessages = $chamado->atualizacoes()->where('is_system_log', false)->get();
+        $historyLogs = $chamado->atualizacoes()->where('is_system_log', true)->get();
+
+        // Passa os dados para a nova view de relatório
+        $pdf = Pdf::loadView('chamados.report', [
+            'chamado' => $chamado,
+            'chatMessages' => $chatMessages,
+            'historyLogs' => $historyLogs
+        ]);
+
+        // Define o nome do arquivo e força o download
+        return $pdf->download("relatorio-chamado-{$chamado->id}.pdf");
+    }
+    
 }

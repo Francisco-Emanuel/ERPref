@@ -1,0 +1,66 @@
+/* Estilos que só se aplicam quando a página está sendo impressa */
+@media print {
+
+    /* Regra principal: esconde tudo que tiver a classe .no-print */
+    .no-print {
+        display: none !important;
+    }
+
+    /* Reseta os estilos do corpo e do fundo para uma impressão limpa */
+    body, .bg-slate-50 {
+        background-color: #fff !important;
+        /* Força a impressão de cores de fundo, se houver */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Remove padding e margens desnecessárias dos containers principais */
+    main.py-12 {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .max-w-7xl {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Força o layout de grid a se tornar um layout de bloco (vertical) para o relatório */
+    main .grid {
+        display: block !important;
+    }
+
+    /* Garante que as colunas do grid ocupem 100% da largura */
+    main .lg\:col-span-2,
+    main .space-y-8 > div {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 20px; /* Adiciona um espaço entre os cards no papel */
+    }
+
+    /* Estiliza os cards para um formato de relatório */
+    .bg-white {
+        background-color: transparent !important;
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        border-radius: 0 !important;
+        /* Tenta não cortar um card no meio de uma página */
+        page-break-inside: avoid;
+    }
+
+    /* Garante que o texto seja preto e legível */
+    * {
+        color: #000 !important;
+    }
+
+    /* Estiliza os fundos cinzas para uma diferenciação sutil no papel */
+    .bg-slate-100, .bg-slate-50 {
+        background-color: #f8f8f8 !important; /* Um cinza bem claro */
+        border: 1px solid #eee;
+    }
+
+    /* Garante que links não apareçam com a cor azul padrão */
+    a {
+        text-decoration: none;
+    }
+}

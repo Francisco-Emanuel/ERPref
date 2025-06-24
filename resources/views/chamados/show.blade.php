@@ -3,7 +3,7 @@
     <div class="bg-slate-50">
 
         {{-- Cabeçalho com Título e Botão Voltar --}}
-        <header class="bg-white shadow-sm">
+        <header class="bg-white shadow-sm no-print">
             <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <div>
                     <h1 class="text-2xl font-bold text-slate-900">
@@ -11,14 +11,28 @@
                     </h1>
                     <p class="mt-1 text-sm text-slate-500">{{ $chamado->titulo }}</p>
                 </div>
-                <a href="{{ route('chamados.index') }}"
-                    class="inline-flex items-center gap-2 bg-white text-slate-700 font-semibold py-2 px-4 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                    </svg>
-                    Voltar
-                </a>
+                <div>
+                    <a href="{{ route('chamados.index') }}"
+                        class="inline-flex items-center gap-2 bg-white text-slate-700 font-semibold py-2 px-4 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                        </svg>
+                        Voltar
+                    </a>
+                    @can('create-chamados')
+                        <a href="{{ route('chamados.report', $chamado) }}" target="_blank"
+                            class="inline-flex items-center gap-2 bg-slate-700 text-white font-semibold py-2 px-4 rounded-lg hover:bg-slate-800 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231a1.125 1.125 0 01-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0" />
+                            </svg>
+                            Imprimir ordem (PDF)
+                        </a>
+                    @endcan
+                </div>
             </div>
         </header>
 
@@ -32,7 +46,7 @@
                     {{-- Card do Chat --}}
                     <div class="bg-white p-6 rounded-xl shadow-sm">
                         <h3 class="text-lg font-semibold text-slate-900 mb-4">Chat</h3>
-                        <form method="POST" action="{{ route('chamados.updates.store', $chamado) }}">
+                        <form method="POST" action="{{ route('chamados.updates.store', $chamado) }}" class="no-print">
                             @csrf
                             <textarea name="texto" rows="3"
                                 class="w-full border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -53,7 +67,9 @@
                                     </div>
                                     <div class="flex-grow min-w-0">
                                         <div class="bg-slate-100 p-4 rounded-lg">
-                                            <p class="text-sm text-slate-800 break-words overflow-hidden">{{ $message->texto }}</p>
+                                            <p class="text-sm text-slate-800 break-words overflow-hidden">
+                                                {{ $message->texto }}
+                                            </p>
                                         </div>
                                         <div class="mt-1 text-xs text-slate-500">
                                             <strong>{{ $message->autor->name }}</strong> &middot;
@@ -123,7 +139,7 @@
 
                         {{-- Ações do Técnico --}}
                         @can('edit-chamados')
-                            <div class="mt-6 border-t pt-6">
+                            <div class="mt-6 border-t pt-6 no-print">
                                 <h4 class="text-base font-semibold text-slate-900 mb-4">Ações do Técnico</h4>
                                 <div class="space-y-3">
                                     {{-- O formulário para alterar o status fica visível para todos que podem editar --}}
@@ -171,12 +187,13 @@
 
                     {{-- Ações do Solicitante: Ações que SÓ o solicitante pode fazer. --}}
                     @if(Auth::id() === $chamado->solicitante_id)
-                        <div class="bg-white p-6 rounded-xl shadow-sm">
-                            <h3 class="text-lg font-semibold text-slate-900 mb-4">Minhas Ações</h3>
+                        <div class="bg-white p-6 rounded-xl shadow-sm no-print">
+                            <h3 class="text-lg font-semibold text-slate-900 mb-4 no-print">Minhas Ações</h3>
                             @if($chamado->status === \App\Enums\ChamadoStatus::FECHADO)
-                                <p class="text-sm text-slate-600 mb-4">O problema retornou? Você pode reabrir o chamado.</p>
+                                <p class="text-sm text-slate-600 mb-4 no-print">O problema retornou? Você pode reabrir o
+                                    chamado.</p>
                                 <button x-data="" x-on:click.prevent="$dispatch('open-modal', 'reopen-chamado-modal')"
-                                    class="w-full inline-flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors shadow-sm">Reabrir
+                                    class="no-print w-full inline-flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors shadow-sm">Reabrir
                                     Chamado</button>
                             @endif
                         </div>
@@ -184,9 +201,10 @@
 
                     {{-- Ação de Finalização: Aparece para o Solicitante OU Admin quando o chamado está Resolvido --}}
                     @if($chamado->status === \App\Enums\ChamadoStatus::RESOLVIDO && (Auth::id() === $chamado->solicitante_id || Auth::user()->hasAnyRole(['Admin', 'Supervisor'])))
-                        <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="bg-white p-6 rounded-xl shadow-md no-print">
                             <h3 class="text-lg font-semibold text-gray-800 mb-4">Finalizar Chamado</h3>
-                            <p class="text-sm text-gray-600 mb-4">O chamado foi resolvido e está pronto para ser fechado permanentemente.</p>
+                            <p class="text-sm text-gray-600 mb-4">O chamado foi resolvido e está pronto para ser fechado
+                                permanentemente.</p>
                             <form method="POST" action="{{ route('chamados.close', $chamado) }}">
                                 @csrf
                                 @method('PATCH')
@@ -197,6 +215,7 @@
                             </form>
                         </div>
                     @endif
+
 
                     {{-- ### FIM DA CORREÇÃO ### --}}
 
