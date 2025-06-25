@@ -35,6 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- MÓDULOS PRINCIPAIS ---
 
+    // com api
+    Route::get('/api/user-details/{user}', [UserController::class, 'getUserDetails'])->name('api.user.details');
+
     // Rotas de Chamados (acessível a mais usuários)
     Route::get('meus-chamados', [ChamadoController::class, 'myChamados'])->name('chamados.my');
     Route::get('chamados-fechados', [ChamadoController::class, 'closedIndex'])->name('chamados.closed');

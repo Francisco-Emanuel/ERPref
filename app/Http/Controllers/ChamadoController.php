@@ -52,8 +52,9 @@ class ChamadoController extends Controller
         $tecnicos = User::whereHas('roles', function ($query) {
             $query->where('name', '!=', 'Cliente');
         })->orderBy('name')->get();
+        $solicitantes = User::orderBy('name')->get();
 
-        return view('chamados.create', compact('ativos', 'categorias', 'tecnicos'));
+        return view('chamados.create', compact('ativos', 'categorias', 'tecnicos', 'solicitantes'));
     }
 
     /**
@@ -82,6 +83,8 @@ class ChamadoController extends Controller
             default => (clone $dataAbertura)->addWeekdays(10),  // Padrão de 10 dias para 'Baixa'
         };
 
+        $solicitanteId = $validatedData['solicitante_id'] ?? Auth::id();
+
         $problema = Problema::create([
             'descricao' => $validatedData['descricao_problema'],
             'ativo_ti_id' => $validatedData['ativo_id'],
@@ -93,7 +96,7 @@ class ChamadoController extends Controller
             'descricao_inicial' => $validatedData['descricao_problema'],
             'problema_id' => $problema->id,
             'local' => $validatedData['local'],
-            'solicitante_id' => Auth::id(),
+            'solicitante_id' => $solicitanteId,
             'status' => ChamadoStatus::ABERTO,
             'prioridade' => $validatedData['prioridade'],
             'categoria_id' => $validatedData['categoria_id'],
@@ -357,12 +360,8 @@ class ChamadoController extends Controller
     }
     public function atribuir(Request $request, Chamado $chamado)
     {
-        // Garante que apenas o técnico atual pode escalar o chamado
+        // Garante que o usuário tem permissão para editar
         $this->authorize('edit-chamados');
-        $user = Auth::user();
-        if (!$user->hasrole('Admin')) {
-            abort(403, 'Apenas administradores podem atribuir chamados.');
-        }
 
         // Valida se um novo técnico foi selecionado
         $validated = $request->validate([
@@ -372,6 +371,7 @@ class ChamadoController extends Controller
         $newTechnician = User::find($validated['new_tecnico_id']);
         $logTexto = '';
 
+        // --- INÍCIO DA CORREÇÃO ---
         // Verifica se o chamado JÁ TINHA um técnico.
         if ($chamado->tecnico) {
             // Se sim, é uma ESCALAÇÃO. Registra o nome do técnico antigo.
@@ -381,13 +381,15 @@ class ChamadoController extends Controller
             // Se não, é uma ATRIBUIÇÃO inicial.
             $logTexto = "Chamado atribuído a {$newTechnician->name} por " . Auth::user()->name . ".";
         }
+        // --- FIM DA CORREÇÃO ---
 
         // Atualiza o chamado com o ID do novo técnico
         $chamado->tecnico_id = $newTechnician->id;
-        $this->startOrResetSla($chamado);
-        //$chamado->save();
 
-        // Cria a entrada no histórico
+        // Inicia ou reinicia o SLA
+        $this->startOrResetSla($chamado); // Este save() já está dentro do método
+
+        // Cria a entrada no histórico com a mensagem correta
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
             'autor_id' => Auth::id(),
@@ -395,8 +397,7 @@ class ChamadoController extends Controller
             'is_system_log' => true,
         ]);
 
-
-        return redirect()->route('chamados.show', $chamado)->with('success', "Chamado escalado para {$newTechnician->name}!");
+        return redirect()->route('chamados.index')->with('success', "Chamado atribuído a {$newTechnician->name}!");
     }
     /**
      * Fecha um chamado que já foi resolvido. Ação do solicitante.
@@ -504,6 +505,19 @@ class ChamadoController extends Controller
 
         // Define o nome do arquivo e força o download
         return $pdf->download("relatorio-chamado-{$chamado->id}.pdf");
+    }
+    public function getUserDetails(User $user)
+    {
+        // Carrega o relacionamento com o setor para garantir que os dados venham juntos
+        $user->load('setor');
+
+        // Retorna os dados em formato JSON
+        return response()->json([
+            'setor_nome' => $user->setor->nome ?? 'Não definido',
+            // Supondo que você adicionará uma coluna 'local' ao seu modelo User no futuro.
+            // Se não, você pode buscar de outro lugar ou deixar fixo.
+            'local_padrao' => $user->local ?? $user->setor->nome ?? '',
+        ]);
     }
 
 }

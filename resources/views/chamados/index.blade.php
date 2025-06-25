@@ -228,5 +228,7 @@
         </x-modal>
     @endforeach
 
-    @include('chamados.partials.modal-escalate')
+    @foreach ($chamados as $chamado)
+        @include('chamados.partials.modal-escalate', ['chamado' => $chamado])
+    @endforeach
 </x-app-layout>

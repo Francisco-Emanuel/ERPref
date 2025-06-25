@@ -34,7 +34,9 @@
                                         <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-800">{{ $setor->nome }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $setor->users_count }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold">
-                                            <a href="{{ route('setores.edit', $setor) }}" class="text-blue-600 hover:text-blue-800">Editar</a>
+                                            @can('edit-setores')
+                                                <a href="{{ route('setores.edit', $setor) }}" class="text-blue-600 hover:text-blue-800">Editar</a>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty
