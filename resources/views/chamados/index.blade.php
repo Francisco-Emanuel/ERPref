@@ -134,7 +134,7 @@
                                                 @endphp
                                                 <span class="{{ $cor_sla }}">{{ $texto_sla }}</span>
                                             @else
-                                                <span class="text-slate-500">N/A</span>
+                                                <span class="text-slate-500">Aguardando atribuição</span>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">

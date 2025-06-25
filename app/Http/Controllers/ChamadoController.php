@@ -97,7 +97,8 @@ class ChamadoController extends Controller
             'status' => ChamadoStatus::ABERTO,
             'prioridade' => $validatedData['prioridade'],
             'categoria_id' => $validatedData['categoria_id'],
-            'prazo_sla' => $prazoSla,
+            'prazo_sla' => null, // <-- SLA começa nulo
+            'data_inicio_sla' => null,
             //'tecnico_id' => $validatedData['tecnico_id'],
             'ativo_id' => $validatedData['ativo_id'],
         ]);
@@ -110,6 +111,27 @@ class ChamadoController extends Controller
         ]);
 
         return redirect()->route('chamados.index')->with('success', 'Chamado aberto com sucesso!');
+    }
+
+    /**
+     * Inicia ou reinicia o SLA para um chamado.
+     * @param \App\Models\Chamado $chamado
+     * @return void
+     */
+    private function startOrResetSla(Chamado $chamado): void
+    {
+        $now = Carbon::now();
+        $chamado->data_inicio_sla = $now;
+
+        $prazoSla = match ($chamado->prioridade) {
+            'Urgente' => (clone $now)->addWeekdays(1),
+            'Alta' => (clone $now)->addWeekdays(3),
+            'Média' => (clone $now)->addWeekdays(5),
+            default => (clone $now)->addWeekdays(10),
+        };
+
+        $chamado->prazo_sla = $prazoSla;
+        $chamado->save();
     }
 
     /**
@@ -217,7 +239,8 @@ class ChamadoController extends Controller
 
         // Atribui o chamado ao usuário logado
         $chamado->tecnico_id = Auth::id();
-        $chamado->save();
+        $this->startOrResetSla($chamado);
+        //$chamado->save();
 
         // Cria uma atualização automática para o histórico
         AtualizacaoChamado::create([
@@ -226,6 +249,7 @@ class ChamadoController extends Controller
             'texto' => "Chamado atribuído a " . Auth::user()->name . ".",
             'is_system_log' => true,
         ]);
+
 
         return redirect()->route('chamados.show', $chamado)->with('success', "Chamado atribuído a você! Agora você pode iniciar o atendimento.");
     }
@@ -360,7 +384,8 @@ class ChamadoController extends Controller
 
         // Atualiza o chamado com o ID do novo técnico
         $chamado->tecnico_id = $newTechnician->id;
-        $chamado->save();
+        $this->startOrResetSla($chamado);
+        //$chamado->save();
 
         // Cria a entrada no histórico
         AtualizacaoChamado::create([
@@ -369,6 +394,7 @@ class ChamadoController extends Controller
             'texto' => $logTexto,
             'is_system_log' => true,
         ]);
+
 
         return redirect()->route('chamados.show', $chamado)->with('success', "Chamado escalado para {$newTechnician->name}!");
     }
