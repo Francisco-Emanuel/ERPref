@@ -127,7 +127,7 @@
             </table>
         </section>
 
-        <section class="section">
+        {{-- <section class="section">
             <div class="section-header">Histórico de Conversa (Chat)</div>
             <table class="log-table">
                 <thead><tr><th class="date">Data</th><th class="author">Autor</th><th>Mensagem</th></tr></thead>
@@ -143,7 +143,7 @@
                     @endforelse
                 </tbody>
             </table>
-        </section>
+        </section> --}}
 
         <section class="section">
             <div class="section-header">Histórico de Eventos</div>

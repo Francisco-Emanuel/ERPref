@@ -39,7 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('meus-chamados', [ChamadoController::class, 'myChamados'])->name('chamados.my');
     Route::get('chamados-fechados', [ChamadoController::class, 'closedIndex'])->name('chamados.closed');
     Route::get('chamados/{chamado}/report', [ChamadoController::class, 'generateReport'])->name('chamados.report');
-    Route::post('chamados/{chamado}/updates', [ChamadoController::class, 'addUpdate'])->name('chamados.updates.store');
+    //Route::post('chamados/{chamado}/updates', [ChamadoController::class, 'addUpdate'])->name('chamados.updates.store');
     Route::patch('chamados/{chamado}/status', [ChamadoController::class, 'updateStatus'])->name('chamados.updateStatus');
     Route::patch('chamados/{chamado}/assign', [ChamadoController::class, 'assignToSelf'])->name('chamados.assign');
     Route::patch('chamados/{chamado}/attend', [ChamadoController::class, 'attend'])->name('chamados.attend');

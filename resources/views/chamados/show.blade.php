@@ -41,10 +41,10 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                 {{-- Coluna da Esquerda (Feed de Atividade) --}}
-                <div class="lg:col-span-2 space-y-8">
+                <div class="lg:col-span-2 space-y-8 order-2">
 
                     {{-- Card do Chat --}}
-                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                    {{-- <div class="bg-white p-6 rounded-xl shadow-sm">
                         <h3 class="text-lg font-semibold text-slate-900 mb-4">Chat</h3>
                         <form method="POST" action="{{ route('chamados.updates.store', $chamado) }}" class="no-print">
                             @csrf
@@ -81,10 +81,10 @@
                                 <p class="text-sm text-slate-500 text-center py-4">Nenhuma mensagem no chat ainda.</p>
                             @endforelse
                         </div>
-                    </div>
+                    </div> --}}
 
                     {{-- Card do Histórico de Eventos --}}
-                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="bg-white p-6 rounded-xl shadow-sm ">
                         <h3 class="text-lg font-semibold text-slate-900 mb-4">Histórico de Eventos</h3>
                         <div class="space-y-3">
                             @forelse ($historyLogs as $log)

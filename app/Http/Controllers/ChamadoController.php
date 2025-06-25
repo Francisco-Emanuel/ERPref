@@ -455,13 +455,13 @@ class ChamadoController extends Controller
         $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor']);
 
         // Separa as atualizações entre chat e histórico
-        $chatMessages = $chamado->atualizacoes()->where('is_system_log', false)->get();
+        //$chatMessages = $chamado->atualizacoes()->where('is_system_log', false)->get();
         $historyLogs = $chamado->atualizacoes()->where('is_system_log', true)->get();
 
         // Passa os dados para a nova view de relatório
         $pdf = Pdf::loadView('chamados.report', [
             'chamado' => $chamado,
-            'chatMessages' => $chatMessages,
+            //'chatMessages' => $chatMessages,
             'historyLogs' => $historyLogs
         ]);
 
