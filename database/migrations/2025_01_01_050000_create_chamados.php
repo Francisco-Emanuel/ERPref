@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('status', 50);
             $table->string('local');
             $table->string('prioridade', 50);
+            $table->timestamp('prazo_sla')->nullable();
             $table->text('solucao_final')->nullable();
             $table->timestamp('data_resolucao')->nullable();
             $table->timestamp('data_fechamento')->nullable();

@@ -29,6 +29,7 @@ class Chamado extends Model
         'status' => ChamadoStatus::class,
         'data_resolucao' => 'datetime',  // <-- ADICIONE ESTA LINHA
         'data_fechamento' => 'datetime', // <-- ADICIONE ESTA LINHA
+        'prazo_sla' => 'datetime', // <-- ADICIONE ESTA LINHA
     ];
 
     /**
@@ -41,6 +42,7 @@ class Chamado extends Model
         'local',
         'status',
         'prioridade',
+        'prazo_sla',
         'solucao_final',
         'data_resolucao',
         'data_fechamento',

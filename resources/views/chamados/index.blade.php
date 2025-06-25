@@ -66,6 +66,9 @@
                                         Última Atualização</th>
                                     <th scope="col"
                                         class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        Prazo SLA</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                         Local</th>
                                     <th scope="col"
                                         class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -85,10 +88,10 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{-- Tags de status com cores atualizadas --}}
                                             <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                                            @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
-                                                                            @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
-                                                                            @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO) bg-blue-100 text-blue-800 @endif
-                                                                        ">
+                                                                                        @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
+                                                                                        @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
+                                                                                        @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO) bg-blue-100 text-blue-800 @endif
+                                                                                    ">
                                                 {{ $chamado->status->value }}
                                             </span>
                                         </td>
@@ -97,6 +100,42 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">
                                             {{ $chamado->updated_at->format('d/m/Y H:i') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            @if ($chamado->prazo_sla)
+                                                @php
+                                                    $prazo = $chamado->prazo_sla;
+                                                    $statusFinalizado = in_array($chamado->status, [\App\Enums\ChamadoStatus::RESOLVIDO, \App\Enums\ChamadoStatus::FECHADO]);
+                                                    $texto_sla = '';
+                                                    $cor_sla = '';
+
+                                                    // Lógica para chamados já finalizados
+                                                    if ($statusFinalizado) {
+                                                        if ($chamado->data_resolucao && $chamado->data_resolucao->lte($prazo)) {
+                                                            $texto_sla = 'Cumprido';
+                                                            $cor_sla = 'text-green-600';
+                                                        } else {
+                                                            $texto_sla = 'Atrasado';
+                                                            $cor_sla = 'text-red-600 font-bold';
+                                                        }
+                                                    }
+                                                    // Lógica para chamados ainda abertos
+                                                    else {
+                                                        if ($prazo->isPast()) {
+                                                            $texto_sla = 'Atrasado';
+                                                            $cor_sla = 'text-red-600 font-bold';
+                                                        } else {
+                                                            // diffForHumans() cria texto como "em 2 horas" ou "em 1 dia"
+                                                            $texto_sla = $prazo->diffForHumans();
+                                                            // Muda a cor se faltar menos de 24h
+                                                            $cor_sla = now()->diffInHours($prazo, false) <= 24 ? 'text-yellow-600 font-semibold' : 'text-blue-600';
+                                                        }
+                                                    }
+                                                @endphp
+                                                <span class="{{ $cor_sla }}">{{ $texto_sla }}</span>
+                                            @else
+                                                <span class="text-slate-500">N/A</span>
+                                            @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">
                                             {{ $chamado->local }}

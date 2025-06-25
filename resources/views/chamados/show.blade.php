@@ -60,25 +60,25 @@
                         </form>
                         <div class="mt-6 space-y-6">
                             @forelse ($chatMessages as $message)
-                                <div class="flex gap-3">
-                                    <div
-                                        class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600 flex-shrink-0">
-                                        {{ substr($message->autor->name, 0, 1) }}
+                            <div class="flex gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600 flex-shrink-0">
+                                    {{ substr($message->autor->name, 0, 1) }}
+                                </div>
+                                <div class="flex-grow min-w-0">
+                                    <div class="bg-slate-100 p-4 rounded-lg">
+                                        <p class="text-sm text-slate-800 break-words overflow-hidden">
+                                            {{ $message->texto }}
+                                        </p>
                                     </div>
-                                    <div class="flex-grow min-w-0">
-                                        <div class="bg-slate-100 p-4 rounded-lg">
-                                            <p class="text-sm text-slate-800 break-words overflow-hidden">
-                                                {{ $message->texto }}
-                                            </p>
-                                        </div>
-                                        <div class="mt-1 text-xs text-slate-500">
-                                            <strong>{{ $message->autor->name }}</strong> &middot;
-                                            {{ $message->created_at->format('d/m/Y \à\s H:i') }}
-                                        </div>
+                                    <div class="mt-1 text-xs text-slate-500">
+                                        <strong>{{ $message->autor->name }}</strong> &middot;
+                                        {{ $message->created_at->format('d/m/Y \à\s H:i') }}
                                     </div>
                                 </div>
+                            </div>
                             @empty
-                                <p class="text-sm text-slate-500 text-center py-4">Nenhuma mensagem no chat ainda.</p>
+                            <p class="text-sm text-slate-500 text-center py-4">Nenhuma mensagem no chat ainda.</p>
                             @endforelse
                         </div>
                     </div> --}}
@@ -133,6 +133,41 @@
                                 <dd class="mt-2 text-base text-slate-700 bg-slate-50 rounded-lg">
                                     {{-- A função nl2br() preserva as quebras de linha do texto original --}}
                                     {{ $chamado->tecnico->name ?? 'Não atribuído' }}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-slate-500">Prazo de Resolução (SLA)</dt>
+                                <dd class="mt-1 text-base font-semibold">
+                                    @if ($chamado->prazo_sla)
+                                        @php
+                                            $prazo = $chamado->prazo_sla;
+                                            $statusFinalizado = in_array($chamado->status, [\App\Enums\ChamadoStatus::RESOLVIDO, \App\Enums\ChamadoStatus::FECHADO]);
+                                            $texto_sla_show = '';
+                                            $cor_sla_show = '';
+
+                                            if ($statusFinalizado) {
+                                                if ($chamado->data_resolucao && $chamado->data_resolucao->lte($prazo)) {
+                                                    $texto_sla_show = 'Cumprido no prazo';
+                                                    $cor_sla_show = 'text-green-600';
+                                                } else {
+                                                    $texto_sla_show = 'Finalizado com atraso';
+                                                    $cor_sla_show = 'text-red-600';
+                                                }
+                                            } else {
+                                                if ($prazo->isPast()) {
+                                                    // O segundo argumento 'true' remove o "atrás" da frase
+                                                    $texto_sla_show = 'Atrasado há ' . $prazo->diffForHumans(null, true);
+                                                    $cor_sla_show = 'text-red-600';
+                                                } else {
+                                                    $texto_sla_show = 'Vence ' . $prazo->diffForHumans();
+                                                    $cor_sla_show = 'text-blue-800';
+                                                }
+                                            }
+                                        @endphp
+                                        <span class="{{ $cor_sla_show }}">{{ $texto_sla_show }}</span>
+                                    @else
+                                        <span>Não definido</span>
+                                    @endif
                                 </dd>
                             </div>
                             <div>

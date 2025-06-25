@@ -13,6 +13,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class ChamadoController extends Controller
 {
@@ -62,6 +63,7 @@ class ChamadoController extends Controller
     {
         $this->authorize('create-chamados');
 
+
         $validatedData = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao_problema' => 'required|string',
@@ -71,6 +73,14 @@ class ChamadoController extends Controller
             'categoria_id' => 'nullable|exists:categorias,id',
             'tecnico_id' => 'nullable|exists:users,id',
         ]);
+
+        $dataAbertura = Carbon::now();
+        $prazoSla = match ($validatedData['prioridade']) {
+            'Urgente' => (clone $dataAbertura)->addWeekdays(1), // 1 dia útil
+            'Alta' => (clone $dataAbertura)->addWeekdays(3),    // 3 dias úteis
+            'Média' => (clone $dataAbertura)->addWeekdays(5),   // 5 dias úteis
+            default => (clone $dataAbertura)->addWeekdays(10),  // Padrão de 10 dias para 'Baixa'
+        };
 
         $problema = Problema::create([
             'descricao' => $validatedData['descricao_problema'],
@@ -87,6 +97,7 @@ class ChamadoController extends Controller
             'status' => ChamadoStatus::ABERTO,
             'prioridade' => $validatedData['prioridade'],
             'categoria_id' => $validatedData['categoria_id'],
+            'prazo_sla' => $prazoSla,
             //'tecnico_id' => $validatedData['tecnico_id'],
             'ativo_id' => $validatedData['ativo_id'],
         ]);
@@ -336,7 +347,7 @@ class ChamadoController extends Controller
 
         $newTechnician = User::find($validated['new_tecnico_id']);
         $logTexto = '';
-        
+
         // Verifica se o chamado JÁ TINHA um técnico.
         if ($chamado->tecnico) {
             // Se sim, é uma ESCALAÇÃO. Registra o nome do técnico antigo.
