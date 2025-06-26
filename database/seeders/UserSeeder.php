@@ -19,7 +19,18 @@ class UserSeeder extends Seeder
         // Se não tiver, crie um Seeder para Setores também.
         $setor = Setor::first();
         if (!$setor) {
-            $setor = Setor::create(['nome' => 'TI']);
+            $setores = [
+            'Tecnologia da Informação', // Nome completo para TI
+            'Recursos Humanos',         // RH
+            'Administrativo',           // ADM
+            'EMEI'                      // EMEI
+        ];
+
+        // Itera sobre o array e cria cada setor
+        // O método firstOrCreate garante que o setor não seja duplicado se o seeder for executado várias vezes
+        foreach ($setores as $setorNome) {
+            Setor::firstOrCreate(['nome' => $setorNome]);
+        }
         }
 
         // Cria o usuário Administrador padrão
