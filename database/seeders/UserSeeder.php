@@ -17,21 +17,7 @@ class UserSeeder extends Seeder
         // Pega o primeiro setor para associar ao admin.
         // Garanta que você tenha pelo menos um setor no banco.
         // Se não tiver, crie um Seeder para Setores também.
-        $setor = Setor::first();
-        if (!$setor) {
-            $setores = [
-            'Tecnologia da Informação', // Nome completo para TI
-            'Recursos Humanos',         // RH
-            'Administrativo',           // ADM
-            'EMEI'                      // EMEI
-        ];
-
-        // Itera sobre o array e cria cada setor
-        // O método firstOrCreate garante que o setor não seja duplicado se o seeder for executado várias vezes
-        foreach ($setores as $setorNome) {
-            Setor::firstOrCreate(['nome' => $setorNome]);
-        }
-        }
+        $setorTI = Setor::firstOrCreate(['nome' => 'Tecnologia da Informação']);
 
         // Cria o usuário Administrador padrão
         $adminUser = User::firstOrCreate(
@@ -40,7 +26,7 @@ class UserSeeder extends Seeder
                 'name' => 'Administrador',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
-                'setor_id' => $setor->id,
+                'setor_id' => $setorTI->id,
             ]
         );
 

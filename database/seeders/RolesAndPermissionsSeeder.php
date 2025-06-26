@@ -1,63 +1,60 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\PermissionRegistrar;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
-        // Limpa o cache de cargos e permissões
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        // Resetar os papéis e permissões em cache
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // --- CRIAR PERMISSÕES ---
-        // Permissões de Ativos
-        Permission::create(['name' => 'view-ativos']);
-        Permission::create(['name' => 'create-ativos']);
-        Permission::create(['name' => 'edit-ativos']);
-        Permission::create(['name' => 'delete-ativos']);
+        // --- DEFINIÇÃO DE PERMISSÕES ---
+        $permissions = [
+            'view-ativos', 'create-ativos', 'edit-ativos', 'delete-ativos',
+            'view-chamados', 'create-chamados', 'edit-chamados', 'close-chamados',
+            'view-users', 'create-users', 'edit-users', 'delete-users',
+            'view-setores', 'create-setores', 'edit-setores', 'delete-setores',
+            'view-categorias', 'create-categorias', 'edit-categorias', 'delete-categorias',
+        ];
 
-        // Permissões de Chamados
-        Permission::create(['name' => 'view-chamados']);
-        Permission::create(['name' => 'create-chamados']);
-        Permission::create(['name' => 'edit-chamados']);
-        Permission::create(['name' => 'close-chamados']);
-        Permission::create(['name' => 'delete-chamados']);
-        
-        // Permissões de Usuários
-        Permission::create(['name' => 'manage-users']);
-        
-        // Permissões de Sistema (Cargos, Setores, etc.)
-        Permission::create(['name' => 'manage-system']);
+        foreach ($permissions as $permission) {
+            // Usa firstOrCreate para evitar duplicatas
+            Permission::firstOrCreate(['name' => $permission]);
+        }
 
+        // --- DEFINIÇÃO DE PAPÉIS E ATRIBUIÇÃO DE PERMISSÕES ---
 
-        // --- CRIAR CARGOS ---
-        $estagiario = Role::create(['name' => 'Estagiário']);
-        $tecnico = Role::create(['name' => 'Técnico de TI']);
-        $supervisor = Role::create(['name' => 'Supervisor']);
-        $admin = Role::create(['name' => 'Admin']);
+        // Papel: Usuário Comum (pode ver e criar chamados)
+        $roleComum = Role::firstOrCreate(['name' => 'Usuário Comum']);
+        $roleComum->givePermissionTo(['view-chamados', 'create-chamados']);
 
+        // Papel: Estagiário (pode ver ativos e se atribuir a chamados)
+        $roleEstagiario = Role::firstOrCreate(['name' => 'Estagiário']);
+        $roleEstagiario->givePermissionTo(['view-ativos', 'view-chamados', 'edit-chamados']);
 
-        // --- ATRIBUIR PERMISSÕES AOS CARGOS ---
-        
-        // Permissões do Estagiário
-        $estagiario->givePermissionTo([
+        // Papel: Técnico de TI (pode gerir chamados e ativos)
+        $roleTecnico = Role::firstOrCreate(['name' => 'Técnico de TI']);
+        $roleTecnico->givePermissionTo([
             'view-ativos', 'create-ativos', 'edit-ativos',
-            'view-chamados', 'create-chamados', 'edit-chamados'
+            'view-chamados', 'create-chamados', 'edit-chamados', 'close-chamados',
         ]);
 
-        // Técnico de TI herda as permissões do Estagiário e ganha novas
-        $tecnico->syncPermissions($estagiario->permissions);
-        $tecnico->givePermissionTo(['close-chamados', 'delete-chamados']);
+        // Papel: Supervisor (pode gerir tudo, exceto usuários)
+        $roleSupervisor = Role::firstOrCreate(['name' => 'Supervisor']);
+        $roleSupervisor->givePermissionTo([
+            'view-ativos', 'create-ativos', 'edit-ativos', 'delete-ativos',
+            'view-chamados', 'create-chamados', 'edit-chamados', 'close-chamados',
+            'view-setores', 'create-setores', 'edit-setores', 'delete-setores',
+            'view-categorias', 'create-categorias', 'edit-categorias', 'delete-categorias',
+        ]);
 
-        // Supervisor herda as permissões do Técnico e ganha novas
-        $supervisor->syncPermissions($tecnico->permissions);
-        $supervisor->givePermissionTo(['manage-users']);
-
-        // Admin tem todas as permissões
-        $admin->givePermissionTo(Permission::all());
+        // Papel: Admin (tem todas as permissões)
+        $roleAdmin = Role::firstOrCreate(['name' => 'Admin']);
+        $roleAdmin->givePermissionTo(Permission::all());
     }
 }
