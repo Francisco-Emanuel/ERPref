@@ -6,22 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Setor extends Model
+class Departamento extends Model
 {
     use HasFactory;
-    protected $table = 'setores';
+    protected $table = 'departamentos';
 
     protected $fillable = ['nome'];
 
-    // Um Setor tem muitos Usuários
+    // Um departamento tem muitos Usuários
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
-    // Um Setor tem muitos Ativos de TI
+    // Um departamento tem muitos Ativos de TI
     public function ativos(): HasMany
     {
-        return $this->hasMany(AtivoTI::class, 'setor_id');
+        return $this->hasMany(AtivoTI::class, 'departamento_id');
     }
 }

@@ -26,7 +26,7 @@
                                 <tr>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Nome</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Setor</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">departamento</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Papéis (Roles)</th>
                                     <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Ações</th>
                                 </tr>
@@ -36,7 +36,7 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-800">{{ $user->name }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $user->email }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $user->setor->nome ?? 'Não definido' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $user->Departamento->nome ?? 'Não definido' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex flex-wrap gap-1">
                                                 @foreach ($user->roles as $role)

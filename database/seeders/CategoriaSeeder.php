@@ -15,12 +15,17 @@ class CategoriaSeeder extends Seeder
     {
         Categoria::firstOrCreate(
             ['tipo_interno' => 'Hardware'],
-            ['nome_amigavel' => 'Computador/impressora/internet']
+            ['nome_amigavel' => 'Computador/impressora/']
         );
 
         Categoria::firstOrCreate(
             ['tipo_interno' => 'Software'],
             ['nome_amigavel' => 'Programa específico/Office']
+        );
+
+        Categoria::firstOrCreate(
+            ['tipo_interno' => 'Rede'],
+            ['nome_amigavel' => 'Wifi/Internet']
         );
     }
 }

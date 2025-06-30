@@ -23,7 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'setor_id',
+        'departamento_id',
     ];
 
     /**
@@ -50,12 +50,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Define o relacionamento: Um Usuário PERTENCE A um Setor.
+     * Define o relacionamento: Um Usuário PERTENCE A um departamento.
      * ESTA É A FUNÇÃO QUE ESTAVA FALTANDO.
      */
-    public function setor(): BelongsTo
+    public function departamento(): BelongsTo
     {
-        // O Laravel vai procurar pela chave estrangeira 'setor_id' nesta tabela (users)
-        return $this->belongsTo(Setor::class);
+        // O Laravel vai procurar pela chave estrangeira 'departamento_id' nesta tabela (users)
+        return $this->belongsTo(Departamento::class);
     }
 }

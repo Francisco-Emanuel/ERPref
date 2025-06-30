@@ -508,15 +508,15 @@ class ChamadoController extends Controller
     }
     public function getUserDetails(User $user)
     {
-        // Carrega o relacionamento com o setor para garantir que os dados venham juntos
-        $user->load('setor');
+        // Carrega o relacionamento com o departamento para garantir que os dados venham juntos
+        $user->load('departamento');
 
         // Retorna os dados em formato JSON
         return response()->json([
-            'setor_nome' => $user->setor->nome ?? 'Não definido',
+            'departamento_nome' => $user->departamento->nome ?? 'Não definido',
             // Supondo que você adicionará uma coluna 'local' ao seu modelo User no futuro.
             // Se não, você pode buscar de outro lugar ou deixar fixo.
-            'local_padrao' => $user->local ?? $user->setor->nome ?? '',
+            'local_padrao' => $user->local ?? $user->departamento->nome ?? '',
         ]);
     }
 

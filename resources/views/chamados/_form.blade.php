@@ -1,7 +1,7 @@
 <div x-data="{
     selectedUserId: '{{ old('solicitante_id', Auth::id()) }}',
-    localAtendimento: '{{ old('local', Auth::user()->local ?? Auth::user()->setor->nome ?? '') }}',
-    setorAtendimento: '{{ old('setor', Auth::user()->setor->nome ?? 'Não definido') }}',
+    localAtendimento: '{{ old('local', Auth::user()->local ?? Auth::user()->departamento->nome ?? '') }}',
+    departamentoAtendimento: '{{ old('departamento', Auth::user()->departamento->nome ?? 'Não definido') }}',
 
     fetchUserDetails() {
         if (!this.selectedUserId) return;
@@ -10,7 +10,7 @@
             .then(response => response.json())
             .then(data => {
                 this.localAtendimento = data.local_padrao;
-                this.setorAtendimento = data.setor_nome;
+                this.departamentoAtendimento = data.departamento_nome;
             });
     }
 }" x-init="fetchUserDetails()">
@@ -52,12 +52,12 @@
                     </div>
                 </div>
 
-                {{-- Campo de Setor (apenas para exibição) --}}
+                {{-- Campo de departamento (apenas para exibição) --}}
                 <div class="sm:col-span-3">
-                    <x-input-label value="Setor do Solicitante" />
+                    <x-input-label value="departamento do Solicitante" />
                     <div class="mt-1">
-                        {{-- Este campo está desabilitado e apenas mostra o setor buscado --}}
-                        <p x-text="setorAtendimento"
+                        {{-- Este campo está desabilitado e apenas mostra o departamento buscado --}}
+                        <p x-text="departamentoAtendimento"
                             class="block w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-md shadow-sm text-slate-600">
                         </p>
                     </div>

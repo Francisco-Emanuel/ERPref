@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Setor;
+use App\Models\Departamento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -15,7 +15,7 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('create-users');
-        $users = User::with(['setor', 'roles'])->orderBy('name')->paginate(15);
+        $users = User::with(['departamento', 'roles'])->orderBy('name')->paginate(15);
         return view('users.index', compact('users'));
     }
 
@@ -25,9 +25,9 @@ class UserController extends Controller
     public function create()
     {
         $this->authorize('create-users');
-        $setores = Setor::orderBy('nome')->get();
+        $departamentos = Departamento::orderBy('nome')->get();
         $roles = Role::orderBy('name')->get();
-        return view('users.create', compact('setores', 'roles'));
+        return view('users.create', compact('departamentos', 'roles'));
     }
 
     /**
@@ -41,7 +41,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', ValidationRules\Password::defaults()],
-            'setor_id' => 'nullable|exists:setores,id',
+            'departamento_id' => 'nullable|exists:departamentos,id',
             'roles' => 'sometimes|array'
         ]);
 
@@ -49,7 +49,7 @@ class UserController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
-            'setor_id' => $validatedData['setor_id'],
+            'departamento_id' => $validatedData['departamento_id'],
         ]);
 
         $user->syncRoles($request->roles ?? []);
@@ -60,9 +60,9 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $this->authorize('create-users');
-        $setores = Setor::orderBy('nome')->get();
+        $departamentos = Departamento::orderBy('nome')->get();
         $roles = Role::orderBy('name')->get();
-        return view('users.edit', compact('user', 'setores', 'roles'));
+        return view('users.edit', compact('user', 'departamentos', 'roles'));
     }
 
     public function update(Request $request, User $user)
@@ -72,7 +72,7 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'setor_id' => 'nullable|exists:setores,id',
+            'departamento_id' => 'nullable|exists:departamentos,id',
             'roles' => 'sometimes|array'
         ]);
 

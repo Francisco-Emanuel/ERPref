@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 // Controllers de Gerenciamento
 use App\Http\Controllers\AtivoTiController;
-use App\Http\Controllers\SetorController;
+use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChamadoController;
@@ -62,8 +62,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('users', UserController::class)
     ->only(['index', 'create', 'store', 'edit', 'update']);
         
-        // CRUD de Setores
-        Route::resource('setores', SetorController::class)->parameters(['setores' => 'setor']);
+        // CRUD de departamentos
+        Route::resource('departamentos', DepartamentoController::class)->parameters(['departamentos' => 'departamento']);
 
         // CRUD de Categorias
         Route::resource('categorias', CategoriaController::class);

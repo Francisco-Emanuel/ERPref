@@ -20,11 +20,11 @@ return new class extends Migration
                 $table->string('especialidade', 50)->nullable();
                 
                 // Agora é o momento certo para adicionar a chave estrangeira,
-                // pois a tabela 'setores' já terá sido criada por sua própria migration.
-                $table->foreignId('setor_id')
+                // pois a tabela 'departamentos' já terá sido criada por sua própria migration.
+                $table->foreignId('departamento_id')
                       ->nullable()
-                      ->constrained('setores') // Liga à tabela 'setores'
-                      ->onDelete('set null');  // Se um setor for deletado, este campo fica nulo
+                      ->constrained('departamentos') // Liga à tabela 'departamentos'
+                      ->onDelete('set null');  // Se um departamento for deletado, este campo fica nulo
             });
         });
     }
@@ -37,9 +37,9 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Remove a chave estrangeira primeiro
-            $table->dropForeign(['setor_id']);
+            $table->dropForeign(['departamento_id']);
             // Depois remove as colunas
-            $table->dropColumn(['setor_id', 'especialidade']);
+            $table->dropColumn(['departamento_id', 'especialidade']);
         });
     }
 };

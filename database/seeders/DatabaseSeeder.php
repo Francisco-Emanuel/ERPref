@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             UserSeeder::class,
             CategoriaSeeder::class,
+            DepartamentoSeeder::class,
         ]);
 
         //User::factory()->count(5)->create();

@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\Setor;
+use App\Models\Departamento;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -14,19 +14,19 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Pega o primeiro setor para associar ao admin.
-        // Garanta que você tenha pelo menos um setor no banco.
-        // Se não tiver, crie um Seeder para Setores também.
-        $setorTI = Setor::firstOrCreate(['nome' => 'Tecnologia da Informação']);
+        // Pega o primeiro departamento para associar ao admin.
+        // Garanta que você tenha pelo menos um departamento no banco.
+        // Se não tiver, crie um Seeder para departamentoes também.
+        $departamentoTI = Departamento::firstOrCreate(['nome' => 'Tecnologia da Informação']);
 
         // Cria o usuário Administrador padrão
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@admin.com'], // Procura por este email
             [ // Se não encontrar, cria com estes dados
                 'name' => 'Administrador',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('Y]uqsn0.'),
                 'email_verified_at' => now(),
-                'setor_id' => $setorTI->id,
+                'departamento_id' => $departamentoTI->id,
             ]
         );
 

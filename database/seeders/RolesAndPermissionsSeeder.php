@@ -18,7 +18,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view-ativos', 'create-ativos', 'edit-ativos', 'delete-ativos',
             'view-chamados', 'create-chamados', 'edit-chamados', 'close-chamados',
             'view-users', 'create-users', 'edit-users', 'delete-users',
-            'view-setores', 'create-setores', 'edit-setores', 'delete-setores',
+            'view-departamentos', 'create-departamentos', 'edit-departamentos', 'delete-departamentos',
             'view-categorias', 'create-categorias', 'edit-categorias', 'delete-categorias',
         ];
 
@@ -49,7 +49,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $roleSupervisor->givePermissionTo([
             'view-ativos', 'create-ativos', 'edit-ativos', 'delete-ativos',
             'view-chamados', 'create-chamados', 'edit-chamados', 'close-chamados',
-            'view-setores', 'create-setores', 'edit-setores', 'delete-setores',
+            'view-departamentos', 'create-departamentos', 'edit-departamentos', 'delete-departamentos',
             'view-categorias', 'create-categorias', 'edit-categorias', 'delete-categorias',
         ]);
 

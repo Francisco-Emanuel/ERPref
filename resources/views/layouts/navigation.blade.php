@@ -30,8 +30,8 @@
                     
 
                     @hasanyrole('Admin|Supervisor')
-                        <x-nav-link :href="route('setores.index')" :active="request()->routeIs('setores.*')">
-                            {{ __('Setores') }}
+                        <x-nav-link :href="route('departamentos.index')" :active="request()->routeIs('departamentos.*')">
+                            {{ __('Departamentos') }}
                         </x-nav-link>
                         <x-nav-link :href="route('categorias.index')" :active="request()->routeIs('categorias.*')">
                             {{ __('Categorias') }}

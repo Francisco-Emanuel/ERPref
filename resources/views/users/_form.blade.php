@@ -30,7 +30,7 @@
         <x-input-label for="setor_id" value="Setor" />
         <select id="setor_id" name="setor_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
             <option value="">Nenhum</option>
-            @foreach($setores as $setor)
+            @foreach($departamentos as $setor)
                 <option value="{{ $setor->id }}" @selected(old('setor_id', $user->setor_id ?? '') == $setor->id)>{{ $setor->nome }}</option>
             @endforeach
         </select>

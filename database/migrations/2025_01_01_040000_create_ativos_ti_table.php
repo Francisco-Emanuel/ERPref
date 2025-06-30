@@ -24,11 +24,11 @@ return new class extends Migration
                   ->constrained('users') 
                   ->onDelete('set null'); // Se o usuário for deletado, o ativo fica sem responsável
 
-            // Chave estrangeira para o setor
-            $table->foreignId('setor_id')
+            // Chave estrangeira para o departamento
+            $table->foreignId('departamento_id')
                   ->nullable() 
-                  ->constrained('setores') 
-                  ->onDelete('set null'); // Se o setor for deletado, o ativo fica sem setor
+                  ->constrained('departamentos') 
+                  ->onDelete('set null'); // Se o departamento for deletado, o ativo fica sem departamento
 
             $table->timestamps(); // Colunas created_at e updated_at
             
