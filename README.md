@@ -2,7 +2,7 @@
 
 ## ERPref
 
-Desenvolvendo pela primeira vez um ERP, ou pelo menos tentando
+Desenvolvendo um sistema de help-desk
 
 ## License
 

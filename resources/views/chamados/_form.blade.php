@@ -1,16 +1,20 @@
 <div x-data="{
     selectedUserId: '{{ old('solicitante_id', Auth::id()) }}',
-    localAtendimento: '{{ old('local', Auth::user()->local ?? Auth::user()->departamento->nome ?? '') }}',
-    departamentoAtendimento: '{{ old('departamento', Auth::user()->departamento->nome ?? 'Não definido') }}',
+    localAtendimento: '{{ old('local', Auth::user()->departamento->local ?? '') }}',
+    departamentoNome: '{{ Auth::user()->departamento->nome ?? 'Não definido' }}',
 
     fetchUserDetails() {
-        if (!this.selectedUserId) return;
+        if (!this.selectedUserId) {
+            this.localAtendimento = '';
+            this.departamentoNome = 'Selecione um solicitante';
+            return;
+        }
         
         fetch(`/api/user-details/${this.selectedUserId}`)
             .then(response => response.json())
             .then(data => {
-                this.localAtendimento = data.local_padrao;
-                this.departamentoAtendimento = data.departamento_nome;
+                this.localAtendimento = data.departamento_local;
+                this.departamentoNome = data.departamento_nome;
             });
     }
 }" x-init="fetchUserDetails()">
@@ -21,45 +25,36 @@
             <h3 class="text-lg font-semibold text-slate-900">Informações do Chamado</h3>
             <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
 
-                {{-- Campo para selecionar o Solicitante (só aparece para técnicos/admins) --}}
+                {{-- Campo para selecionar o Solicitante --}}
                 @if(Auth::user()->hasAnyRole(['Admin', 'Supervisor', 'Técnico de TI']))
                     <div class="sm:col-span-6">
                         <x-input-label for="solicitante_id" value="Abrir Chamado em Nome de:" />
                         <div class="mt-1">
-                            {{-- O @change chama nossa função JS sempre que o valor mudar --}}
-                            <select id="solicitante_id" name="solicitante_id" x-model="selectedUserId"
-                                @change="fetchUserDetails()" class="block w-full rounded-md border-slate-300 shadow-sm">
+                            <select id="solicitante_id" name="solicitante_id" x-model="selectedUserId" @change="fetchUserDetails()" class="block w-full rounded-md border-slate-300 shadow-sm">
                                 @foreach($solicitantes as $solicitante)
-                                    <option value="{{ $solicitante->id }}">
-                                        {{ $solicitante->name }}
-                                    </option>
+                                    <option value="{{ $solicitante->id }}">{{ $solicitante->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                 @else
-                    {{-- Para usuários normais, o ID é enviado em um campo escondido --}}
                     <input type="hidden" name="solicitante_id" value="{{ Auth::id() }}">
                 @endif
-
-                {{-- Campo de Local agora é preenchido dinamicamente --}}
+                
+                {{-- Campo de Local --}}
                 <div class="sm:col-span-3">
                     <x-input-label for="local" value="Local do Atendimento" />
                     <div class="mt-1">
-                        {{-- O x-model:value liga o valor do campo à nossa variável JS --}}
-                        <x-text-input id="local" name="local" type="text" class="block w-full"
-                            x-model="localAtendimento" required />
+                        <p x-text="localAtendimento" class="block w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-md shadow-sm text-slate-600"></p>
                     </div>
+                    <x-input-error :messages="$errors->get('local')" class="mt-2" />
                 </div>
 
-                {{-- Campo de departamento (apenas para exibição) --}}
-                <div class="sm:col-span-3">
-                    <x-input-label value="departamento do Solicitante" />
+                {{-- Campo de Departamento (apenas para exibição) --}}
+                 <div class="sm:col-span-3">
+                    <x-input-label value="Departamento do Solicitante" />
                     <div class="mt-1">
-                        {{-- Este campo está desabilitado e apenas mostra o departamento buscado --}}
-                        <p x-text="departamentoAtendimento"
-                            class="block w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-md shadow-sm text-slate-600">
-                        </p>
+                        <p x-text="departamentoNome" class="block w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-md shadow-sm text-slate-600"></p>
                     </div>
                 </div>
 

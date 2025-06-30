@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         // Pega o primeiro departamento para associar ao admin.
         // Garanta que você tenha pelo menos um departamento no banco.
         // Se não tiver, crie um Seeder para departamentoes também.
-        $departamentoTI = Departamento::firstOrCreate(['nome' => 'Tecnologia da Informação']);
+        $departamentoTI = Departamento::firstOrCreate(['nome' => 'Tecnologia da Informação'], ['local'=> 'Tecnologia da Informação']);
 
         // Cria o usuário Administrador padrão
         $adminUser = User::firstOrCreate(

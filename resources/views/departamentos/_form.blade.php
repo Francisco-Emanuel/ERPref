@@ -10,6 +10,14 @@
             </div>
             <x-input-error :messages="$errors->get('nome')" class="mt-2" />
         </div>
+        <div>
+            <x-input-label for="local" value="local do departamento" />
+            <div class="mt-1">
+                {{-- A lógica '?? ""' garante que o formulário de criação não gere erro --}}
+                <x-text-input id="local" name="local" type="text" class="block w-full" :value="old('local', $departamento->local ?? '')" required autofocus />
+            </div>
+            <x-input-error :messages="$errors->get('local')" class="mt-2" />
+        </div>
     </div>
 </div>
 <div class="pt-5 mt-5 border-t border-slate-200">

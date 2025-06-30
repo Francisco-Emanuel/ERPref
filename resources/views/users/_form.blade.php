@@ -27,11 +27,11 @@
     @endif
     
     <div>
-        <x-input-label for="setor_id" value="Setor" />
-        <select id="setor_id" name="setor_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
+        <x-input-label for="departamento_id" value="departamento" />
+        <select id="departamento_id" name="departamento_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
             <option value="">Nenhum</option>
-            @foreach($departamentos as $setor)
-                <option value="{{ $setor->id }}" @selected(old('setor_id', $user->setor_id ?? '') == $setor->id)>{{ $setor->nome }}</option>
+            @foreach($departamentos as $departamento)
+                <option value="{{ $departamento->id }}" @selected(old('departamento_id', $user->departamento_id ?? '') == $departamento->id)>{{ $departamento->nome }}</option>
             @endforeach
         </select>
     </div>

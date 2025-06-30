@@ -11,7 +11,7 @@ class Departamento extends Model
     use HasFactory;
     protected $table = 'departamentos';
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['nome', 'local'];
 
     // Um departamento tem muitos Usuários
     public function users(): HasMany

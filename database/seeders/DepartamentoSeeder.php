@@ -13,7 +13,13 @@ class DepartamentoSeeder extends Seeder
      */
     public function run(): void
     {
-        Departamento::firstOrCreate(['nome' => 'Tecnologia da Informação']);
-        Departamento::firstOrCreate(['nome' => 'Recursos Humanos']);
+        Departamento::firstOrCreate(
+            ['nome' => 'Tecnologia da Informação'],
+            ['local' => 'Tecnologia da Informação']
+        );
+        Departamento::firstOrCreate(
+            ['nome' => 'Recursos Humanos'],
+            ['local' => 'Prefeitura']
+        );
     }
 }
