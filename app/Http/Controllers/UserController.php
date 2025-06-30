@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $this->authorize('manage-users');
+        $this->authorize('create-users');
         $users = User::with(['setor', 'roles'])->orderBy('name')->paginate(15);
         return view('users.index', compact('users'));
     }
@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $this->authorize('manage-users');
+        $this->authorize('create-users');
         $setores = Setor::orderBy('nome')->get();
         $roles = Role::orderBy('name')->get();
         return view('users.create', compact('setores', 'roles'));
@@ -35,7 +35,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('manage-users');
+        $this->authorize('create-users');
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -59,7 +59,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $this->authorize('manage-users');
+        $this->authorize('create-users');
         $setores = Setor::orderBy('nome')->get();
         $roles = Role::orderBy('name')->get();
         return view('users.edit', compact('user', 'setores', 'roles'));
@@ -67,7 +67,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        $this->authorize('manage-users');
+        $this->authorize('create-users');
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
