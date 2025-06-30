@@ -33,7 +33,7 @@
                     <h1 class="mt-6 text-3xl font-bold">PREF Desk</h1>
                     <p class="mt-2 text-slate-300">Sistema de Gestão de Chamados</p>
                 </div>
-                <p class="text-slate-600">Made by Francisco Soares</p>
+                <p class="text-slate-600">Desenvolvido por Francisco Soares</p>
             </div>
 
             <!-- Painel Direito (Conteúdo do Formulário) -->
