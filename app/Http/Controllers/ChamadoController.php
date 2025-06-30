@@ -72,7 +72,7 @@ class ChamadoController extends Controller
             'ativo_id' => 'nullable|exists:ativos_ti,id',
             'prioridade' => 'required|string|max:50',
             'categoria_id' => 'nullable|exists:categorias,id',
-            'tecnico_id' => 'nullable|exists:users,id',
+            'tecnico_id' => 'nullable|exists:users,id'
         ]);
 
         $dataAbertura = Carbon::now();
