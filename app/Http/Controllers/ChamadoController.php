@@ -359,27 +359,34 @@ class ChamadoController extends Controller
         return redirect()->route('chamados.index')->with('success', "Chamado atribuído a {$newTechnician->name}!");
     }
     /**
-     * Fecha um chamado que já foi resolvido. Ação do solicitante.
+     * Fecha um chamado que já foi resolvido. Ação do solicitante. 
      */
     public function close(Chamado $chamado)
     {
-        // Garante que apenas o solicitante pode fechar o chamado
-        if (Auth::id() !== $chamado->solicitante_id) {
-            abort(403, 'Apenas o solicitante pode fechar este chamado.');
-        }
-        // Garante que o chamado esteja resolvido para ser fechado
-        if ($chamado->status !== \App\Enums\ChamadoStatus::RESOLVIDO) {
-            return back()->with('error', 'Apenas chamados resolvidos podem ser fechados.');
+        $user = Auth::user();
+
+        // 1. Verificação de Permissão (Quem pode fazer a ação?)
+        // Apenas o solicitante ou um Admin podem prosseguir.
+        if (!$user->hasRole("Admin") && $user->id !== $chamado->solicitante_id) {
+            abort(403, 'Você não tem permissão para fechar este chamado.');
         }
 
+        // 2. Verificação da Regra de Negócio (A ação pode ser feita agora?)
+        // Apenas chamados com status "Resolvido" podem ser fechados.
+        if ($chamado->status !== \App\Enums\ChamadoStatus::RESOLVIDO) {
+            return back()->with('error', 'Este chamado não pode ser fechado, pois não está com o status "Resolvido".');
+        }
+
+        // 3. Execução da Ação
+        // Se passou por todas as verificações, fecha o chamado.
         $chamado->status = \App\Enums\ChamadoStatus::FECHADO;
         $chamado->data_fechamento = now();
         $chamado->save();
 
-        // Cria uma atualização automática para o histórico
+        // Cria o log no histórico do chamado
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
-            'autor_id' => Auth::id(),
+            'autor_id' => $user->id,
             'texto' => 'Chamado fechado pelo solicitante.',
             'is_system_log' => true,
         ]);

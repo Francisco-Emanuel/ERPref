@@ -46,6 +46,7 @@
                     <x-input-label for="local" value="Local do Atendimento" />
                     <div class="mt-1">
                         <p x-text="localAtendimento" class="block w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-md shadow-sm text-slate-600"></p>
+                        <input type="hidden" name="local" x-bind:value="localAtendimento">
                     </div>
                     <x-input-error :messages="$errors->get('local')" class="mt-2" />
                 </div>

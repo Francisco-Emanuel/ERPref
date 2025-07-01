@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             ['email' => 'admin@admin.com'], // Procura por este email
             [ // Se não encontrar, cria com estes dados
                 'name' => 'Administrador',
-                'password' => Hash::make('Y]uqsn0.'),
+                'password' => Hash::make('Ti@2025'),
                 'email_verified_at' => now(),
                 'departamento_id' => $departamentoTI->id,
             ]
