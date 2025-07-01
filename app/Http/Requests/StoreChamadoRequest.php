@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreChamadoRequest extends FormRequest
 {
@@ -22,6 +23,7 @@ class StoreChamadoRequest extends FormRequest
      */
     public function rules(): array
     {
+         $user = $this->user();
         // Movemos as regras do controller para cá
         return [
             'titulo' => 'required|string|max:255',
@@ -30,7 +32,11 @@ class StoreChamadoRequest extends FormRequest
             'ativo_id' => 'nullable|exists:ativos_ti,id',
             'prioridade' => 'required|string|max:50',
             'categoria_id' => 'nullable|exists:categorias,id',
-            'solicitante_id' => 'sometimes|nullable|exists:users,id'
+            'solicitante_id' => [
+            Rule::requiredIf(fn () => $user->hasAnyRole(['Admin', 'Supervisor', 'Técnico de TI'])),
+            'nullable',
+            'exists:users,id'
+        ]
         ];
     }
 }
