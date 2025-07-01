@@ -468,15 +468,15 @@ class ChamadoController extends Controller
     }
     public function getUserDetails(User $user)
     {
-        // Carrega o relacionamento com o departamento para garantir que os dados venham juntos
+        // Garante que apenas usuários com a permissão 'create-chamados' (ou outra que faça sentido)
+        // possam ver os detalhes de outros usuários.
+        $this->authorize('create-chamados');
+
         $user->load('departamento');
 
-        // Retorna os dados em formato JSON
         return response()->json([
             'departamento_nome' => $user->departamento->nome ?? 'Não definido',
-            // Supondo que você adicionará uma coluna 'local' ao seu modelo User no futuro.
-            // Se não, você pode buscar de outro lugar ou deixar fixo.
-            'local_padrao' => $user->local ?? $user->departamento->nome ?? '',
+            'departamento_local' => $user->departamento->local ?? '',
         ]);
     }
 
