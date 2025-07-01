@@ -398,12 +398,14 @@ class ChamadoController extends Controller
      */
     public function reopen(Request $request, Chamado $chamado)
     {
-        // Garante que apenas o solicitante pode reabrir o chamado
+        // 1. Verificação de Permissão: Apenas o solicitante pode reabrir.
         if (Auth::id() !== $chamado->solicitante_id) {
-            abort(403, 'Apenas o solicitante pode reabrir este chamado.');
+            abort(403, 'Você não tem permissão para reabrir este chamado.');
         }
+
+        // 2. Verificação de Regra de Negócio: O chamado DEVE estar fechado.
         if ($chamado->status !== \App\Enums\ChamadoStatus::FECHADO) {
-            return back()->with('error', 'Apenas chamados fechados podem ser reabertos.');
+            return back()->with('error', 'Apenas chamados que já foram fechados podem ser reabertos.');
         }
 
         // Valida o motivo da reabertura
@@ -413,26 +415,18 @@ class ChamadoController extends Controller
 
         // Reseta o estado do chamado
         $chamado->status = \App\Enums\ChamadoStatus::ABERTO;
-        $chamado->tecnico_id = null; // Volta para a fila geral de técnicos
+        $chamado->tecnico_id = null; // Volta para a fila geral
         $chamado->solucao_final = null;
         $chamado->data_resolucao = null;
         $chamado->data_fechamento = null;
         $chamado->save();
 
-        // Adiciona o motivo da reabertura no "chat"
+        // Adiciona o motivo da reabertura e o log no histórico
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
             'autor_id' => Auth::id(),
             'texto' => "Motivo da Reabertura: " . $validated['motivo_reabertura'],
             'is_system_log' => true,
-        ]);
-
-        // Adiciona um log no histórico
-        AtualizacaoChamado::create([
-            'chamado_id' => $chamado->id,
-            'autor_id' => Auth::id(),
-            'texto' => "Chamado reaberto pelo solicitante.",
-            'is_system_log' => true, // Log de sistema
         ]);
 
         return redirect()->route('chamados.show', $chamado)->with('success', 'Chamado reaberto e enviado para a fila de atendimento!');
