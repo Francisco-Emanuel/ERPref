@@ -14,9 +14,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
+use App\Services\ChamadoService;
+use App\Http\Requests\StoreChamadoRequest;
 
 class ChamadoController extends Controller
 {
+
+    public function __construct(protected ChamadoService $chamadoService)
+    {
+    }
     /**
      * Exibe a lista de todos os chamados.
      */
@@ -60,58 +66,11 @@ class ChamadoController extends Controller
     /**
      * Salva o novo chamado E o novo problema no banco de dados.
      */
-    public function store(Request $request)
+    public function store(StoreChamadoRequest $request)
     {
-        $this->authorize('create-chamados');
+        $validatedData = $request->validated();
 
-
-        $validatedData = $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descricao_problema' => 'required|string',
-            'local' => 'required|string|max:255',
-            'ativo_id' => 'nullable|exists:ativos_ti,id',
-            'prioridade' => 'required|string|max:50',
-            'categoria_id' => 'nullable|exists:categorias,id',
-            'tecnico_id' => 'nullable|exists:users,id'
-        ]);
-
-        $dataAbertura = Carbon::now();
-        $prazoSla = match ($validatedData['prioridade']) {
-            'Urgente' => (clone $dataAbertura)->addWeekdays(1), // 1 dia útil
-            'Alta' => (clone $dataAbertura)->addWeekdays(3),    // 3 dias úteis
-            'Média' => (clone $dataAbertura)->addWeekdays(5),   // 5 dias úteis
-            default => (clone $dataAbertura)->addWeekdays(10),  // Padrão de 10 dias para 'Baixa'
-        };
-
-        $solicitanteId = $validatedData['solicitante_id'] ?? Auth::id();
-
-        $problema = Problema::create([
-            'descricao' => $validatedData['descricao_problema'],
-            'ativo_ti_id' => $validatedData['ativo_id'],
-            'autor_id' => Auth::id(),
-        ]);
-
-        $chamado = Chamado::create([
-            'titulo' => $validatedData['titulo'],
-            'descricao_inicial' => $validatedData['descricao_problema'],
-            'problema_id' => $problema->id,
-            'local' => $validatedData['local'],
-            'solicitante_id' => $solicitanteId,
-            'status' => ChamadoStatus::ABERTO,
-            'prioridade' => $validatedData['prioridade'],
-            'categoria_id' => $validatedData['categoria_id'],
-            'prazo_sla' => null, // <-- SLA começa nulo
-            'data_inicio_sla' => null,
-            //'tecnico_id' => $validatedData['tecnico_id'],
-            'ativo_id' => $validatedData['ativo_id'],
-        ]);
-
-        AtualizacaoChamado::create([
-            'chamado_id' => $chamado->id, // Assumindo que o resultado do create está em $chamado
-            'autor_id' => Auth::id(),
-            'texto' => 'Chamado aberto.',
-            'is_system_log' => true,
-        ]);
+        $this->chamadoService->criarNovoChamado($validatedData);
 
         return redirect()->route('chamados.index')->with('success', 'Chamado aberto com sucesso!');
     }
