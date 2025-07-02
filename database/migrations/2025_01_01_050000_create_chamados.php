@@ -42,7 +42,11 @@ return new class extends Migration {
             $table->foreignId('ativo_id')
                 ->nullable()
                 ->constrained('ativos_ti')
-                ->onDelete('set null'); // Se o ativo for deletado, o campo fica nulo
+                ->onDelete('set null');
+            $table->foreignId('departamento_id')
+                ->nullable()
+                ->constrained('departamentos')
+                ->onDelete('set null'); 
             $table->timestamps();
         });
     }

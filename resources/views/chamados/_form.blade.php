@@ -24,11 +24,13 @@
                     <div class="mt-1">
                         {{-- <x-text-input id="departamento" name="departamento" type="text" class="block w-full"
                             :value="old('departamento')" required autofocus /> --}}
-                        <select id="departamento" name="departamento"
-                            class="block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                            {{-- <option value="">Não definido</option> --}}
+                        <select id="departamento" name="departamento_id"
+                            class="block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            required>
+                            <option value="">Selecione um departamento</option>
                             @foreach($departamentos as $departamento)
-                                <option value="{{ $departamento->id }}" @selected(old('departamento') == $departamento->id)>
+                                <option value="{{ $departamento->id }}"
+                                    @selected(old('departamento_id') == $departamento->id)>
                                     {{ $departamento->nome }}
                                 </option>
                             @endforeach

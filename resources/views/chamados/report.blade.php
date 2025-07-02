@@ -107,8 +107,8 @@
             <div class="section-header">Detalhes do Chamado</div>
             <table class="details-table">
                 <tr><td>Status</td><td>{{ $chamado->status->value }}</td></tr>
-                <tr><td>Local</td><td>{{ $chamado->local }}</td></tr>
-                <tr><td>Departamento</td><td>{{ $chamado->departamento }}</td></tr>
+                <tr><td>Local</td><td>{{ $chamado->local ?? 'Não informado' }}</td></tr>
+                <tr><td>Departamento</td><td>{{ $chamado->departamento->nome ?? 'Não informado' }}</td></tr>
                 <tr><td>Solicitante</td><td>{{ $chamado->solicitante->name ?? 'N/A' }}</td></tr>
                 <tr><td>Técnico</td><td>{{ $chamado->tecnico->name ?? 'Não atribuído' }}</td></tr>
                 <tr><td>Data de Abertura</td><td>{{ $chamado->created_at->format('d/m/Y H:i') }}</td></tr>

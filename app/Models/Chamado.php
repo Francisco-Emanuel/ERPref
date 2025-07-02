@@ -52,7 +52,8 @@ class Chamado extends Model
         'solicitante_id',
         'tecnico_id',
         'categoria_id',
-        'ativo_id', // Mantivemos para acesso rápido
+        'ativo_id',
+        'departamento_id'
     ];
 
     /**
@@ -128,5 +129,13 @@ class Chamado extends Model
     public function atualizacoes(): HasMany
     {
         return $this->hasMany(AtualizacaoChamado::class, 'chamado_id')->latest(); // Ordena da mais nova para a mais antiga
+    }
+
+    /**
+     * Relacionamento departamento - chamado
+    */
+    public function departamento(): BelongsTo
+    {
+        return $this->belongsTo(Departamento::class);
     }
 }

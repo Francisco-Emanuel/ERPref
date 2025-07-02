@@ -24,4 +24,10 @@ class Departamento extends Model
     {
         return $this->hasMany(AtivoTI::class, 'departamento_id');
     }
+
+    // Um departamento tem muitos chamados
+    public function chamados(): HasMany
+    {
+        return $this->hasMany(Chamado::class);
+    }
 }
