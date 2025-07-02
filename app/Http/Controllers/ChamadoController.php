@@ -452,7 +452,7 @@ class ChamadoController extends Controller
         $this->authorize('view-chamados');
 
         // Carrega todas as informações necessárias
-        $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor', 'departamento', 'abertoPara']);
+        $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor', 'departamento']);
 
         // Separa as atualizações entre chat e histórico
         //$chatMessages = $chamado->atualizacoes()->where('is_system_log', false)->get();
