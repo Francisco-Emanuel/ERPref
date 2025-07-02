@@ -29,6 +29,7 @@ class StoreChamadoRequest extends FormRequest
             'titulo' => 'required|string|max:255',
             'descricao_problema' => 'required|string',
             'local' => 'required|string|max:255',
+            'abertoPara' => 'required|string|max:255',
             'departamento_id' => 'required|exists:departamentos,id',
             'ativo_id' => 'nullable|exists:ativos_ti,id',
             'prioridade' => 'required|string|max:50',

@@ -110,6 +110,7 @@
                 <tr><td>Local</td><td>{{ $chamado->local ?? 'Não informado' }}</td></tr>
                 <tr><td>Departamento</td><td>{{ $chamado->departamento->nome ?? 'Não informado' }}</td></tr>
                 <tr><td>Solicitante</td><td>{{ $chamado->solicitante->name ?? 'N/A' }}</td></tr>
+                <tr><td>Aberto para</td><td>{{ $chamado->abertoPara ?? 'N/A' }}</td></tr>
                 <tr><td>Técnico</td><td>{{ $chamado->tecnico->name ?? 'Não atribuído' }}</td></tr>
                 <tr><td>Data de Abertura</td><td>{{ $chamado->created_at->format('d/m/Y H:i') }}</td></tr>
                 @if($chamado->data_fechamento)

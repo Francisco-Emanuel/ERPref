@@ -32,6 +32,7 @@ class ChamadoService
             'descricao_inicial' => $validatedData['descricao_problema'],
             'problema_id' => $problema->id,
             'local' => $validatedData['local'],
+            'abertoPara' => $validatedData['abertoPara'],
             'departamento_id' => $validatedData['departamento_id'],
             'solicitante_id' => Auth::id(),
             'status' => ChamadoStatus::ABERTO,

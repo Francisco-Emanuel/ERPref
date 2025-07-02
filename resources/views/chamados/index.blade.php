@@ -151,7 +151,7 @@
                                                             {{-- Para Admins: Botão que abre o modal para atribuir a qualquer técnico
                                                             --}}
                                                             <button x-data
-                                                                @click.stop="$dispatch('open-modal', 'escalate-chamado-{{ $chamado->id }}')"
+                                                                @click.stop="$dispatch('open-modal', 'atribuir-chamado-{{ $chamado->id }}')"
                                                                 class="text-slate-500 hover:text-slate-700">
                                                                 Atribuir
                                                             </button>
@@ -201,7 +201,7 @@
             </div>
         </main>
     </div>
-    @foreach ($chamados as $chamado)
+    {{-- @foreach ($chamados as $chamado)
         <x-modal :name="'escalate-chamado-' . $chamado->id" focusable>
             <form method="post" action="{{ route('chamados.atribuir', $chamado) }}" class="p-6">
                 @csrf
@@ -226,9 +226,9 @@
                 </div>
             </form>
         </x-modal>
-    @endforeach
+    @endforeach --}}
 
     @foreach ($chamados as $chamado)
-        @include('chamados.partials.modal-escalate', ['chamado' => $chamado])
+        @include('chamados.partials.modal-atribuir', ['chamado' => $chamado])
     @endforeach
 </x-app-layout>

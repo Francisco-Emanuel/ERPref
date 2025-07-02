@@ -130,9 +130,14 @@
                             </div>
                             <div>
                                 <dt class="text-sm font-medium text-slate-500">Técnico responsável</dt>
-                                <dd class="mt-2 text-base text-slate-700 bg-slate-50 rounded-lg">
-                                    {{-- A função nl2br() preserva as quebras de linha do texto original --}}
+                                <dd class="mt-2 text-base text-slate-700 rounded-lg">
                                     {{ $chamado->tecnico->name ?? 'Não atribuído' }}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-slate-500">Aberto para</dt>
+                                <dd class="mt-2 text-base text-slate-700 rounded-lg">
+                                    {{ $chamado->abertoPara ?? 'Não atribuído' }}
                                 </dd>
                             </div>
                             <div>
@@ -226,8 +231,6 @@
                         @endcan
                     </div>
 
-                    {{-- ### INÍCIO DA CORREÇÃO ### --}}
-
                     {{-- Ações do Solicitante: Ações que SÓ o solicitante pode fazer. --}}
                     @if(Auth::id() === $chamado->solicitante_id)
                         <div class="bg-white p-6 rounded-xl shadow-sm no-print">
@@ -258,10 +261,6 @@
                             </form>
                         </div>
                     @endif
-
-
-                    {{-- ### FIM DA CORREÇÃO ### --}}
-
                 </div>
             </div>
         </main>

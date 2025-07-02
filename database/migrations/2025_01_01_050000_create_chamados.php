@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->text('descricao_inicial');
             $table->string('status', 50);
             $table->string('local');
+            $table->string('abertoPara');
             $table->string('prioridade', 50);
             $table->timestamp('prazo_sla')->nullable();
             $table->timestamp('data_inicio_sla')->nullable();
