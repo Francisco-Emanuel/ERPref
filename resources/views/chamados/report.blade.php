@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Relatório do Chamado #{{ $chamado->id }}</title>
+    <title>Ordem de serviço #{{ $chamado->id }}</title>
     <style>
         /* Define fontes e cores básicas */
         body { 
