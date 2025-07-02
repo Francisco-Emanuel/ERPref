@@ -6,6 +6,7 @@ use App\Enums\ChamadoStatus;
 use App\Models\AtivoTI;
 use App\Models\AtualizacaoChamado;
 use App\Models\Chamado;
+use App\Models\Departamento;
 use App\Models\Problema;
 use App\Models\Categoria;
 use App\Models\User;
@@ -54,13 +55,14 @@ class ChamadoController extends Controller
         // Busca os dados necessários para preencher os menus de seleção do formulário
         $ativos = AtivoTI::orderBy('nome_ativo')->get();
         $categorias = Categoria::orderBy('nome_amigavel')->get();
+        $departamentos = Departamento::orderBy('nome')->get();
         // Apenas usuários que não são 'clientes' podem ser técnicos
         $tecnicos = User::whereHas('roles', function ($query) {
             $query->where('name', '!=', 'Cliente');
         })->orderBy('name')->get();
         $solicitantes = User::orderBy('name')->get();
 
-        return view('chamados.create', compact('ativos', 'categorias', 'tecnicos', 'solicitantes'));
+        return view('chamados.create', compact('ativos', 'categorias', 'tecnicos', 'solicitantes', 'departamentos'));
     }
 
     /**
@@ -450,7 +452,7 @@ class ChamadoController extends Controller
         $this->authorize('view-chamados');
 
         // Carrega todas as informações necessárias
-        $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor']);
+        $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor', 'departamento']);
 
         // Separa as atualizações entre chat e histórico
         //$chatMessages = $chamado->atualizacoes()->where('is_system_log', false)->get();

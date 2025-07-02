@@ -1,23 +1,4 @@
-<div x-data="{
-    selectedUserId: '{{ old('solicitante_id', Auth::id()) }}',
-    localAtendimento: '{{ old('local', Auth::user()->departamento->local ?? '') }}',
-    departamentoNome: '{{ Auth::user()->departamento->nome ?? 'Não definido' }}',
-
-    fetchUserDetails() {
-        if (!this.selectedUserId) {
-            this.localAtendimento = '';
-            this.departamentoNome = 'Selecione um solicitante';
-            return;
-        }
-        
-        fetch(`/api/user-details/${this.selectedUserId}`)
-            .then(response => response.json())
-            .then(data => {
-                this.localAtendimento = data.departamento_local;
-                this.departamentoNome = data.departamento_nome;
-            });
-    }
-}" x-init="fetchUserDetails()">
+<div>
 
     @csrf
     <div class="space-y-8 divide-y divide-slate-200">
@@ -25,37 +6,33 @@
             <h3 class="text-lg font-semibold text-slate-900">Informações do Chamado</h3>
             <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
 
-                {{-- Campo para selecionar o Solicitante --}}
-                @if(Auth::user()->hasAnyRole(['Admin', 'Supervisor', 'Técnico de TI']))
-                    <div class="sm:col-span-6">
-                        <x-input-label for="solicitante_id" value="Abrir Chamado em Nome de:" />
-                        <div class="mt-1">
-                            <select id="solicitante_id" name="solicitante_id" x-model="selectedUserId" @change="fetchUserDetails()" class="block w-full rounded-md border-slate-300 shadow-sm">
-                                @foreach($solicitantes as $solicitante)
-                                    <option value="{{ $solicitante->id }}">{{ $solicitante->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                @else
-                    <input type="hidden" name="solicitante_id" value="{{ Auth::id() }}">
-                @endif
-                
+                <input type="hidden" name="solicitante_id" value="{{ Auth::id() }}">
+
                 {{-- Campo de Local --}}
                 <div class="sm:col-span-3">
                     <x-input-label for="local" value="Local do Atendimento" />
                     <div class="mt-1">
-                        <p x-text="localAtendimento" class="block w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-md shadow-sm text-slate-600"></p>
-                        <input type="hidden" name="local" x-bind:value="localAtendimento">
+                        <x-text-input id="local" name="local" type="text" class="block w-full" :value="old('local')"
+                            required autofocus />
                     </div>
                     <x-input-error :messages="$errors->get('local')" class="mt-2" />
                 </div>
 
                 {{-- Campo de Departamento (apenas para exibição) --}}
-                 <div class="sm:col-span-3">
+                <div class="sm:col-span-3">
                     <x-input-label value="Departamento do Solicitante" />
                     <div class="mt-1">
-                        <p x-text="departamentoNome" class="block w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-md shadow-sm text-slate-600"></p>
+                        {{-- <x-text-input id="departamento" name="departamento" type="text" class="block w-full"
+                            :value="old('departamento')" required autofocus /> --}}
+                        <select id="departamento" name="departamento"
+                            class="block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            {{-- <option value="">Não definido</option> --}}
+                            @foreach($departamentos as $departamento)
+                                <option value="{{ $departamento->id }}" @selected(old('departamento') == $departamento->id)>
+                                    {{ $departamento->nome }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
@@ -137,8 +114,10 @@
 
     <div class="pt-5 mt-5 border-t border-slate-200">
         <div class="flex justify-end gap-3">
-            <a href="{{ route('chamados.index') }}" class="rounded-md border border-slate-300 bg-white py-2 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</a>
-            <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
+            <a href="{{ route('chamados.index') }}"
+                class="rounded-md border border-slate-300 bg-white py-2 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancelar</a>
+            <button type="submit"
+                class="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
                 Abrir Chamado
             </button>
         </div>

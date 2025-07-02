@@ -32,7 +32,7 @@ class ChamadoService
             'descricao_inicial' => $validatedData['descricao_problema'],
             'problema_id' => $problema->id,
             'local' => $validatedData['local'],
-            'solicitante_id' => $validatedData['solicitante_id'] ?? Auth::id(),
+            'solicitante_id' => Auth::id(),
             'status' => ChamadoStatus::ABERTO,
             'prioridade' => $validatedData['prioridade'],
             'categoria_id' => $validatedData['categoria_id'] ?? null,
