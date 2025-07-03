@@ -39,7 +39,7 @@
 
         <footer class="bg-white rounded-lg shadow-md m-4">
             <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
-                <span class="text-sm text-gray-500 sm:text-center">Prefeitura de Jacarezinho © 2025.
+                <span class="text-sm text-gray-500 sm:text-center">Município de Jacarezinho © 2025.
                 </span>
                 <p class="text-sm  text-slate-400">Desenvolvido por Francisco Soares</p>
                 {{-- <ul
