@@ -12,7 +12,7 @@
                     <x-nav-link :href="route('chamados.closed')" :active="request()->routeIs('chamados.closed')">
                         Chamados Fechados
                     </x-nav-link>
-                    @can('edit-chamados') {{-- Apenas técnicos verão este link --}}
+                    @can('edit-chamados') 
                         <x-nav-link :href="route('chamados.my')" :active="request()->routeIs('chamados.my')">
                             Meus Chamados
                         </x-nav-link>
@@ -109,7 +109,6 @@
                                                     $texto_sla = '';
                                                     $cor_sla = '';
 
-                                                    // Lógica para chamados já finalizados
                                                     if ($statusFinalizado) {
                                                         if ($chamado->data_resolucao && $chamado->data_resolucao->lte($prazo)) {
                                                             $texto_sla = 'Cumprido';
@@ -119,15 +118,13 @@
                                                             $cor_sla = 'text-red-600 font-bold';
                                                         }
                                                     }
-                                                    // Lógica para chamados ainda abertos
                                                     else {
                                                         if ($prazo->isPast()) {
                                                             $texto_sla = 'Atrasado';
                                                             $cor_sla = 'text-red-600 font-bold';
                                                         } else {
-                                                            // diffForHumans() cria texto como "em 2 horas" ou "em 1 dia"
+                                                            
                                                             $texto_sla = $prazo->diffForHumans();
-                                                            // Muda a cor se faltar menos de 24h
                                                             $cor_sla = now()->diffInHours($prazo, false) <= 24 ? 'text-yellow-600 font-semibold' : 'text-blue-600';
                                                         }
                                                     }
@@ -166,7 +163,7 @@
                                                                 </button>
                                                             </form>
                                                         @endif
-                                                    @else {{-- Se o chamado JÁ tem um técnico --}}
+                                                    @else 
                                                         @if (Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
                                                             {{-- Apenas Admins podem escalar um chamado já atribuído --}}
                                                             <button x-data
@@ -201,32 +198,7 @@
             </div>
         </main>
     </div>
-    {{-- @foreach ($chamados as $chamado)
-        <x-modal :name="'escalate-chamado-' . $chamado->id" focusable>
-            <form method="post" action="{{ route('chamados.atribuir', $chamado) }}" class="p-6">
-                @csrf
-                @method('patch')
-                <h2 class="text-lg font-medium text-gray-900">Atribuir / Escalar Chamado #{{ $chamado->id }}</h2>
-                <p class="mt-1 text-sm text-gray-600">Selecione o técnico para quem você deseja transferir este chamado.</p>
-                <div class="mt-6">
-                    <x-input-label for="new_tecnico_id_{{ $chamado->id }}" value="Atribuir Para" />
-                    <select id="new_tecnico_id_{{ $chamado->id }}" name="new_tecnico_id"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                        <option value="">Selecione um técnico...</option>
-                        @foreach ($tecnicosDisponiveis as $tecnico)
-                            @if($chamado->tecnico_id !== $tecnico->id)
-                                <option value="{{ $tecnico->id }}">{{ $tecnico->name }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mt-6 flex justify-end">
-                    <x-secondary-button x-on:click="$dispatch('close')">Cancelar</x-secondary-button>
-                    <x-danger-button class="ms-3">Confirmar</x-danger-button>
-                </div>
-            </form>
-        </x-modal>
-    @endforeach --}}
+   
 
     @foreach ($chamados as $chamado)
         @include('chamados.partials.modal-atribuir', ['chamado' => $chamado])

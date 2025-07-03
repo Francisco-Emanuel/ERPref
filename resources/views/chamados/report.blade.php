@@ -95,7 +95,6 @@
 <body>
 
     <header class="header">
-        {{-- Garanta que o seu logo.png esteja na pasta public/ --}}
         <img src="{{ public_path('logo.png') }}" alt="Logo">
         <h1>Relatório de Atendimento</h1>
         <h2>Chamado #{{ $chamado->id }}: {{ $chamado->titulo }}</h2>

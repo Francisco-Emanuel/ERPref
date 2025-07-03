@@ -160,7 +160,6 @@
                                                 }
                                             } else {
                                                 if ($prazo->isPast()) {
-                                                    // O segundo argumento 'true' remove o "atrás" da frase
                                                     $texto_sla_show = 'Atrasado há ' . $prazo->diffForHumans(null, true);
                                                     $cor_sla_show = 'text-red-600';
                                                 } else {

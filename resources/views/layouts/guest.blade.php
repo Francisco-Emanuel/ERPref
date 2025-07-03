@@ -39,7 +39,7 @@
             <!-- Painel Direito (Conteúdo do Formulário) -->
             <div class="w-full md:w-7/12 lg:w-2/3 flex items-center justify-center p-6 sm:p-12">
                 <div class="w-full max-w-md">
-                    {{-- O $slot é onde o conteúdo de login.blade.php, etc., será injetado --}}
+                    {{-- conteúdo injetado --}}
                     {{ $slot }}
                 </div>
             </div>

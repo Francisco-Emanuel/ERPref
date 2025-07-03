@@ -22,8 +22,6 @@
                 <div class="sm:col-span-3">
                     <x-input-label value="Departamento do Solicitante" />
                     <div class="mt-1">
-                        {{-- <x-text-input id="departamento" name="departamento" type="text" class="block w-full"
-                            :value="old('departamento')" required autofocus /> --}}
                         <select id="departamento" name="departamento_id"
                             class="block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             required>

@@ -5,7 +5,6 @@
         <div>
             <x-input-label for="nome" value="Nome do departamento" />
             <div class="mt-1">
-                {{-- A lógica '?? ""' garante que o formulário de criação não gere erro --}}
                 <x-text-input id="nome" name="nome" type="text" class="block w-full" :value="old('nome', $departamento->nome ?? '')" required autofocus />
             </div>
             <x-input-error :messages="$errors->get('nome')" class="mt-2" />
@@ -13,7 +12,6 @@
         <div>
             <x-input-label for="local" value="local do departamento" />
             <div class="mt-1">
-                {{-- A lógica '?? ""' garante que o formulário de criação não gere erro --}}
                 <x-text-input id="local" name="local" type="text" class="block w-full" :value="old('local', $departamento->local ?? '')" required autofocus />
             </div>
             <x-input-error :messages="$errors->get('local')" class="mt-2" />

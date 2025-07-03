@@ -16,7 +16,7 @@
                 <div class="bg-white rounded-xl shadow-sm">
                     <div class="p-6 sm:p-8">
                         <form method="POST" action="{{ route('chamados.store') }}">
-                            {{-- Inclui o formulário que acabamos de criar --}}
+                            
                             @include('chamados._form')
                         </form>
                     </div>
