@@ -67,9 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     
     // --- ROTAS DE ATIVOS (Controle mais granular pode ser feito com permissões) ---
-    // A rota de lixeira e restauração poderia ser protegida por uma permissão específica
     Route::get('ativos/trash', [AtivoTiController::class, 'trash'])->name('ativos.trash');
-    // Parâmetro ajustado para {ativo} para consistência
     Route::patch('ativos/{ativo}/restore', [AtivoTiController::class, 'restore'])->name('ativos.restore');
     
     // CRUD de Ativos

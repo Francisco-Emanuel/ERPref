@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AtivoTI extends Model
 {
-    // 2. USO DO SOFT DELETES E DO HASFACTORY
     use HasFactory, SoftDeletes;
 
     /**
@@ -28,7 +27,7 @@ class AtivoTI extends Model
         'numero_serie',
         'tipo_ativo',
         'status_condicao',
-        'user_id', // Renomeado de 'responsavel_id' para seguir a convenção do Laravel
+        'user_id',
         'departamento_id',
     ];
 

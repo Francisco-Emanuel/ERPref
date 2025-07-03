@@ -26,20 +26,20 @@ return new class extends Migration {
             $table->integer('avaliacao')->nullable();
             // --- CHAVES ESTRANGEIRAS ---
             $table->foreignId('problema_id')
-                ->unique() // Garante que um problema só possa ter um chamado
+                ->unique() 
                 ->constrained('problemas')
                 ->after('titulo');
             $table->foreignId('solicitante_id')
                 ->constrained('users')
-                ->onDelete('cascade'); // Se o usuário for deletado, seus chamados também são
+                ->onDelete('cascade');
             $table->foreignId('tecnico_id')
                 ->nullable()
                 ->constrained('users')
-                ->onDelete('set null'); // Se o técnico for deletado, o campo fica nulo
+                ->onDelete('set null'); 
             $table->foreignId('categoria_id')
                 ->nullable()
                 ->constrained('categorias')
-                ->onDelete('restrict'); // Impede que uma categoria com chamados seja deletada
+                ->onDelete('restrict'); 
             $table->foreignId('ativo_id')
                 ->nullable()
                 ->constrained('ativos_ti')

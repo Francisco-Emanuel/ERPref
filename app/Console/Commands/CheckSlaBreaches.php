@@ -17,7 +17,6 @@ class CheckSlaBreaches extends Command
     {
         $this->info('Verificando chamados com SLA estourado...');
 
-        // Busca chamados não finalizados, com prazo definido, que já passaram do prazo e ainda não são urgentes.
         $breachedChamados = Chamado::whereNotIn('status', [ChamadoStatus::RESOLVIDO, ChamadoStatus::FECHADO])
                                 ->whereNotNull('prazo_sla')
                                 ->where('prazo_sla', '<', now())
@@ -28,22 +27,19 @@ class CheckSlaBreaches extends Command
             $prazoAntigo = $chamado->prazo_sla;
             $horasAtraso = $prazoAntigo->diffInHours(now());
 
-            // 1. Muda a prioridade para Urgente
             $chamado->prioridade = 'Urgente';
 
-            // 2. Recalcula e reinicia o SLA
             $now = Carbon::now();
             $chamado->data_inicio_sla = $now;
             $chamado->prazo_sla = (clone $now)->addWeekdays(1); // Novo prazo de 1 dia útil
             $chamado->save();
 
-            // 3. Registra o evento no histórico
             $logTexto = "SLA violado! O chamado estava atrasado em {$horasAtraso} horas. ";
             $logTexto .= "A prioridade foi elevada para Urgente e um novo prazo de resolução foi definido.";
 
             AtualizacaoChamado::create([
                 'chamado_id' => $chamado->id,
-                'autor_id' => 1, // Ou um ID de um usuário "Sistema"
+                'autor_id' => 1, 
                 'texto' => $logTexto,
                 'is_system_log' => true,
             ]);

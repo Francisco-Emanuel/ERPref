@@ -48,7 +48,7 @@ class AtivoTiController extends Controller
             'tipo_ativo' => 'required|string|max:50',
             'status_condicao' => 'required|string|max:50',
             'user_id' => 'required|exists:users,id',
-            'departamento_id' => 'required|exists:departamentos,id', // Changed from 'setor_id' and 'setores'
+            'departamento_id' => 'required|exists:departamentos,id', 
         ]);
 
         AtivoTI::create($validatedData);
@@ -63,7 +63,6 @@ class AtivoTiController extends Controller
     {
         $this->authorize('view-ativos');
 
-        // Changed 'setor' to 'departamento' in eager loading
         $ativo->load(['responsavel', 'departamento', 'problemas.autor']);
         return view('ativos.show', compact('ativo'));
     }
@@ -76,7 +75,6 @@ class AtivoTiController extends Controller
         $this->authorize('edit-ativos');
 
         $users = User::orderBy('name')->get();
-        // Changed 'Setor' to 'Departamento' and '$setores' to '$departamentos'
         $departamentos = Departamento::orderBy('nome')->get();
         return view('ativos.edit', compact('ativo', 'users', 'departamentos')); // Passed 'departamentos'
     }
@@ -120,7 +118,6 @@ class AtivoTiController extends Controller
     {
         $this->authorize('delete-ativos');
 
-        // Changed 'setor' to 'departamento' in eager loading
         $ativos = AtivoTI::onlyTrashed()->with(['responsavel', 'departamento'])->orderBy('id', 'desc')->paginate(10);
         return view('ativos.trash', compact('ativos'));
     }

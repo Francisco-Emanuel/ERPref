@@ -13,7 +13,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Cria a tabela 'users' com os campos padrão do Laravel
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');

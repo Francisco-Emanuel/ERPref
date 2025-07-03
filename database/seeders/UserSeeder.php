@@ -14,15 +14,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Pega o primeiro departamento para associar ao admin.
-        // Garanta que você tenha pelo menos um departamento no banco.
-        // Se não tiver, crie um Seeder para departamentoes também.
         $departamentoTI = Departamento::firstOrCreate(['nome' => 'Tecnologia da Informação'], ['local'=> 'Tecnologia da Informação']);
 
-        // Cria o usuário Administrador padrão
         $adminUser = User::firstOrCreate(
-            ['email' => 'admin@admin.com'], // Procura por este email
-            [ // Se não encontrar, cria com estes dados
+            ['email' => 'admin@admin.com'], 
+            [ 
                 'name' => 'Administrador',
                 'password' => Hash::make('Ti@2025'),
                 'email_verified_at' => now(),
@@ -30,8 +26,6 @@ class UserSeeder extends Seeder
             ]
         );
 
-        // Atribui o cargo 'Admin' a este usuário
-        // Isso só funciona se o RolesAndPermissionsSeeder já tiver sido executado
         $adminUser->assignRole('Admin');
     }
 }

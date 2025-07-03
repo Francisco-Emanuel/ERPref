@@ -73,7 +73,6 @@ class DepartamentoController extends Controller
      */
     public function destroy(departamento $departamento)
     {
-        // TRAVA DE SEGURANÇA: Verifica se há usuários ou ativos ligados a este departamento
         if ($departamento->users()->count() > 0 || $departamento->ativos()->count() > 0) {
             return redirect()->route('departamentos.index')
                              ->with('error', 'Não é possível excluir este departamento, pois ele está associado a usuários ou ativos.');

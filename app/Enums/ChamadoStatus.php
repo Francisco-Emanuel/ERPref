@@ -8,5 +8,4 @@ enum ChamadoStatus: string
     case EM_ANDAMENTO = 'Em Andamento';
     case RESOLVIDO = 'Resolvido';
     case FECHADO = 'Fechado';
-    // Você pode adicionar outros status aqui se precisar, como 'Aguardando Usuário'
 }

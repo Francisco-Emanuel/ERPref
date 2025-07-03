@@ -18,25 +18,20 @@ return new class extends Migration
             $table->string('tipo_ativo', 50);
             $table->string('status_condicao', 50);
 
-            // Chave estrangeira para o responsável (User)
             $table->foreignId('user_id')
                   ->nullable() 
                   ->constrained('users') 
-                  ->onDelete('set null'); // Se o usuário for deletado, o ativo fica sem responsável
+                  ->onDelete('set null'); 
 
-            // Chave estrangeira para o departamento
             $table->foreignId('departamento_id')
                   ->nullable() 
                   ->constrained('departamentos') 
-                  ->onDelete('set null'); // Se o departamento for deletado, o ativo fica sem departamento
+                  ->onDelete('set null'); 
 
-            $table->timestamps(); // Colunas created_at e updated_at
+            $table->timestamps(); 
             
-            // ADICIONADO: Esta é a forma correta do Laravel de "ocultar" registros.
-            // Ele cria uma coluna 'deleted_at' que funciona como a sua antiga coluna 'visible'.
             $table->softDeletes(); 
 
-            // A coluna 'descricao_problema' foi permanentemente REMOVIDA daqui.
         });
     }
 

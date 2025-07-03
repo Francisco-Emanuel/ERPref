@@ -12,7 +12,6 @@ class StoreChamadoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Usamos a mesma lógica de autorização que estava no controller
         return $this->user()->can('create-chamados');
     }
 
@@ -24,7 +23,6 @@ class StoreChamadoRequest extends FormRequest
     public function rules(): array
     {
          $user = $this->user();
-        // Movemos as regras do controller para cá
         return [
             'titulo' => 'required|string|max:255',
             'descricao_problema' => 'required|string',

@@ -17,11 +17,11 @@ return new class extends Migration
             // --- CHAVES ESTRANGEIRAS ---
             $table->foreignId('chamado_id')
                   ->constrained('chamados')
-                  ->onDelete('cascade'); // Se o chamado for deletado, suas atualizações também serão.
+                  ->onDelete('cascade'); 
             $table->foreignId('autor_id')
                   ->constrained('users')
-                  ->onDelete('cascade'); // Se o usuário autor for deletado, suas atualizações também serão.
-            $table->timestamps(); // Cria 'created_at' (nossa data_hora) e 'updated_at'
+                  ->onDelete('cascade'); 
+            $table->timestamps(); 
         });
     }
 

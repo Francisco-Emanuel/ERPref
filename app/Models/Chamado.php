@@ -27,10 +27,10 @@ class Chamado extends Model
      */
     protected $casts = [
         'status' => ChamadoStatus::class,
-        'data_resolucao' => 'datetime',  // <-- ADICIONE ESTA LINHA
-        'data_fechamento' => 'datetime', // <-- ADICIONE ESTA LINHA
+        'data_resolucao' => 'datetime',  
+        'data_fechamento' => 'datetime', 
         'prazo_sla' => 'datetime',
-        'data_inicio_sla' => 'datetime', // <-- ADICIONE ESTA LINHA
+        'data_inicio_sla' => 'datetime', 
     ];
 
     /**
@@ -68,10 +68,8 @@ class Chamado extends Model
         $user = Auth::user();
 
         return $query
-            // 1. Exclui chamados FECHADOS
             ->where('status', '!=', ChamadoStatus::FECHADO)
 
-            // 2. Lógica para chamados RESOLVIDOS (só aparece para o solicitante)
             ->where(function ($subQuery) use ($user) {
                 $subQuery->where('status', '!=', ChamadoStatus::RESOLVIDO)
                     ->orWhere(function ($q) use ($user) {
@@ -80,7 +78,6 @@ class Chamado extends Model
                     });
             })
 
-            // 3. Ordenação customizada por status e depois por data
             ->orderByRaw("
                 CASE
                     WHEN status = 'Aberto' THEN 1
@@ -129,7 +126,7 @@ class Chamado extends Model
      */
     public function atualizacoes(): HasMany
     {
-        return $this->hasMany(AtualizacaoChamado::class, 'chamado_id')->latest(); // Ordena da mais nova para a mais antiga
+        return $this->hasMany(AtualizacaoChamado::class, 'chamado_id')->latest(); 
     }
 
     /**

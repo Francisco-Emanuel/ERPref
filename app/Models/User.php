@@ -51,11 +51,9 @@ class User extends Authenticatable
 
     /**
      * Define o relacionamento: Um Usuário PERTENCE A um departamento.
-     * ESTA É A FUNÇÃO QUE ESTAVA FALTANDO.
      */
     public function departamento(): BelongsTo
     {
-        // O Laravel vai procurar pela chave estrangeira 'departamento_id' nesta tabela (users)
         return $this->belongsTo(Departamento::class);
     }
 }

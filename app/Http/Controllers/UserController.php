@@ -83,14 +83,10 @@ class UserController extends Controller
     }
     public function getUserDetails(User $user)
 {
-    // Carrega o relacionamento com o departamento para garantir que os dados venham juntos
     $user->load('departamento');
 
-    // Retorna os dados em formato JSON com as chaves que o JavaScript espera
     return response()->json([
         'departamento_nome' => $user->departamento->nome ?? 'Não definido',
-        // Supondo que o "local" padrão de um utilizador é o seu próprio departamento.
-        // Você pode alterar esta lógica se tiver um campo 'local' na tabela de utilizadores.
         'departamento_local' => $user->departamento->local ?? '', 
     ]);
 }

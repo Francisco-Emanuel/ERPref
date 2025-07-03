@@ -1,7 +1,4 @@
 <?php
-
-// Arquivo: database/migrations/YYYY_MM_DD_HHMMSS_add_custom_fields_to_users_table.php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,18 +10,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Usamos Schema::table() para MODIFICAR uma tabela que já existe
         Schema::table('users', function (Blueprint $table) {
-            // Opcional: define onde as novas colunas devem ser inseridas
             $table->after('password', function ($table) {
                 $table->string('especialidade', 50)->nullable();
                 
-                // Agora é o momento certo para adicionar a chave estrangeira,
-                // pois a tabela 'departamentos' já terá sido criada por sua própria migration.
                 $table->foreignId('departamento_id')
                       ->nullable()
-                      ->constrained('departamentos') // Liga à tabela 'departamentos'
-                      ->onDelete('set null');  // Se um departamento for deletado, este campo fica nulo
+                      ->constrained('departamentos') 
+                      ->onDelete('set null');  
             });
         });
     }

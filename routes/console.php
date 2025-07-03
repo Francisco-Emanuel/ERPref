@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Schedule; // <-- Adicione a importação do Schedule
+use Illuminate\Support\Facades\Schedule; 
 
 /*
 |--------------------------------------------------------------------------
@@ -20,5 +20,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-// --- ADICIONE O SEU AGENDAMENTO AQUI ---
 Schedule::command('app:check-sla-breaches')->everyFiveMinutes();

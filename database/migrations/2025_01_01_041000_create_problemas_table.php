@@ -12,20 +12,18 @@ return new class extends Migration {
     {
         Schema::create('problemas', function (Blueprint $table) {
             $table->id();
-            $table->text('descricao'); // A descrição detalhada do problema
+            $table->text('descricao'); 
 
-            // Chave estrangeira para o Ativo de TI ao qual o problema pertence
             $table->foreignId('ativo_ti_id')
                 ->nullable()
                 ->constrained('ativos_ti')
-                ->onDelete('cascade'); // Se o ativo for deletado, seus problemas também são
+                ->onDelete('cascade'); 
 
-            // Chave estrangeira para o Usuário que reportou o problema
             $table->foreignId('autor_id')
                 ->constrained('users')
-                ->onDelete('cascade'); // Se o autor for deletado, seus relatos também são
+                ->onDelete('cascade'); 
 
-            $table->timestamps(); // Cria created_at (nossa data_ocorrencia) e updated_at
+            $table->timestamps(); 
         });
     }
 
