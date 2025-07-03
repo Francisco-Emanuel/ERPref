@@ -29,7 +29,7 @@ class AtivoTI extends Model
         'tipo_ativo',
         'status_condicao',
         'user_id', // Renomeado de 'responsavel_id' para seguir a convenção do Laravel
-        'setor_id',
+        'departamento_id',
     ];
 
     /**
@@ -41,11 +41,11 @@ class AtivoTI extends Model
     }
 
     /**
-     * Define o relacionamento: Um AtivoTI pertence a um Setor.
+     * Define o relacionamento: Um AtivoTI pertence a um Departamento.
      */
-    public function setor(): BelongsTo
+    public function departamento(): BelongsTo
     {
-        return $this->belongsTo(Setor::class);
+        return $this->belongsTo(Departamento::class, 'departamento_id');
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AtivoTI;
-use App\Models\Setor;
+use App\Models\Departamento; // Changed from Setor
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -17,7 +17,8 @@ class AtivoTiController extends Controller
     {
         $this->authorize('view-ativos');
         
-        $ativos = AtivoTI::with(['responsavel', 'setor'])->orderBy('id', 'desc')->paginate(10);
+        // Changed 'setor' to 'departamento' in eager loading
+        $ativos = AtivoTI::with(['responsavel', 'departamento'])->orderBy('id', 'desc')->paginate(10);
         return view('ativos.index', compact('ativos'));
     }
 
@@ -29,13 +30,13 @@ class AtivoTiController extends Controller
         $this->authorize('create-ativos');
 
         $users = User::orderBy('name')->get();
-        $setores = Setor::orderBy('nome')->get();
-        return view('ativos.create', compact('users', 'setores'));
+        // Changed 'Setor' to 'Departamento' and '$setores' to '$departamentos'
+        $departamentos = Departamento::orderBy('nome')->get();
+        return view('ativos.create', compact('users', 'departamentos')); // Passed 'departamentos'
     }
 
     /**
      * Salva o novo ativo no banco de dados.
-     * (LÓGICA COMPLETA ADICIONADA AQUI)
      */
     public function store(Request $request)
     {
@@ -47,7 +48,7 @@ class AtivoTiController extends Controller
             'tipo_ativo' => 'required|string|max:50',
             'status_condicao' => 'required|string|max:50',
             'user_id' => 'required|exists:users,id',
-            'setor_id' => 'required|exists:setores,id',
+            'departamento_id' => 'required|exists:departamentos,id', // Changed from 'setor_id' and 'setores'
         ]);
 
         AtivoTI::create($validatedData);
@@ -62,7 +63,8 @@ class AtivoTiController extends Controller
     {
         $this->authorize('view-ativos');
 
-        $ativo->load(['responsavel', 'setor', 'problemas.autor']);
+        // Changed 'setor' to 'departamento' in eager loading
+        $ativo->load(['responsavel', 'departamento', 'problemas.autor']);
         return view('ativos.show', compact('ativo'));
     }
 
@@ -74,13 +76,13 @@ class AtivoTiController extends Controller
         $this->authorize('edit-ativos');
 
         $users = User::orderBy('name')->get();
-        $setores = Setor::orderBy('nome')->get();
-        return view('ativos.edit', compact('ativo', 'users', 'setores'));
+        // Changed 'Setor' to 'Departamento' and '$setores' to '$departamentos'
+        $departamentos = Departamento::orderBy('nome')->get();
+        return view('ativos.edit', compact('ativo', 'users', 'departamentos')); // Passed 'departamentos'
     }
 
     /**
      * Atualiza um ativo existente.
-     * (LÓGICA COMPLETA ADICIONADA AQUI)
      */
     public function update(Request $request, AtivoTI $ativo)
     {
@@ -92,7 +94,7 @@ class AtivoTiController extends Controller
             'tipo_ativo' => 'required|string|max:50',
             'status_condicao' => 'required|string|max:50',
             'user_id' => 'required|exists:users,id',
-            'setor_id' => 'required|exists:setores,id',
+            'departamento_id' => 'required|exists:departamentos,id', // Changed from 'setor_id' and 'setores'
         ]);
 
         $ativo->update($validatedData);
@@ -118,7 +120,8 @@ class AtivoTiController extends Controller
     {
         $this->authorize('delete-ativos');
 
-        $ativos = AtivoTI::onlyTrashed()->with(['responsavel', 'setor'])->orderBy('id', 'desc')->paginate(10);
+        // Changed 'setor' to 'departamento' in eager loading
+        $ativos = AtivoTI::onlyTrashed()->with(['responsavel', 'departamento'])->orderBy('id', 'desc')->paginate(10);
         return view('ativos.trash', compact('ativos'));
     }
 
@@ -130,7 +133,6 @@ class AtivoTiController extends Controller
     {
         $this->authorize('delete-ativos');
 
-        // Busca o ativo na lixeira ou falha
         $ativo = AtivoTI::onlyTrashed()->findOrFail($id);
         $ativo->restore();
 

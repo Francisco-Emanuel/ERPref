@@ -37,10 +37,10 @@
                 </select></div>
             </div>
             <div class="sm:col-span-3">
-                <x-input-label for="setor_id" value="Setor" />
-                <div class="mt-1"><select id="setor_id" name="setor_id" class="block w-full rounded-md border-slate-300" required>
-                    @foreach($setores as $setor)
-                        <option value="{{ $setor->id }}" @selected(old('setor_id', $ativo->setor_id ?? '') == $setor->id)>{{ $setor->nome }}</option>
+                <x-input-label for="departamento_id" value="Departamento" /> {{-- Changed from setor_id and Setor --}}
+                <div class="mt-1"><select id="departamento_id" name="departamento_id" class="block w-full rounded-md border-slate-300" required>
+                    @foreach($departamentos as $departamento) {{-- Changed from $setores as $setor --}}
+                        <option value="{{ $departamento->id }}" @selected(old('departamento_id', $ativo->departamento_id ?? '') == $departamento->id)>{{ $departamento->nome }}</option>
                     @endforeach
                 </select></div>
             </div>
