@@ -15,11 +15,9 @@ class DepartamentoSeeder extends Seeder
     {
         Departamento::firstOrCreate(
             ['nome' => 'Tecnologia da Informação'],
-            ['local' => 'Tecnologia da Informação']
         );
         Departamento::firstOrCreate(
             ['nome' => 'Recursos Humanos'],
-            ['local' => 'Prefeitura']
         );
     }
 }

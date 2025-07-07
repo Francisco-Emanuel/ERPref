@@ -37,7 +37,6 @@ class DepartamentoController extends Controller
     {
         $validatedData = $request->validate([
             'nome' => 'required|string|max:100|unique:departamentos,nome',
-            'local'=> 'nullable|string|max:100',
         ]);
 
         departamento::create($validatedData);
@@ -60,7 +59,6 @@ class DepartamentoController extends Controller
     {
         $validatedData = $request->validate([
             'nome' => ['required', 'string', 'max:100', Rule::unique('departamentos')->ignore($departamento->id)],
-            'local' => ['nullable', 'string', 'max:100']
         ]);
 
         $departamento->update($validatedData);

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('departamentos', function (Blueprint $table) {
             $table->id();
             $table->string('nome', 100)->unique();
-            $table->string('local', 100)->nullable();
             $table->timestamps();
         });
     }
