@@ -28,8 +28,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Rotas do Perfil (acessível a todos os usuários logados)
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+// Rotas do Perfil (acessível a todos os usuários logados)
+    // A rota principal /profile agora mostra a view simplificada
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.show'); // Nova rota principal de visualização
+    // A rota para a página de edição completa
+    Route::get('/profile/edit', [ProfileController::class, 'editProfile'])->name('profile.edit'); // Rota para o formulário de edição
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
