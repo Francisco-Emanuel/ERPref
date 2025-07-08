@@ -463,7 +463,7 @@ class ChamadoController extends Controller
             'historyLogs' => $historyLogs
         ]);
 
-        return $pdf->download("relatorio-chamado-{$chamado->id}.pdf");
+        return $pdf->download("Ordem-Serviço-{$chamado->id}.pdf");
     }
     public function getUserDetails(User $user)
     {
