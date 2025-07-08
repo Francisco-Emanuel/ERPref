@@ -140,7 +140,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold">
                                             <div class="flex items-center justify-end gap-4">
                                                 <a href="{{ route('chamados.show', $chamado) }}"
-                                                    class="text-blue-600 hover:text-blue-800">Ver Detalhes</a>
+                                                    class="text-blue-600 hover:text-blue-800">Detalhes</a>
 
                                                 @can('edit-chamados')
                                                     @if (!$chamado->tecnico_id) {{-- Se o chamado não tem técnico --}}
