@@ -10,6 +10,7 @@ use App\Models\Departamento;
 use App\Models\Problema;
 use App\Models\Categoria;
 use App\Models\User;
+use App\Notifications\ChamadoAtribuidoNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -358,6 +359,13 @@ class ChamadoController extends Controller
         $chamado->tecnico_id = $newTechnician->id;
 
         $this->startOrResetSla($chamado); // Este save() já está dentro do método
+
+        if ($chamado->tecnico_id) {
+            $tecnico = User::find($chamado->tecnico_id);
+            if ($tecnico) {
+                $tecnico->notify(new ChamadoAtribuidoNotification($chamado, Auth::user()));
+            }
+        }
 
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
