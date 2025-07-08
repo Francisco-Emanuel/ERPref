@@ -174,7 +174,7 @@
                                         </form>
                                     @endif
                                     {{-- O formulário para alterar o status fica visível para todos que podem editar --}}
-                                    <form method="POST" action="{{ route('chamados.updateStatus', $chamado) }}"
+                                    {{-- <form method="POST" action="{{ route('chamados.updateStatus', $chamado) }}"
                                         class="flex items-center gap-2">
                                         @csrf
                                         @method('PATCH')
@@ -187,7 +187,7 @@
                                             @endforeach
                                         </select>
                                         <x-primary-button>Salvar</x-primary-button>
-                                    </form>
+                                    </form> --}}
 
                                     {{-- Botões de Resolução e Escalação --}}
                                     @if(!in_array($chamado->status, [\App\Enums\ChamadoStatus::RESOLVIDO, \App\Enums\ChamadoStatus::FECHADO]))
