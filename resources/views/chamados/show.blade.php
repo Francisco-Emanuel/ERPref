@@ -160,6 +160,19 @@
                             <div class="mt-6 border-t border-slate-300 pt-6 no-print">
                                 <h4 class="text-base font-semibold text-slate-900 mb-4">Ações de Técnico</h4>
                                 <div class="space-y-3">
+                                    @if($chamado->tecnico_id === Auth::id() && $chamado->status === \App\Enums\ChamadoStatus::ABERTO)
+                                        <form method="POST" action="{{ route('chamados.attend', $chamado) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
+                                                class="w-full inline-flex items-center justify-center gap-2 bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors shadow-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                Atender Chamado
+                                            </button>
+                                        </form>
+                                    @endif
                                     {{-- O formulário para alterar o status fica visível para todos que podem editar --}}
                                     <form method="POST" action="{{ route('chamados.updateStatus', $chamado) }}"
                                         class="flex items-center gap-2">
@@ -200,22 +213,6 @@
                             </div>
                         @endcan
                     </div>
-
-                    {{-- Ações do Solicitante: Ações que SÓ o solicitante pode fazer. --}}
-                    @if(Auth::id() === $chamado->solicitante_id)
-                        <div class="bg-white p-6 rounded-xl shadow-sm no-print">
-                            <h3 class="text-lg font-semibold text-slate-900 mb-4 no-print">Minhas Ações</h3>
-                            @if($chamado->status === \App\Enums\ChamadoStatus::FECHADO)
-                                <p class="text-sm text-slate-600 mb-4 no-print">O problema retornou? Você pode reabrir o
-                                    chamado.</p>
-                                <button x-data="" x-on:click.prevent="$dispatch('open-modal', 'reopen-chamado-modal')"
-                                    class="no-print w-full inline-flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors shadow-sm">Reabrir
-                                    Chamado</button>
-                                    
-                            @endif
-                        </div>
-                    @endif
-
                     {{-- Ação de Finalização: Aparece para o Solicitante OU Admin quando o chamado está Resolvido --}}
                     @if($chamado->status === \App\Enums\ChamadoStatus::RESOLVIDO && (Auth::id() === $chamado->solicitante_id || Auth::user()->hasAnyRole(['Admin', 'Supervisor'])))
                         <div class="bg-white p-6 rounded-xl shadow-md no-print">
@@ -232,6 +229,23 @@
                             </form>
                         </div>
                     @endif
+
+                    {{-- Ações do Solicitante: Ações que SÓ o solicitante pode fazer. --}}
+                    @if(Auth::id() === $chamado->solicitante_id)
+                        <div class="bg-white p-6 rounded-xl shadow-sm no-print">
+                            <h3 class="text-lg font-semibold text-slate-900 mb-4 no-print">Minhas Ações</h3>
+                            @if($chamado->status === \App\Enums\ChamadoStatus::FECHADO)
+                                <p class="text-sm text-slate-600 mb-4 no-print">O problema retornou? Você pode reabrir o
+                                    chamado.</p>
+                                <button x-data="" x-on:click.prevent="$dispatch('open-modal', 'reopen-chamado-modal')"
+                                    class="no-print w-full inline-flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors shadow-sm">Reabrir
+                                    Chamado</button>
+                                    
+                            @endif
+                        </div>
+                    @endif
+
+                    
                 </div>
             </div>
         </main>

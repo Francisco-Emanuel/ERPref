@@ -43,8 +43,8 @@ class ChamadoController extends Controller
     }
 
     /**
-     * Mostra o formulário para criar um novo chamado.
-     * (MÉTODO CORRIGIDO)
+     * Summary of create
+     * @return \Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -182,8 +182,8 @@ class ChamadoController extends Controller
         }
 
         $chamado->tecnico_id = Auth::id();
-        $this->startOrResetSla($chamado);
-        //$chamado->save();
+        //$this->startOrResetSla($chamado);
+        $chamado->save();
 
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
@@ -209,19 +209,31 @@ class ChamadoController extends Controller
 
         return view('chamados.my-chamados', ['chamados' => $meusChamados]);
     }
+    /**
+     * Summary of attend
+     * @param \App\Models\Chamado $chamado
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function attend(Chamado $chamado)
     {
+        // Verifica se o usuário logado é o técnico atribuído
         if ($chamado->tecnico_id !== Auth::id()) {
             abort(403, 'Você não tem permissão para atender este chamado.');
         }
 
-        $chamado->status = \App\Enums\ChamadoStatus::EM_ANDAMENTO;
-        $chamado->save();
+        // Verifica se o chamado já não está em atendimento, resolvido ou fechado
+        if (in_array($chamado->status, [ChamadoStatus::EM_ANDAMENTO, ChamadoStatus::RESOLVIDO, ChamadoStatus::FECHADO])) {
+            return back()->with('error', 'Este chamado já está em atendimento ou foi finalizado.');
+        }
+
+        $chamado->status = ChamadoStatus::EM_ANDAMENTO;
+        $this->startOrResetSla($chamado); // Inicia o SLA aqui!
+        // O save() já é feito dentro de startOrResetSla()
 
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
             'autor_id' => Auth::id(),
-            'texto' => "Chamado em atendimento por " . Auth::user()->name . ".",
+            'texto' => "Chamado em atendimento por " . Auth::user()->name . ". O SLA foi iniciado.",
             'is_system_log' => true,
         ]);
 
