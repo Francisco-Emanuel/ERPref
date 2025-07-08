@@ -112,12 +112,6 @@
                                 </dd>
                             </div>
                             <div>
-                                <dt class="text-sm font-medium text-slate-500">Aberto para</dt>
-                                <dd class="mt-2 text-base text-slate-700 rounded-lg">
-                                    {{ $chamado->abertoPara ?? 'Não atribuído' }}
-                                </dd>
-                            </div>
-                            <div>
                                 <dt class="text-sm font-medium text-slate-500">Prazo de Resolução (SLA)</dt>
                                 <dd class="mt-1 text-base font-semibold">
                                     @if ($chamado->prazo_sla)

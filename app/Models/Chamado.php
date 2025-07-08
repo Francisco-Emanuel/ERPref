@@ -41,7 +41,6 @@ class Chamado extends Model
         'descricao_inicial',
         'problema_id',
         'local',
-        'abertoPara',
         'status',
         'prioridade',
         'prazo_sla',

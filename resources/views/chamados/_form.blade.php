@@ -36,13 +36,6 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-6">
-                    <x-input-label for="abertoPara" value="Quem será atendido" />
-                    <div class="mt-1">
-                        <x-text-input id="abertoPara" name="abertoPara" type="text" class="block w-full" :value="old('abertoPara')"
-                            required autofocus />
-                    </div>
-                </div>
 
                 <div class="sm:col-span-6">
                     <x-input-label for="titulo" value="Título do Chamado" />
