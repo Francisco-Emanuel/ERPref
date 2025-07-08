@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
             ['email' => 'admin@admin.com'], 
             [ 
                 'name' => 'Administrador',
-                'password' => Hash::make('Ti@2025'),
+                'password' => Hash::make('Adminti@2025'),
                 'email_verified_at' => now(),
                 'departamento_id' => $departamentoTI->id,
             ]

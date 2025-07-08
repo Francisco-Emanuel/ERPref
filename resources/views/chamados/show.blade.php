@@ -43,44 +43,21 @@
                 {{-- Coluna da Esquerda (Feed de Atividade) --}}
                 <div class="lg:col-span-2 space-y-8 order-2">
 
-                    {{-- Card do Chat --}}
+                    {{-- Card da observação --}}
                     {{-- <div class="bg-white p-6 rounded-xl shadow-sm">
-                        <h3 class="text-lg font-semibold text-slate-900 mb-4">Chat</h3>
+                        <h3 class="text-lg font-semibold text-slate-900 mb-4">Observações</h3>
                         <form method="POST" action="{{ route('chamados.updates.store', $chamado) }}" class="no-print">
                             @csrf
                             <textarea name="texto" rows="3"
                                 class="w-full border-slate-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Digite sua mensagem..."></textarea>
+                                placeholder="Registre uma observação ou atualização..."></textarea>
                             <div class="mt-2 flex justify-end">
                                 <button type="submit"
                                     class="inline-flex items-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                                    Enviar Mensagem
+                                    Registrar observação
                                 </button>
                             </div>
                         </form>
-                        <div class="mt-6 space-y-6">
-                            @forelse ($chatMessages as $message)
-                            <div class="flex gap-3">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600 flex-shrink-0">
-                                    {{ substr($message->autor->name, 0, 1) }}
-                                </div>
-                                <div class="flex-grow min-w-0">
-                                    <div class="bg-slate-100 p-4 rounded-lg">
-                                        <p class="text-sm text-slate-800 break-words overflow-hidden">
-                                            {{ $message->texto }}
-                                        </p>
-                                    </div>
-                                    <div class="mt-1 text-xs text-slate-500">
-                                        <strong>{{ $message->autor->name }}</strong> &middot;
-                                        {{ $message->created_at->format('d/m/Y \à\s H:i') }}
-                                    </div>
-                                </div>
-                            </div>
-                            @empty
-                            <p class="text-sm text-slate-500 text-center py-4">Nenhuma mensagem no chat ainda.</p>
-                            @endforelse
-                        </div>
                     </div> --}}
 
                     {{-- Card do Histórico de Eventos --}}
@@ -186,8 +163,8 @@
 
                         {{-- Ações do Técnico --}}
                         @can('edit-chamados')
-                            <div class="mt-6 border-t pt-6 no-print">
-                                <h4 class="text-base font-semibold text-slate-900 mb-4">Ações do Técnico</h4>
+                            <div class="mt-6 border-t border-slate-300 pt-6 no-print">
+                                <h4 class="text-base font-semibold text-slate-900 mb-4">Ações de Técnico</h4>
                                 <div class="space-y-3">
                                     {{-- O formulário para alterar o status fica visível para todos que podem editar --}}
                                     <form method="POST" action="{{ route('chamados.updateStatus', $chamado) }}"
@@ -208,7 +185,7 @@
                                     {{-- Botões de Resolução e Escalação --}}
                                     @if(!in_array($chamado->status, [\App\Enums\ChamadoStatus::RESOLVIDO, \App\Enums\ChamadoStatus::FECHADO]))
                                         @if($chamado->tecnico_id === Auth::id() || Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
-                                            <div class="flex items-center gap-4 mt-3">
+                                            <div class="flex items-center gap-4 mt-3 border-t pt-3 border-slate-300">
                                                 @can('close-chamados')
                                                     <button x-data=""
                                                         x-on:click.prevent="$dispatch('open-modal', 'resolve-chamado-modal')"
@@ -240,6 +217,7 @@
                                 <button x-data="" x-on:click.prevent="$dispatch('open-modal', 'reopen-chamado-modal')"
                                     class="no-print w-full inline-flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-700 transition-colors shadow-sm">Reabrir
                                     Chamado</button>
+                                    
                             @endif
                         </div>
                     @endif

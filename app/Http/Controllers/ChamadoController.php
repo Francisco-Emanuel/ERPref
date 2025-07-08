@@ -126,7 +126,8 @@ class ChamadoController extends Controller
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
             'autor_id' => Auth::id(),
-            'texto' => $request->texto,
+            'texto' => 'OBS: ' . $request->texto,
+            'is_system_log' => true,
         ]);
 
         return redirect()->route('chamados.show', $chamado)->with('success', 'Sua atualização foi adicionada!');
@@ -226,37 +227,71 @@ class ChamadoController extends Controller
 
         return redirect()->route('chamados.show', $chamado)->with('success', 'Chamado em atendimento!');
     }
+    /**
+     * Summary of resolve (Feito por IA)
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Chamado $chamado
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function resolve(Request $request, Chamado $chamado)
     {
+        // 1. Autoriza a ação de fechar chamados (permissão 'close-chamados')
         $this->authorize('close-chamados');
-        if ($chamado->tecnico_id !== Auth::id()) {
-            abort(403, 'Você não tem permissão para resolver este chamado.');
+
+        $user = Auth::user(); // Obtém o usuário autenticado
+
+        // 2. Lógica para atribuir o chamado ao administrador se ele estiver não atribuído
+        // Esta verificação deve vir ANTES da verificação de permissão do técnico.
+        if (!$chamado->tecnico_id && $user->hasRole('Admin')) {
+            $chamado->tecnico_id = $user->id;
+            // Opcional: Adiciona um log de sistema para esta auto-atribuição
+            AtualizacaoChamado::create([
+                'chamado_id' => $chamado->id,
+                'autor_id' => $user->id,
+                'texto' => "Chamado automaticamente atribuído a " . $user->name . " (Admin) ao ser resolvido.",
+                'is_system_log' => true,
+            ]);
         }
 
+        // 3. Verificação de permissão mais flexível:
+        // Permite que o técnico atribuído resolva o chamado, OU
+        // permite que um Administrador ou Supervisor resolva QUALQUER chamado (atribuído ou não).
+        // Se o usuário não for o técnico atribuído E não for Admin/Supervisor, então ele não tem permissão.
+        if ($chamado->tecnico_id !== $user->id && !$user->hasAnyRole(['Admin', 'Supervisor'])) {
+            abort(403, 'Você não tem permissão para resolver este chamado. Apenas o técnico responsável, um Administrador ou Supervisor pode fazê-lo.');
+        }
+
+        // 4. Validação dos dados do formulário
         $validated = $request->validate([
             'solucao_final' => 'required|string|min:10',
             'servico_executado' => 'accepted', 
         ]);
 
+        // 5. Atualiza os campos do chamado
         $chamado->solucao_final = $validated['solucao_final'];
         $chamado->status = \App\Enums\ChamadoStatus::RESOLVIDO;
         $chamado->data_resolucao = now();
-        $chamado->save();
+        $chamado->save(); // Salva as alterações, incluindo o tecnico_id se foi atualizado
 
-        $logTexto = "Chamado marcado como Resolvido por " . Auth::user()->name . ".\n\n";
+        // 6. Cria o log de resolução do chamado
+        $logTexto = "Chamado marcado como Resolvido por " . $user->name . ".\n\n";
         $logTexto .= "Solução registrada: " . $validated['solucao_final'];
 
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
-            'autor_id' => Auth::id(),
+            'autor_id' => $user->id,
             'texto' => $logTexto,
             'is_system_log' => true,
         ]);
 
+        // 7. Redireciona com mensagem de sucesso
         return redirect()->route('chamados.show', $chamado)->with('success', 'Chamado resolvido com sucesso!');
     }
     /**
-     * Escala/Reatribui um chamado para outro técnico.
+     * Summary of escalate
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Chamado $chamado
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function escalate(Request $request, Chamado $chamado)
     {
@@ -285,6 +320,12 @@ class ChamadoController extends Controller
 
         return redirect()->route('chamados.show', $chamado)->with('success', "Chamado escalado para {$newTechnician->name}!");
     }
+    /**
+     * Summary of atribuir
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Chamado $chamado
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function atribuir(Request $request, Chamado $chamado)
     {
         $this->authorize('edit-chamados');
@@ -317,7 +358,9 @@ class ChamadoController extends Controller
         return redirect()->route('chamados.index')->with('success', "Chamado atribuído a {$newTechnician->name}!");
     }
     /**
-     * Fecha um chamado que já foi resolvido. Ação do solicitante. 
+     * Summary of close
+     * @param \App\Models\Chamado $chamado
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function close(Chamado $chamado)
     {
@@ -345,7 +388,10 @@ class ChamadoController extends Controller
         return redirect()->route('chamados.show', $chamado)->with('success', 'Chamado fechado com sucesso!');
     }
     /**
-     * Reabre um chamado que estava fechado. Ação do solicitante.
+     * Summary of reopen
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Chamado $chamado
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function reopen(Request $request, Chamado $chamado)
     {
