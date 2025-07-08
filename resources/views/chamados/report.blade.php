@@ -5,10 +5,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Ordem de serviço #{{ $chamado->id }}</title>
     <style>
-       /* Define fontes e cores básicas */
+        /* Define fontes e cores básicas */
         body {
             font-family: 'Helvetica', sans-serif;
-            font-size: 11px;
+            font-size: 10px; /* Reduzido de 11px para 10px */
+            line-height: 1.4; /* Ajustado para um pouco mais compacto */
             color: #000;
             background-color: #fff;
             margin: 0;
@@ -17,41 +18,41 @@
         /* Cabeçalho do Documento */
         .header {
             background-color: #e0e6ed; /* Escurecido de #f8fafc (slate-50) */
-            padding: 20px;
+            padding: 5px; /* Reduzido de 20px */
             text-align: center;
             border-bottom: 2px solid #aeb7c2; /* Escurecido de #e2e8f0 (slate-200) */
         }
         .header img {
-            max-height: 60px;
-            margin-bottom: 10px;
+            max-height: 50px; /* Reduzido de 60px */
+            margin-bottom: 8px; /* Reduzido de 10px */
         }
         .header h1 {
             margin: 0;
-            font-size: 22px;
+            font-size: 20px; /* Reduzido de 22px */
             color: #1e293b; /* Cor cinza-escuro (slate-800) */
         }
         .header h2 {
-            margin: 5px 0 0;
-            font-size: 16px;
+            margin: 4px 0 0; /* Reduzido de 5px */
+            font-size: 14px; /* Reduzido de 16px */
             font-weight: normal;
             color: #475569; /* Cor cinza (slate-600) */
         }
 
         /* Corpo do Relatório */
         .content {
-            padding: 25px;
+            padding: 10px; /* Reduzido de 25px */
         }
 
         /* Estilo das Seções */
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 10px; /* Reduzido de 25px */
             page-break-inside: avoid; /* Tenta não quebrar a seção no meio da página */
         }
         .section-header {
-            background-color: #fff; /* Mantido branco para contraste com o texto preto */
+            background-color: #fff;
             color: #000;
-            padding: 8px 12px;
-            font-size: 14px;
+            padding: 5px; /* Reduzido de 8px 12px */
+            font-size: 13px; /* Reduzido de 14px */
             font-weight: bold;
             border-radius: 4px;
         }
@@ -60,11 +61,11 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 8px; /* Reduzido de 10px */
         }
         th, td {
             border: 1px solid #94a3b8; /* Escurecido de #e2e8f0 (slate-200) */
-            padding: 8px 10px;
+            padding: 6px 8px; /* Reduzido de 8px 10px */
             text-align: left;
             vertical-align: top;
         }
@@ -81,8 +82,8 @@
         }
 
         /* Tabela de Logs (Chat e Histórico) */
-        .log-table .date { width: 120px; }
-        .log-table .author { width: 150px; }
+        .log-table .date { width: 100px; } /* Ajustado para otimizar espaço */
+        .log-table .author { width: 120px; } /* Ajustado para otimizar espaço */
         .log-table p, .details-table p { margin: 0; }
 
         /* Tratamento de quebra de linha */
@@ -93,33 +94,33 @@
 
         /* Estilos para as assinaturas */
         .signatures-section {
-            margin-top: 50px; /* Espaçamento do conteúdo acima */
-            padding: 25px;
-            text-align: center; /* Centraliza os blocos de assinatura */
-            page-break-before: auto; /* Tenta não quebrar a página antes, se houver espaço */
-            page-break-inside: avoid; /* Evita quebra dentro da seção */
+            margin-top: 40px; /* Reduzido de 50px */
+            padding: 20px; /* Reduzido de 25px */
+            text-align: center;
+            page-break-before: auto;
+            page-break-inside: avoid;
         }
 
         .signature-block {
-            display: inline-block; /* Coloca os blocos lado a lado */
-            width: 45%; /* Largura para cada bloco de assinatura */
-            margin: 0 2%; /* Espaçamento entre os blocos */
-            vertical-align: top; /* Alinha os blocos pelo topo */
-            text-align: center; /* Centraliza o conteúdo dentro de cada bloco */
+            display: inline-block;
+            width: 45%;
+            margin: 0 2%;
+            vertical-align: top;
+            text-align: center;
         }
 
         .signature-line {
-            width: 100%; /* A linha ocupa a largura total do seu bloco pai */
-            border-bottom: 1px solid #000; /* Linha preta */
-            height: 1px; /* Garante que a linha apareça, mesmo que vazia */
-            margin-bottom: 5px; /* Espaço entre a linha e o texto abaixo */
+            width: 100%;
+            border-bottom: 1px solid #000;
+            height: 1px;
+            margin-bottom: 4px; /* Reduzido de 5px */
         }
 
         .signature-text {
-            font-size: 10px;
+            font-size: 9px; /* Reduzido de 10px */
             font-weight: bold;
             color: #333;
-            text-align: center; /* Garante que o texto esteja centralizado abaixo da linha */
+            text-align: center;
         }
     </style>
 </head>
@@ -141,10 +142,15 @@
                 <tr><td>Departamento</td><td>{{ $chamado->departamento->nome ?? 'Não informado' }}</td></tr>
                 <tr><td>Solicitante</td><td>{{ $chamado->solicitante->name ?? 'N/A' }}</td></tr>
                 <tr><td>Técnico</td><td>{{ $chamado->tecnico->name ?? 'Não atribuído' }}</td></tr>
-                <tr><td>Data de Abertura</td><td>{{ $chamado->created_at->format('d/m/Y H:i') }}</td></tr>
-                @if($chamado->data_fechamento)
-                    <tr><td>Data de Fechamento</td><td>{{ $chamado->data_fechamento->format('d/m/Y H:i') }}</td></tr>
-                @endif
+                <tr>
+                    <td>Datas</td>
+                    <td>
+                        Aberto em: {{ $chamado->created_at->format('d/m/Y H:i') }}
+                        @if($chamado->data_fechamento)
+                            Fechado em: {{ $chamado->data_fechamento->format('d/m/Y H:i') }}
+                        @endif
+                    </td>
+                </tr>
                 <tr>
                     <td>Descrição do Problema</td>
                     <td class="preserve-lines">{{ $chamado->problema->descricao }}</td>
@@ -155,7 +161,6 @@
                         <td class="preserve-lines">{{ $chamado->solucao_final }}</td>
                     </tr>
                 @endif
-                <tr><td>Observações</td><td><br/><br/><br/><br/></td></tr>
             </table>
         </section>
 

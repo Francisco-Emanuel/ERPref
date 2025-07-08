@@ -286,8 +286,7 @@ class ChamadoController extends Controller
         $chamado->save(); // Salva as alterações, incluindo o tecnico_id se foi atualizado
 
         // 6. Cria o log de resolução do chamado
-        $logTexto = "Chamado marcado como Resolvido por " . $user->name . ".\n\n";
-        $logTexto .= "Solução registrada: " . $validated['solucao_final'];
+        $logTexto = "Chamado marcado como Resolvido por " . $user->name;
 
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
