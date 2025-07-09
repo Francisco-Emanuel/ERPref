@@ -46,9 +46,10 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 {{-- Ícone de Notificações com contador --}}
                 <div x-data="{
-        result: null,
+        result: 0,
         async retrieveData() {
-        this.result = axios.get('/notifications/count');
+        const response = await axios.get('/notifications/count');
+        this.result = response.data;
     }
      }" class="relative me-4" x-init="retrieveData()">
                     <a href="{{ route('notifications.index') }}"
@@ -60,7 +61,7 @@
                             </path>
                         </svg>
                         <span x-transition x-text="result"
-                            class="absolute  -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full"></span>
+                            class="absolute top-5 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full"></span>
                     </a>
                 </div>
 
