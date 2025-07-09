@@ -11,6 +11,8 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChamadoController;
 use App\Http\Controllers\ProblemaController;
+use App\Http\Controllers\NotificationController as NotifController; // Importe o NotificationController com um alias
+
 
 
 /*
@@ -38,8 +40,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::get('/notifications', [NotifController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/{id}/mark-as-read', [NotifController::class, 'markAsRead'])->name('notifications.markAsRead');
 
 
     // --- MÓDULOS PRINCIPAIS ---

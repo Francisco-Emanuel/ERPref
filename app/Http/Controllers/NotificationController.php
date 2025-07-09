@@ -11,15 +11,20 @@ class NotificationController extends Controller
 {
     /**
      * Exibe a lista completa de notificações do usuário logado.
+     * Esta é a rota web (GET /notifications).
      */
     public function index(): View
     {
         $user = Auth::user();
-        $notifications = $user->notifications()->paginate(10); // Pagina as notificações
+        // Pagina as notificações, 10 por página
+        $notifications = $user->notifications()->paginate(10); 
 
         return view('notifications.index', compact('notifications'));
     }
 
+    /**
+     * Retorna todas as notificações do usuário logado via API (GET /api/notifications).
+     */
     public function getNotifications(Request $request): JsonResponse
     {
         return response()->json([
@@ -29,7 +34,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Retorna a contagem de notificações não lidas do usuário logado.
+     * Retorna a contagem de notificações não lidas do usuário logado via API (GET /api/notifications/count).
      */
     public function getUnreadCount(Request $request): JsonResponse
     {
@@ -37,7 +42,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Marca todas as notificações não lidas do usuário logado como lidas.
+     * Marca todas as notificações não lidas do usuário logado como lidas via API (POST /api/notifications/mark-as-read).
      */
     public function markAllAsRead(Request $request): JsonResponse
     {
@@ -46,7 +51,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Marca uma notificação específica como lida.
+     * Marca uma notificação específica como lida via API (PATCH /api/notifications/{id}/mark-as-read).
      */
     public function markAsRead(Request $request, $id): JsonResponse
     {
