@@ -12,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChamadoController;
 use App\Http\Controllers\ProblemaController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,6 +58,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('chamados/{chamado}/close', [ChamadoController::class, 'close'])->name('chamados.close');
     Route::patch('chamados/{chamado}/reopen', [ChamadoController::class, 'reopen'])->name('chamados.reopen');
     Route::resource('chamados', ChamadoController::class)->only(['index', 'create', 'store', 'show']);
+
+        // Rotas de Notificações (Adicione ESTE BLOCO)
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    // Esta rota PATCH é para marcar uma notificação como lida através de um clique na página de listagem, por exemplo.
+    Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
 
     // Rotas de Problemas
     Route::resource('problemas', ProblemaController::class)->only(['create', 'store']);

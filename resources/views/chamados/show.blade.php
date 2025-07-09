@@ -194,11 +194,13 @@
                                         @if($chamado->tecnico_id === Auth::id() || Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
                                             <div class="flex items-center gap-4 mt-3 border-t pt-3 border-slate-300">
                                                 @can('close-chamados')
-                                                    <button x-data=""
-                                                        x-on:click.prevent="$dispatch('open-modal', 'resolve-chamado-modal')"
-                                                        class="flex-1 inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                                                        Resolver
-                                                    </button>
+                                                    @if($chamado->status === \App\Enums\ChamadoStatus::EM_ANDAMENTO && (Auth::id() === $chamado->solicitante_id))
+                                                        <button x-data=""
+                                                            x-on:click.prevent="$dispatch('open-modal', 'resolve-chamado-modal')"
+                                                            class="flex-1 inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                                                            Resolver
+                                                        </button>
+                                                    @endif
                                                 @endcan
 
                                                 <button x-data=""
