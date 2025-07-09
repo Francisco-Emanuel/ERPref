@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
@@ -85,3 +86,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Arquivo com as rotas de login, registro, etc.
 require __DIR__.'/auth.php';
+require __DIR__.'/api.php';

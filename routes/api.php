@@ -2,41 +2,39 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController; 
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\NotificationController; // Importe o NotificationController
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
 
-    Route::get('/user-details/{user}', [UserController::class, 'getUserDetails'])->name('api.user.details');
+// Rota padrão para obter detalhes do usuário autenticado via Sanctum
+Route::middleware(['auth', 'verified'])->get('/user', function (Request $request) {
+    return $request->user();
+});
 
+// Rota para obter detalhes de um usuário específico via API (se ainda estiver em uso)
+Route::middleware(['auth', 'verified'])->get('/user-details/{user}', [UserController::class, 'getUserDetails'])->name('api.user.details');
+
+// Rotas de API para Notificações
+Route::middleware(['auth', 'verified'])->group(function () {
     // Rota para buscar todas as notificações do usuário logado (lidas e não lidas)
-    Route::get('/notifications', function (Request $request) {
-        return response()->json([
-            'notifications' => $request->user()->notifications,
-            'unreadCount' => $request->user()->unreadNotifications->count()
-        ]);
-    });
+    Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('api.notifications.all');
 
     // Rota para buscar apenas a contagem de notificações não lidas
-    Route::get('/notifications/count', function (Request $request) {
-        return response()->json(['count' => $request->user()->unreadNotifications->count()]);
-    });
+    Route::get('/notifications/count', [NotificationController::class, 'getUnreadCount'])->name('api.notifications.count');
 
     // Rota para marcar todas as notificações não lidas como lidas
-    Route::post('/notifications/mark-as-read', function (Request $request) {
-        $request->user()->unreadNotifications->markAsRead();
-        return response()->json(['status' => 'success']);
-    });
+    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAllAsRead'])->name('api.notifications.markAllAsRead');
 
-    // Rota para marcar uma notificação específica como lida (opcional, para clique individual)
-    Route::patch('/notifications/{id}/mark-as-read', function (Request $request, $id) {
-        $notification = $request->user()->notifications()->where('id', $id)->first();
-        if ($notification) {
-            $notification->markAsRead();
-            return response()->json(['status' => 'success']);
-        }
-        return response()->json(['status' => 'error', 'message' => 'Notificação não encontrada'], 404);
-    });
+    // Rota para marcar uma notificação específica como lida
+    Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notifications.markAsRead');
 });

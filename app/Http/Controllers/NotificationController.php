@@ -20,6 +20,31 @@ class NotificationController extends Controller
         return view('notifications.index', compact('notifications'));
     }
 
+    public function getNotifications(Request $request): JsonResponse
+    {
+        return response()->json([
+            'notifications' => $request->user()->notifications,
+            'unreadCount' => $request->user()->unreadNotifications->count()
+        ]);
+    }
+
+    /**
+     * Retorna a contagem de notificações não lidas do usuário logado.
+     */
+    public function getUnreadCount(Request $request): JsonResponse
+    {
+        return response()->json(['count' => $request->user()->unreadNotifications->count()]);
+    }
+
+    /**
+     * Marca todas as notificações não lidas do usuário logado como lidas.
+     */
+    public function markAllAsRead(Request $request): JsonResponse
+    {
+        $request->user()->unreadNotifications->markAsRead();
+        return response()->json(['status' => 'success', 'message' => 'Todas as notificações foram marcadas como lidas.']);
+    }
+
     /**
      * Marca uma notificação específica como lida.
      */
