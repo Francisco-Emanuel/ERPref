@@ -17,15 +17,15 @@ use App\Http\Controllers\NotificationController; // Importe o NotificationContro
 */
 
 // Rota padrão para obter detalhes do usuário autenticado via Sanctum
-Route::middleware(['auth', 'verified'])->get('/user', function (Request $request) {
+Route::middleware('auth')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 // Rota para obter detalhes de um usuário específico via API (se ainda estiver em uso)
-Route::middleware(['auth', 'verified'])->get('/user-details/{user}', [UserController::class, 'getUserDetails'])->name('api.user.details');
+Route::middleware('auth')->get('/user-details/{user}', [UserController::class, 'getUserDetails'])->name('api.user.details');
 
 // Rotas de API para Notificações (ADICIONE ESTE BLOCO)
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware('auth')->group(function () {
     // Rota para buscar todas as notificações do usuário logado (lidas e não lidas)
     Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('api.notifications.all');
 
