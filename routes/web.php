@@ -42,6 +42,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/notifications', [NotifController::class, 'index'])->name('notifications.index');
     Route::patch('/notifications/{id}/mark-as-read', [NotifController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::get('/notifications/count', [NotificationController::class, 'getUnreadCount'])->name('api.notifications.count');
+
 
 
     // --- MÓDULOS PRINCIPAIS ---

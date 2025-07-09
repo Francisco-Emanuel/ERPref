@@ -46,9 +46,9 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 {{-- Ícone de Notificações com contador --}}
                 <div x-data="{
-        result: 0,
+        result: null,
         async retrieveData() {
-        this.result = parseInt(axios.get('/api/notifications/count'));
+        this.result = axios.get('/notifications/count');
     }
      }" class="relative me-4" x-init="retrieveData()">
                     <a href="{{ route('notifications.index') }}"
