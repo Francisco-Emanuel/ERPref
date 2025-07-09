@@ -18,70 +18,63 @@
                             {{ __('Ativos') }}
                         </x-nav-link>
                     @endcan
-                    
+
                     @can('view-chamados')
                         <x-nav-link :href="route('chamados.index')" :active="request()->routeIs('chamados.*')">
                             {{ __('Chamados') }}
                         </x-nav-link>
 
-                        
+
                     @endcan
 
-                    
+
 
                     @hasanyrole('Admin|Supervisor')
-                        <x-nav-link :href="route('departamentos.index')" :active="request()->routeIs('departamentos.*')">
-                            {{ __('Departamentos') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('categorias.index')" :active="request()->routeIs('categorias.*')">
-                            {{ __('Categorias') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
-                            {{ __('Usuários') }}
-                        </x-nav-link>
+                    <x-nav-link :href="route('departamentos.index')" :active="request()->routeIs('departamentos.*')">
+                        {{ __('Departamentos') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('categorias.index')" :active="request()->routeIs('categorias.*')">
+                        {{ __('Categorias') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                        {{ __('Usuários') }}
+                    </x-nav-link>
                     @endhasanyrole
                 </div>
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 {{-- Ícone de Notificações com contador --}}
-                <div x-data="{ 
-                    unreadCount: 0, 
-                    // Função para buscar apenas a contagem de não lidas
-                    fetchUnreadCount: async function() { 
-                        try {
-                            const response = await axios.get('/api/notifications/count');
-                            this.unreadCount = response.data.count; 
-                        } catch (error) {
-                            console.error('Erro ao buscar contagem de notificações:', error);
-                            this.unreadCount = 0; 
-                        }
-                    }
-                }" 
-                x-init="
-                    // Envolve as chamadas iniciais em um setTimeout para garantir que 'this' esteja totalmente inicializado
-                    setTimeout(() => {
-                        this.fetchUnreadCount(); 
-                        setInterval(() => this.fetchUnreadCount(), 30000); 
-                    }, 0);
-                " class="relative me-4">
-                    {{-- O link do sino aponta para a rota web de listagem de notificações --}}
-                    <a href="{{ route('notifications.index') }}" class="p-2 text-gray-500 hover:text-gray-700 relative focus:outline-none">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                <div x-data="{
+        result: null,
+        async retrieveData() {
+        this.result = await (await fetch('/api/notifications/count'));
+    }
+     }" class="relative me-4" x-init="retrieveData()">
+                    <a href="{{ route('notifications.index') }}"
+                        class="p-2 text-gray-500 hover:text-gray-700 relative focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                            </path>
                         </svg>
-                        {{-- Bolinha vermelha com contador --}}
-                        <span x-show="unreadCount > 0" x-transition class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full" x-text="unreadCount"></span>
+                        <span x-transition x-text="result"
+                            class="absolute  -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full"></span>
                     </a>
                 </div>
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button
+                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
                             <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clip-rule="evenodd" />
                                 </svg>
                             </div>
                         </button>
@@ -95,8 +88,7 @@
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -106,10 +98,14 @@
             </div>
 
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open"
+                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
@@ -137,8 +133,7 @@
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

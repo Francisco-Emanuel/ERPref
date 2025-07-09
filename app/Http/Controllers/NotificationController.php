@@ -17,7 +17,7 @@ class NotificationController extends Controller
     {
         $user = Auth::user();
         // Pagina as notificações, 10 por página
-        $notifications = $user->notifications()->paginate(10); 
+        $notifications = $user->notifications()->paginate(10);
 
         return view('notifications.index', compact('notifications'));
     }
@@ -38,7 +38,9 @@ class NotificationController extends Controller
      */
     public function getUnreadCount(Request $request): JsonResponse
     {
-        return response()->json(['count' => $request->user()->unreadNotifications->count()]);
+        $user = Auth::user();
+        $unreadNotifications = $user->unreadNotifications()->count();
+        return response()->json($unreadNotifications);
     }
 
     /**
