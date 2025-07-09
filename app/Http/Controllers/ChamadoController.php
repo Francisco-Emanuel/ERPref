@@ -456,22 +456,24 @@ class ChamadoController extends Controller
 
         return view('chamados.closed', ['chamados' => $chamadosFechados]);
     }
-    public function generateReport(Chamado $chamado)
+    public function generateReport(Request $request, Chamado $chamado)
     {
         $this->authorize('view-chamados');
 
         $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor', 'departamento']);
 
-        //$chatMessages = $chamado->atualizacoes()->where('is_system_log', false)->get();
         $historyLogs = $chamado->atualizacoes()->where('is_system_log', true)->get();
+
+        // Pega o parâmetro da URL. Se não existir, o padrão é '1' (incluir histórico).
+        $comHistorico = $request->query('historico', '1') === '1';
 
         $pdf = Pdf::loadView('chamados.report', [
             'chamado' => $chamado,
-            //'chatMessages' => $chatMessages,
-            'historyLogs' => $historyLogs
+            'historyLogs' => $historyLogs,
+            'comHistorico' => $comHistorico // Passa a variável para a view
         ]);
 
-        return $pdf->download("Ordem-Serviço-{$chamado->id}.pdf");
+        return $pdf->download("Ordem-Servico-{$chamado->id}.pdf");
     }
     public function getUserDetails(User $user)
     {

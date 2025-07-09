@@ -128,8 +128,8 @@
 
     <header class="header">
         <img src="{{ public_path('logo.png') }}" alt="Logo">
-        <h1>Ordem de Serviço</h1>
-        <h2>Chamado #{{ $chamado->id }}: {{ $chamado->titulo }}</h2>
+        <h1>Ordem de Serviço N° {{ $chamado->id }}</h1>
+        <h2>Chamado: {{ $chamado->titulo }}</h2>
     </header>
 
     <main class="content">
@@ -161,9 +161,11 @@
                         <td class="preserve-lines">{{ $chamado->solucao_final }}</td>
                     </tr>
                 @endif
+                <tr><td>Observações</td><td><br/><br/><br/><br/><br/><br/></td></tr>
             </table>
         </section>
 
+        @if($comHistorico)
         <section class="section">
             <div class="section-header">Histórico de Eventos</div>
             <table class="log-table">
@@ -180,6 +182,7 @@
                 </tbody>
             </table>
         </section>
+        @endif
 
     </main>
 
