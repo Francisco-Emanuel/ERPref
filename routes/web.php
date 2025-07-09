@@ -86,4 +86,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Arquivo com as rotas de login, registro, etc.
 require __DIR__.'/auth.php';
-require __DIR__.'/api.php';
