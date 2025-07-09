@@ -48,7 +48,7 @@
                 <div x-data="{
         result: 0,
         async retrieveData() {
-        this.result = await (await fetch('/api/notifications/count')).text();
+        this.result = axios.get('/api/notifications/count');
     }
      }" class="relative me-4" x-init="retrieveData()">
                     <a href="{{ route('notifications.index') }}"
