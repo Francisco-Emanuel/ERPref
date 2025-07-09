@@ -41,8 +41,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/notifications', [NotifController::class, 'index'])->name('notifications.index');
-    Route::patch('/notifications/{id}/mark-as-read', [NotifController::class, 'markAsRead'])->name('notifications.markAsRead');
-    Route::get('/notifications/count', [NotificationController::class, 'getUnreadCount'])->name('api.notifications.count');
+    Route::get('/notifications/count', [NotificationController::class, 'getUnreadCount'])->name('notifications.count');
+    Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('notifications.all');
+    Route::get('/notifications/count', [NotificationController::class, 'getUnreadCount'])->name('notifications.count');
+    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 
 
 

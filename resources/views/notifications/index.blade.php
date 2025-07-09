@@ -13,21 +13,23 @@
         <main class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="p-6">
+                    <div class="p-6 space-y-2">
                         @forelse ($notifications as $notification)
-                            <div class="border-b border-slate-200 last:border-b-0 py-4">
-                                <a href="{{ $notification->data['url'] ?? '#' }}"
+                            {{-- O div agora tem uma classe condicional para o fundo --}}
+                            <div class="border-b border-slate-200 last:border-b-0 py-4 rounded-md {{ $notification->read_at ? 'bg-green-50' : '' }}">
+                                {{-- O link agora apenas submete o formulário, o controller faz o resto --}}
+                                <a href="#"
                                    class="block hover:bg-slate-50 p-2 rounded-md"
-                                   onclick="event.preventDefault(); document.getElementById('mark-as-read-{{ $notification->id }}').submit(); window.location.href = '{{ $notification->data['url'] ?? '#' }}';">
-                                    <p class="text-sm {{ $notification->read_at ? 'text-slate-500' : 'font-semibold text-slate-800' }}">
+                                   onclick="event.preventDefault(); document.getElementById('mark-as-read-form-{{ $notification->id }}').submit();">
+                                    <p class="text-sm {{ $notification->read_at ? 'text-slate-600' : 'font-semibold text-slate-800' }}">
                                         {{ $notification->data['mensagem'] }}
                                     </p>
                                     <span class="text-xs text-slate-400">
                                         {{ $notification->created_at->diffForHumans() }}
                                     </span>
                                 </a>
-                                {{-- Formulário oculto para marcar como lida --}}
-                                <form id="mark-as-read-{{ $notification->id }}" method="POST" action="{{ route('notifications.markAsRead', $notification->id) }}" style="display: none;">
+                                {{-- Formulário oculto para marcar como lida com ID único --}}
+                                <form id="mark-as-read-form-{{ $notification->id }}" method="POST" action="{{ route('notifications.markAsRead', $notification->id) }}" style="display: none;">
                                     @csrf
                                     @method('PATCH')
                                 </form>

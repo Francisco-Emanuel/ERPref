@@ -26,16 +26,5 @@ Route::middleware('auth')->get('/user-details/{user}', [UserController::class, '
 
 // Rotas de API para Notificações (ADICIONE ESTE BLOCO)
 Route::middleware('auth')->group(function () {
-    // Rota para buscar todas as notificações do usuário logado (lidas e não lidas)
-    Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('api.notifications.all');
-
-    // Rota para buscar apenas a contagem de notificações não lidas
-    Route::get('/notifications/count', [NotificationController::class, 'getUnreadCount'])->name('api.notifications.count');
-
-    // Rota para marcar todas as notificações não lidas como lidas
-    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAllAsRead'])->name('api.notifications.markAllAsRead');
-
-    // Rota para marcar uma notificação específica como lida
-    Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('api.notifications.markAsRead');
 });
 

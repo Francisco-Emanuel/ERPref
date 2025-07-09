@@ -6,35 +6,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class NotificationController extends Controller
 {
     /**
      * Exibe a lista completa de notificações do usuário logado.
-     * Esta é a rota web (GET /notifications).
      */
     public function index(): View
     {
         $user = Auth::user();
-        // Pagina as notificações, 10 por página
         $notifications = $user->notifications()->paginate(10);
-
+        
+        // A linha que marcava tudo como lido foi removida daqui.
         return view('notifications.index', compact('notifications'));
     }
 
     /**
-     * Retorna todas as notificações do usuário logado via API (GET /api/notifications).
-     */
-    public function getNotifications(Request $request): JsonResponse
-    {
-        return response()->json([
-            'notifications' => $request->user()->notifications,
-            'unreadCount' => $request->user()->unreadNotifications->count()
-        ]);
-    }
-
-    /**
-     * Retorna a contagem de notificações não lidas do usuário logado via API (GET /api/notifications/count).
+     * Retorna a contagem de notificações não lidas do usuário logado via API.
      */
     public function getUnreadCount(Request $request): JsonResponse
     {
@@ -42,28 +31,23 @@ class NotificationController extends Controller
         $unreadNotifications = $user->unreadNotifications()->count();
         return response()->json($unreadNotifications);
     }
-
+    
     /**
-     * Marca todas as notificações não lidas do usuário logado como lidas via API (POST /api/notifications/mark-as-read).
+     * Marca uma notificação específica como lida e redireciona.
      */
-    public function markAllAsRead(Request $request): JsonResponse
-    {
-        $request->user()->unreadNotifications->markAsRead();
-        return response()->json(['status' => 'success', 'message' => 'Todas as notificações foram marcadas como lidas.']);
-    }
-
-    /**
-     * Marca uma notificação específica como lida via API (PATCH /api/notifications/{id}/mark-as-read).
-     */
-    public function markAsRead(Request $request, $id): JsonResponse
+    public function markAsRead(Request $request, $id): RedirectResponse
     {
         $notification = $request->user()->notifications()->where('id', $id)->first();
 
         if ($notification) {
             $notification->markAsRead();
-            return response()->json(['status' => 'success', 'message' => 'Notificação marcada como lida.']);
+            
+            // Redireciona para a URL contida na notificação ou de volta para a lista.
+            return redirect($notification->data['url'] ?? route('notifications.index'));
         }
 
-        return response()->json(['status' => 'error', 'message' => 'Notificação não encontrada.'], 404);
+        return back()->with('error', 'Notificação não encontrada.');
     }
+    
+    // ... outros métodos da sua API podem continuar aqui, se necessário ...
 }
