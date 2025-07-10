@@ -18,6 +18,8 @@ use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use App\Services\ChamadoService;
 use App\Http\Requests\StoreChamadoRequest;
+use Illuminate\Support\Facades\Storage; // Importe a classe Storage
+use Illuminate\Support\Str;
 
 class ChamadoController extends Controller
 {
@@ -284,8 +286,27 @@ class ChamadoController extends Controller
         // 4. Validação dos dados do formulário
         $validated = $request->validate([
             'solucao_final' => 'required|string|min:10',
-            'servico_executado' => 'accepted', 
+            'servico_executado' => 'accepted',
+            'assinatura_tecnico' => 'required|string',    // Agora é obrigatório
+            'assinatura_solicitante' => 'required|string',
         ]);
+
+        // Função auxiliar para salvar a assinatura
+        $saveSignature = function($base64Data, $type) use ($chamado) {
+            $image_parts = explode(";base64,", $base64Data);
+            $image_base64 = base64_decode($image_parts[1]);
+            $fileName = "assinatura_{$type}_{$chamado->id}_" . uniqid() . '.png';
+            $path = 'assinaturas/' . $fileName;
+            Storage::disk('local')->put($path, $image_base64);
+            return $path;
+        };
+
+        // Salva a assinatura do técnico
+        $chamado->assinatura_tecnico_path = $saveSignature($request->input('assinatura_tecnico'), 'tecnico');
+        
+        // Salva a assinatura do solicitante
+        $chamado->assinatura_solicitante_path = $saveSignature($request->input('assinatura_solicitante'), 'solicitante');
+
 
         // 5. Atualiza os campos do chamado
         $chamado->solucao_final = $validated['solucao_final'];

@@ -129,7 +129,7 @@
     <header class="header">
         <img src="{{ public_path('logo.png') }}" alt="Logo">
         <h1>Ordem de Serviço N° {{ $chamado->id }}</h1>
-        <h2>Chamado: {{ $chamado->titulo }}</h2>
+        
     </header>
 
     <main class="content">
@@ -137,6 +137,7 @@
         <section class="section">
             <div class="section-header">Detalhes do Chamado</div>
             <table class="details-table">
+                <tr><td>Titulo</td><td>{{ $chamado->titulo }}</td></tr>
                 <tr><td>Status</td><td>{{ $chamado->status->value }}</td></tr>
                 <tr><td>Local</td><td>{{ $chamado->local ?? 'Não informado' }}</td></tr>
                 <tr><td>Departamento</td><td>{{ $chamado->departamento->nome ?? 'Não informado' }}</td></tr>
@@ -161,7 +162,7 @@
                         <td class="preserve-lines">{{ $chamado->solucao_final }}</td>
                     </tr>
                 @endif
-                <tr><td>Observações</td><td><br/><br/><br/><br/><br/><br/></td></tr>
+                <tr><td>Observações</td><td><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></td></tr>
             </table>
         </section>
 
@@ -186,17 +187,33 @@
 
     </main>
 
-    {{-- Seção de Assinaturas --}}
     <div class="signatures-section">
-        <div class="signature-block">
-            <div class="signature-line"></div>
-            <div class="signature-text">Assinatura do técnico responsável</div>
+    <div class="signature-block">
+        @if($chamado->assinatura_tecnico_path && Storage::disk('local')->exists($chamado->assinatura_tecnico_path))
+                @php
+                    $imageData = base64_encode(Storage::disk('local')->get($chamado->assinatura_tecnico_path));
+                @endphp
+                <img src="data:image/png;base64,{{ $imageData }}" style="width: 150px; height: auto; margin: -20px auto 0;">
+            @endif
+        <div class="signature-line">
+            
         </div>
-        <div class="signature-block">
-            <div class="signature-line"></div>
-            <div class="signature-text">Assinatura do atendido</div>
-        </div>
+        <div class="signature-text">Assinatura do técnico responsável</div>
     </div>
+    <div class="signature-block">
+        {{-- Mostra a assinatura do solicitante --}}
+            @if($chamado->assinatura_solicitante_path && Storage::disk('local')->exists($chamado->assinatura_solicitante_path))
+                @php
+                    $imageData = base64_encode(Storage::disk('local')->get($chamado->assinatura_solicitante_path));
+                @endphp
+                <img src="data:image/png;base64,{{ $imageData }}" style="width: 150px; height: auto; margin: -20px auto 0;">
+            @endif
+        <div class="signature-line">
+            
+        </div>
+        <div class="signature-text">Assinatura do atendido</div>
+    </div>
+</div>
 
 </body>
 </html>

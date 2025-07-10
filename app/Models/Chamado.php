@@ -53,7 +53,9 @@ class Chamado extends Model
         'tecnico_id',
         'categoria_id',
         'ativo_id',
-        'departamento_id'
+        'departamento_id',
+        'assinatura_tecnico_path',       // Adicionar esta linha
+        'assinatura_solicitante_path',
     ];
 
     /**
