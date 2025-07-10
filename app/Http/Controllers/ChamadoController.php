@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ChamadoStatus;
+use App\Http\Requests\Chamado\StoreChamadoRequest;
 use App\Models\AtivoTI;
 use App\Models\AtualizacaoChamado;
 use App\Models\Chamado;
@@ -17,8 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use App\Services\ChamadoService;
-use App\Http\Requests\StoreChamadoRequest;
-use Illuminate\Support\Facades\Storage; // Importe a classe Storage
+use Illuminate\Support\Facades\Storage; 
 use Illuminate\Support\Str;
 
 class ChamadoController extends Controller
