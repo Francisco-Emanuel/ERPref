@@ -1,36 +1,26 @@
 <x-modal name="escalate-chamado-modal" focusable>
-        <form method="post" action="{{ route('chamados.escalate', $chamado) }}" class="p-6">
-            @csrf
-            @method('patch')
+        <form id="escalate-chamado-form" method="POST" action="{{ route('chamados.atribuir', $chamado) }}">
+    @csrf
+    @method('PATCH') {{-- Garanta que este método está presente --}}
 
-            <h2 class="text-lg font-medium text-gray-900">
-                Escalar Chamado #{{ $chamado->id }}
-            </h2>
+    {{-- Seu select para escolher o novo técnico --}}
+    <div class="mt-4">
+        <label for="new_tecnico_id" class="block font-medium text-sm text-gray-700">Novo Técnico</label>
+        <select name="new_tecnico_id" id="new_tecnico_id" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">
+            @foreach($tecnicosDisponiveis as $tecnico)
+                <option value="{{ $tecnico->id }}">{{ $tecnico->name }}</option>
+            @endforeach
+        </select>
+    </div>
 
-            <p class="mt-1 text-sm text-gray-600">
-                Selecione o técnico para quem você deseja transferir a responsabilidade deste chamado.
-            </p>
-
-            <div class="mt-6">
-                <x-input-label for="new_tecnico_id" value="Atribuir Para" />
-                <select id="new_tecnico_id" name="new_tecnico_id"
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                    <option value="">Selecione um técnico...</option>
-                    @foreach ($tecnicosDisponiveis as $tecnico)
-                        <option value="{{ $tecnico->id }}">{{ $tecnico->name }}</option>
-                    @endforeach
-                </select>
-                <x-input-error :messages="$errors->get('new_tecnico_id')" class="mt-2" />
-            </div>
-
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    Cancelar
-                </x-secondary-button>
-
-                <x-danger-button class="ms-3">
-                    Confirmar Escalação
-                </x-danger-button>
-            </div>
-        </form>
+    {{-- Seus botões de confirmar e cancelar --}}
+    <div class="mt-6 flex justify-end">
+        <x-secondary-button type="button" x-on:click="$dispatch('close')">
+            Cancelar
+        </x-secondary-button>
+        <x-primary-button class="ms-3">
+            Confirmar Escalação
+        </x-primary-button>
+    </div>
+</form>
     </x-modal>
