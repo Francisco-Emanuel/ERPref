@@ -16,7 +16,7 @@
                     <div class="p-6 space-y-2">
                         @forelse ($notifications as $notification)
                             {{-- O div agora tem uma classe condicional para o fundo --}}
-                            <div class="border-b border-slate-200 last:border-b-0 py-4 rounded-md {{ $notification->read_at ? 'bg-green-50' : '' }}">
+                            <div class="border-b border-slate-200 last:border-b-0 py-4 rounded-md {{ $notification->read_at ? 'bg-green-100' : 'bg-red-100' }}">
                                 {{-- O link agora apenas submete o formulário, o controller faz o resto --}}
                                 <a href="#"
                                    class="block hover:bg-slate-50 p-2 rounded-md"
