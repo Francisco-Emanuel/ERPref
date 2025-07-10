@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $departamentoTI = Departamento::firstOrCreate(['nome' => 'Tecnologia da Informação'], ['local'=> 'Tecnologia da Informação']);
+        $departamentoTI = Departamento::firstOrCreate(['nome' => 'Tecnologia da Informação']);
 
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@admin.com'], 

@@ -186,6 +186,13 @@ class ChamadoController extends Controller
         //$this->startOrResetSla($chamado);
         $chamado->save();
 
+        if ($chamado->tecnico_id) {
+            $tecnico = User::find($chamado->tecnico_id);
+            if ($tecnico) {
+                $tecnico->notify(new ChamadoAtribuidoNotification($chamado, Auth::user()));
+            }
+        }
+
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
             'autor_id' => Auth::id(),
@@ -322,6 +329,13 @@ class ChamadoController extends Controller
         $chamado->tecnico_id = $newTechnician->id;
         $chamado->save();
 
+        if ($chamado->tecnico_id) {
+            $tecnico = User::find($chamado->tecnico_id);
+            if ($tecnico) {
+                $tecnico->notify(new ChamadoAtribuidoNotification($chamado, Auth::user()));
+            }
+        }
+
         $logTexto = "Chamado escalado de {$oldTechnicianName} para {$newTechnician->name} por " . Auth::user()->name . ".";
         AtualizacaoChamado::create([
             'chamado_id' => $chamado->id,
@@ -358,7 +372,7 @@ class ChamadoController extends Controller
 
         $chamado->tecnico_id = $newTechnician->id;
 
-        $this->startOrResetSla($chamado); // Este save() já está dentro do método
+        $chamado->save(); 
 
         if ($chamado->tecnico_id) {
             $tecnico = User::find($chamado->tecnico_id);
