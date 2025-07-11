@@ -15,8 +15,8 @@
         <div class="mt-6">
             <x-input-label for="solucao_final" value="Descrição da Solução" />
             <textarea id="solucao_final" name="solucao_final" rows="3"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                required minlength="10">{{ old('solucao_final') }}</textarea>
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required
+                minlength="10">{{ old('solucao_final') }}</textarea>
         </div>
 
         {{-- Painel de Assinaturas (Técnico e Solicitante) --}}
@@ -27,7 +27,8 @@
                 <div class="mt-1 border border-gray-300 rounded-md">
                     <canvas id="signature-pad-tecnico" class="w-full h-32"></canvas>
                 </div>
-                <button type="button" data-clear-for="tecnico" class="text-sm text-blue-600 hover:underline mt-1">Limpar</button>
+                <button type="button" data-clear-for="tecnico"
+                    class="text-sm text-blue-600 hover:underline mt-1">Limpar</button>
                 <input type="hidden" name="assinatura_tecnico" id="assinatura_tecnico_input">
             </div>
 
@@ -37,7 +38,8 @@
                 <div class="mt-1 border border-gray-300 rounded-md">
                     <canvas id="signature-pad-solicitante" class="w-full h-32"></canvas>
                 </div>
-                <button type="button" data-clear-for="solicitante" class="text-sm text-blue-600 hover:underline mt-1">Limpar</button>
+                <button type="button" data-clear-for="solicitante"
+                    class="text-sm text-blue-600 hover:underline mt-1">Limpar</button>
                 <input type="hidden" name="assinatura_solicitante" id="assinatura_solicitante_input">
             </div>
         </div>
@@ -46,7 +48,8 @@
             <label for="servico_executado" class="flex items-center">
                 <input type="checkbox" id="servico_executado" name="servico_executado"
                     class="rounded border-gray-300 text-indigo-600 shadow-sm" required>
-                <span class="ms-2 text-sm text-gray-700">Confirmo que o serviço foi executado e o problema resolvido.</span>
+                <span class="ms-2 text-sm text-gray-700">Confirmo que o serviço foi executado e o problema
+                    resolvido.</span>
             </label>
         </div>
 
@@ -61,43 +64,52 @@
 
 {{-- Script para inicializar os Signature Pads --}}
 @push('scripts')
-<script type="module">
-    document.addEventListener('open-modal', (event) => {
-        if (event.detail === 'resolve-chamado-modal') {
-            const canvasTecnico = document.getElementById('signature-pad-tecnico');
-            const canvasSolicitante = document.getElementById('signature-pad-solicitante');
+    <script type="module">
+        document.addEventListener('open-modal', (event) => {
+            if (event.detail === 'resolve-chamado-modal') {
+                const canvasTecnico = document.getElementById('signature-pad-tecnico');
+                const canvasSolicitante = document.getElementById('signature-pad-solicitante');
 
-            // Função para inicializar um pad
-            const initSignaturePad = (canvas) => {
-                if (canvas && !canvas.signaturePad) {
-                    const signaturePad = new window.SignaturePad(canvas, {
-                        backgroundColor: 'rgb(255, 255, 255)'
-                    });
-                    canvas.signaturePad = signaturePad;
-                }
-            };
+                // Função para inicializar um pad
+                const initSignaturePad = (canvas) => {
+                    if (canvas && !canvas.signaturePad) {
+                        const signaturePad = new window.SignaturePad(canvas, {
+                            backgroundColor: 'rgb(255, 255, 255)'
+                        });
+                        canvas.signaturePad = signaturePad;
+                    }
+                };
 
-            initSignaturePad(canvasTecnico);
-            initSignaturePad(canvasSolicitante);
+                initSignaturePad(canvasTecnico);
+                initSignaturePad(canvasSolicitante);
 
-            // Limpadores
-            document.querySelector('[data-clear-for="tecnico"]').addEventListener('click', () => {
-                canvasTecnico.signaturePad.clear();
-            });
-            document.querySelector('[data-clear-for="solicitante"]').addEventListener('click', () => {
-                canvasSolicitante.signaturePad.clear();
-            });
+                // Limpadores
+                document.querySelector('[data-clear-for="tecnico"]').addEventListener('click', () => {
+                    canvasTecnico.signaturePad.clear();
+                });
+                document.querySelector('[data-clear-for="solicitante"]').addEventListener('click', () => {
+                    canvasSolicitante.signaturePad.clear();
+                });
 
-            // Submissão do formulário
-            document.getElementById('submit-resolve-form').addEventListener('click', () => {
-                
-                
-                document.getElementById('assinatura_tecnico_input').value = canvasTecnico.signaturePad.toDataURL('image/png');
-                document.getElementById('assinatura_solicitante_input').value = canvasSolicitante.signaturePad.toDataURL('image/png');
-                
-                document.getElementById('resolve-chamado-form').submit();
-            });
-        }
-    });
-</script>
+                // Submissão do formulário
+                document.getElementById('submit-resolve-form').addEventListener('click', () => {
+
+
+                    if (!canvasTecnico.signaturePad.isEmpty()) {
+                        document.getElementById('assinatura_tecnico_input').value = canvasTecnico.signaturePad.toDataURL('image/png');
+                    } else {
+                        document.getElementById('assinatura_tecnico_input').value = '';
+                    }
+
+                    if (!canvasSolicitante.signaturePad.isEmpty()) {
+                        document.getElementById('assinatura_solicitante_input').value = canvasSolicitante.signaturePad.toDataURL('image/png');
+                    } else {
+                        document.getElementById('assinatura_solicitante_input').value = '';
+                    }
+
+                    document.getElementById('resolve-chamado-form').submit();
+                });
+            }
+        });
+    </script>
 @endpush

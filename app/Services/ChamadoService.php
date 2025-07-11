@@ -117,8 +117,17 @@ class ChamadoService
             $this->criarLog($chamado, $autor, "Chamado automaticamente atribuído a {$autor->name} (Admin) ao ser resolvido.");
         }
 
-        $chamado->assinatura_tecnico_path = $this->saveSignature($validatedData['assinatura_tecnico'], 'tecnico', $chamado->id);
-        $chamado->assinatura_solicitante_path = $this->saveSignature($validatedData['assinatura_solicitante'], 'solicitante', $chamado->id);
+        // --- LÓGICA CONDICIONAL ADICIONADA ---
+        // ANÁLISE: Antes de tentar salvar, verificamos se os dados da assinatura não estão vazios.
+        // Isso evita o erro quando o campo é opcional e não é preenchido.
+        if (!empty($validatedData['assinatura_tecnico'])) {
+            $chamado->assinatura_tecnico_path = $this->saveSignature($validatedData['assinatura_tecnico'], 'tecnico', $chamado->id);
+        }
+
+        if (!empty($validatedData['assinatura_solicitante'])) {
+            $chamado->assinatura_solicitante_path = $this->saveSignature($validatedData['assinatura_solicitante'], 'solicitante', $chamado->id);
+        }
+        // --- FIM DA MODIFICAÇÃO ---
 
         $chamado->solucao_final = $validatedData['solucao_final'];
         $chamado->status = ChamadoStatus::RESOLVIDO;
