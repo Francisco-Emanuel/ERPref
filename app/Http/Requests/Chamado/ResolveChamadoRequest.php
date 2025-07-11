@@ -17,8 +17,8 @@ class ResolveChamadoRequest extends FormRequest
         return [
             'solucao_final' => 'required|string|min:10',
             'servico_executado' => 'accepted',
-            'assinatura_tecnico' => 'required|string',
-            'assinatura_solicitante' => 'required|string',
+            'assinatura_tecnico' => 'string',
+            'assinatura_solicitante' => 'string',
         ];
     }
 }

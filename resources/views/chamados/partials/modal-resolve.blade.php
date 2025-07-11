@@ -90,10 +90,7 @@
 
             // Submissão do formulário
             document.getElementById('submit-resolve-form').addEventListener('click', () => {
-                if (canvasTecnico.signaturePad.isEmpty() || canvasSolicitante.signaturePad.isEmpty()) {
-                    alert("Por favor, colete a assinatura do técnico e do solicitante.");
-                    return;
-                }
+                
                 
                 document.getElementById('assinatura_tecnico_input').value = canvasTecnico.signaturePad.toDataURL('image/png');
                 document.getElementById('assinatura_solicitante_input').value = canvasSolicitante.signaturePad.toDataURL('image/png');
