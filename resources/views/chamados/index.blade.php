@@ -1,33 +1,33 @@
 <x-app-layout>
-    {{-- O fundo da página segue o padrão do novo Dashboard --}}
+    {{-- Fundo da página --}}
     <div class="bg-slate-50 min-h-screen">
 
-        {{-- Cabeçalho com o título e o botão de ação principal --}}
+        {{-- Cabeçalho --}}
         <header class="bg-white shadow-sm">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-slate-900">
                     Central de Chamados
                 </h1>
-                <div>
+                <div class="flex items-center gap-4">
                     <x-nav-link :href="route('chamados.closed')" :active="request()->routeIs('chamados.closed')">
                         Chamados Fechados
                     </x-nav-link>
-                    @can('edit-chamados') 
+                    @can('edit-chamados')
                         <x-nav-link :href="route('chamados.my')" :active="request()->routeIs('chamados.my')">
                             Meus Chamados
                         </x-nav-link>
                     @endcan
+                    @can('create-chamados')
+                        <a href="{{ route('chamados.create') }}"
+                           class="inline-flex items-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            Abrir Novo Chamado
+                        </a>
+                    @endcan
                 </div>
-                @can('create-chamados')
-                    <a href="{{ route('chamados.create') }}"
-                        class="inline-flex items-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                        Abrir Novo Chamado
-                    </a>
-                @endcan
             </div>
         </header>
 
@@ -35,157 +35,69 @@
         <main class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-                {{-- Mensagem de sucesso --}}
                 @if(session('success'))
                     <div class="mb-6 p-4 text-sm text-green-700 bg-green-100 rounded-xl shadow-sm">
                         {{ session('success') }}
                     </div>
                 @endif
+                
+                {{-- Container da Lista de Chamados --}}
+                <div class="bg-white rounded-xl shadow-sm">
+                    {{-- Cabeçalho da Lista (Visível apenas em Desktop) --}}
+                    <div class="hidden md:flex px-6 py-3 border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <div class="flex-1">Chamado</div>
+                        <div class="w-40 text-center">Status</div>
+                        <div class="w-48 text-right">Ações</div>
+                    </div>
 
-                {{-- Card principal que envolve a tabela --}}
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
-                            {{-- Cabeçalho da tabela com o novo estilo --}}
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        ID</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Título</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Status</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Técnico</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Última Atualização</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Prazo SLA</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Local</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        Ações</th>
-                                </tr>
-                            </thead>
-                            {{-- Corpo da tabela com linhas divididas sutilmente --}}
-                            <tbody class="bg-white divide-y divide-slate-200">
-                                @forelse ($chamados as $chamado)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">
-                                            <span class="font-semibold text-blue-600">#{{ $chamado->id }}</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-800">
-                                            {{ $chamado->titulo }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            {{-- Tags de status com cores atualizadas --}}
-                                            <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                                                        @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
-                                                                                        @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
-                                                                                        @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO) bg-blue-100 text-blue-800 @endif
-                                                                                    ">
-                                                {{ $chamado->status->value }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">
-                                            {{ $chamado->tecnico->name ?? 'Não atribuído' }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">
-                                            {{ $chamado->updated_at->format('d/m/Y H:i') }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            @if ($chamado->prazo_sla)
-                                                @php
-                                                    $prazo = $chamado->prazo_sla;
-                                                    $statusFinalizado = in_array($chamado->status, [\App\Enums\ChamadoStatus::RESOLVIDO, \App\Enums\ChamadoStatus::FECHADO]);
-                                                    $texto_sla = '';
-                                                    $cor_sla = '';
+                    {{-- Lista de Chamados --}}
+                    <div class="p-4 md:p-0">
+                        @forelse ($chamados as $chamado)
+                            {{-- Card Individual do Chamado --}}
+                            <div class="bg-white p-4 rounded-lg shadow-md mb-4 md:shadow-none md:rounded-none md:mb-0 md:flex md:items-center md:px-6 md:py-4 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors duration-200">
 
-                                                    if ($statusFinalizado) {
-                                                        if ($chamado->data_resolucao && $chamado->data_resolucao->lte($prazo)) {
-                                                            $texto_sla = 'Cumprido';
-                                                            $cor_sla = 'text-green-600';
-                                                        } else {
-                                                            $texto_sla = 'Atrasado';
-                                                            $cor_sla = 'text-red-600 font-bold';
-                                                        }
-                                                    }
-                                                    else {
-                                                        if ($prazo->isPast()) {
-                                                            $texto_sla = 'Atrasado';
-                                                            $cor_sla = 'text-red-600 font-bold';
-                                                        } else {
-                                                            
-                                                            $texto_sla = $prazo->diffForHumans();
-                                                            $cor_sla = now()->diffInHours($prazo, false) <= 24 ? 'text-yellow-600 font-semibold' : 'text-blue-600';
-                                                        }
-                                                    }
-                                                @endphp
-                                                <span class="{{ $cor_sla }}">{{ $texto_sla }}</span>
-                                            @else
-                                                <span class="text-slate-500">Aguardando atribuição</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">
-                                            {{ $chamado->local }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold">
-                                            <div class="flex items-center justify-end gap-4">
-                                                <a href="{{ route('chamados.show', $chamado) }}"
-                                                    class="text-blue-600 hover:text-blue-800">Detalhes</a>
+                                {{-- Informações Principais --}}
+                                <div class="flex-1">
+                                    <p class="font-bold text-gray-900 text-base">
+                                        #{{ $chamado->id }} - {{ $chamado->titulo }}
+                                    </p>
+                                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mt-2">
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" /></svg>
+                                            <span>{{ $chamado->solicitante->name ?? 'N/A' }}</span>
+                                        </div>
+                                        <div class="flex items-center gap-1.5">
+                                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.078 2.25c-.42.205-.678.638-.678 1.119v1.237c0 .425.12.83.337 1.173a5.25 5.25 0 008.535 3.418c.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003 1.23 1.23 0 00.41 1.412 9.957 9.957 0 006.131 2.1c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a5.25 5.25 0 00-3.418-8.535c-.343-.217-.748-.337-1.173-.337H11.08zM10 8a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
+                                            <span>{{ $chamado->tecnico->name ?? 'Não atribuído' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                                @can('edit-chamados')
-                                                    @if (!$chamado->tecnico_id) {{-- Se o chamado não tem técnico --}}
-                                                        @if (Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
-                                                            {{-- Para Admins: Botão que abre o modal para atribuir a qualquer técnico
-                                                            --}}
-                                                            <button x-data
-                                                                @click.stop="$dispatch('open-modal', 'atribuir-chamado-{{ $chamado->id }}')"
-                                                                class="text-slate-500 hover:text-slate-700">
-                                                                Atribuir
-                                                            </button>
-                                                        @else
-                                                            {{-- Para Técnicos normais: Botão para se auto-atribuir --}}
-                                                            <form method="POST" action="{{ route('chamados.assign', $chamado) }}"
-                                                                class="inline-block" @click.stop>
-                                                                @csrf
-                                                                @method('PATCH')
-                                                                <button type="submit" class="text-slate-500 hover:text-slate-700">
-                                                                    Atribuir a mim
-                                                                </button>
-                                                            </form>
-                                                        @endif
-                                                    @else 
-                                                        @if (Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
-                                                            {{-- Apenas Admins podem escalar um chamado já atribuído --}}
-                                                            <button x-data
-                                                                @click.stop="$dispatch('open-modal', 'escalate-chamado-{{ $chamado->id }}')"
-                                                                class="text-red-600 hover:text-red-800">
-                                                                Escalar
-                                                            </button>
-                                                        @endif
-                                                    @endif
-                                                @endcan
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="px-6 py-4 text-center text-slate-500">Nenhum chamado
-                                            encontrado.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
+                                {{-- Status --}}
+                                <div class="mt-4 md:mt-0 md:w-40 md:text-center">
+                                    <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        @if($chamado->status == \App\Enums\ChamadoStatus::ABERTO) bg-green-100 text-green-800 @endif
+                                        @if($chamado->status == \App\Enums\ChamadoStatus::EM_ANDAMENTO) bg-yellow-100 text-yellow-800 @endif
+                                        @if($chamado->status == \App\Enums\ChamadoStatus::RESOLVIDO) bg-blue-100 text-blue-800 @endif
+                                        @if($chamado->status == \App\Enums\ChamadoStatus::FECHADO) bg-gray-200 text-gray-800 @endif
+                                    ">
+                                        {{ $chamado->status->value }}
+                                    </span>
+                                </div>
 
-                        </table>
+                                {{-- Botão de Ação --}}
+                                <div class="mt-4 md:mt-0 md:w-48 md:text-right">
+                                    <a href="{{ route('chamados.show', $chamado) }}" 
+                                       class="inline-block w-full md:w-auto px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 text-center">
+                                        Ver Detalhes
+                                    </a>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center text-gray-500">
+                                Nenhum chamado encontrado.
+                            </div>
+                        @endforelse
                     </div>
 
                     {{-- Paginação --}}
@@ -198,8 +110,8 @@
             </div>
         </main>
     </div>
-   
 
+    {{-- Modais para atribuição --}}
     @foreach ($chamados as $chamado)
         @include('chamados.partials.modal-atribuir', ['chamado' => $chamado])
     @endforeach
