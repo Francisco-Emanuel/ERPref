@@ -23,8 +23,6 @@
                         <x-nav-link :href="route('chamados.index')" :active="request()->routeIs('chamados.*')">
                             {{ __('Chamados') }}
                         </x-nav-link>
-
-
                     @endcan
 
 
@@ -128,6 +126,31 @@
 
             <div class="mt-3 space-y-1">
                 {{-- O link do perfil agora aponta para a nova rota de visualização --}}
+                @can('view-chamados')
+                    <x-responsive-nav-link :href="route('chamados.index')">
+                    {{ __('Chamados') }}
+                    </x-responsive-nav-link>
+                @endcan
+                @can('view-ativos')
+                    <x-responsive-nav-link :href="route('ativos.index')">
+                    {{ __('Ativos') }}
+                    </x-responsive-nav-link>
+                @endcan
+                @can('edit-departamentos')
+                    <x-responsive-nav-link :href="route('departamentos.index')">
+                    {{ __('Departamentos') }}
+                    </x-responsive-nav-link>
+                @endcan
+                @can('edit-categorias')
+                    <x-responsive-nav-link :href="route('categorias.index')">
+                    {{ __('Categorias') }}
+                    </x-responsive-nav-link>
+                @endcan
+                @can('edit-users')
+                    <x-responsive-nav-link :href="route('users.index')">
+                    {{ __('Users') }}
+                    </x-responsive-nav-link>
+                @endcan
                 <x-responsive-nav-link :href="route('profile.show')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>

@@ -2,3 +2,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+  CSS para a visualização de cards em telas pequenas.
+  Ele pega o valor do atributo `data-label` e o exibe antes do conteúdo da célula.
+*/
+@media (max-width: 767px) {
+  [data-label]::before {
+    content: attr(data-label) ": ";
+    font-weight: 600; /* semibold */
+    display: block;
+    color: #475569; /* slate-600 */
+    font-size: 0.75rem; /* text-xs */
+    line-height: 1rem;
+  }
+}
