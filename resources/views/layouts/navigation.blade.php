@@ -122,33 +122,53 @@
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                <div x-data="{
+        result: 0,
+        async retrieveData() {
+        const response = await axios.get('/notifications/count');
+        this.result = response.data;
+    }
+     }" class="relative" x-init="retrieveData()">
+                    <a href="{{ route('notifications.index') }}"
+                        class=" text-gray-500 hover:text-gray-700 relative focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                            </path>
+                        </svg>
+                        <span x-transition x-text="result" x-show="result > 0"
+                            class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full relative bottom-5 left-3"></span>
+                    </a>
+                </div>
             </div>
+
 
             <div class="mt-3 space-y-1">
                 {{-- O link do perfil agora aponta para a nova rota de visualização --}}
                 @can('view-chamados')
                     <x-responsive-nav-link :href="route('chamados.index')">
-                    {{ __('Chamados') }}
+                        {{ __('Chamados') }}
                     </x-responsive-nav-link>
                 @endcan
                 @can('view-ativos')
                     <x-responsive-nav-link :href="route('ativos.index')">
-                    {{ __('Ativos') }}
+                        {{ __('Ativos') }}
                     </x-responsive-nav-link>
                 @endcan
                 @can('edit-departamentos')
                     <x-responsive-nav-link :href="route('departamentos.index')">
-                    {{ __('Departamentos') }}
+                        {{ __('Departamentos') }}
                     </x-responsive-nav-link>
                 @endcan
                 @can('edit-categorias')
                     <x-responsive-nav-link :href="route('categorias.index')">
-                    {{ __('Categorias') }}
+                        {{ __('Categorias') }}
                     </x-responsive-nav-link>
                 @endcan
                 @can('edit-users')
                     <x-responsive-nav-link :href="route('users.index')">
-                    {{ __('Users') }}
+                        {{ __('Users') }}
                     </x-responsive-nav-link>
                 @endcan
                 <x-responsive-nav-link :href="route('profile.show')">

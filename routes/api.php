@@ -22,7 +22,7 @@ Route::middleware('auth')->get('/user', function (Request $request) {
 });
 
 // Rota para obter detalhes de um usuário específico via API (se ainda estiver em uso)
-Route::middleware('auth')->get('/user-details/{user}', [UserController::class, 'getUserDetails'])->name('api.user.details');
+Route::middleware('auth:sanctum')->get('/user-details/{user}', [UserController::class, 'getUserDetails'])->name('api.user.details');
 
 // Rotas de API para Notificações (ADICIONE ESTE BLOCO)
 Route::middleware('auth')->group(function () {

@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+        'driver' => 'sanctum',
+        'provider' => 'users',
+    ],
     'sanctum' => [ // Certifique-se de que este bloco está correto
         'driver' => 'sanctum',
         'provider' => 'users',

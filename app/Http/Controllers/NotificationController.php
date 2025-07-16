@@ -18,7 +18,6 @@ class NotificationController extends Controller
         $user = Auth::user();
         $notifications = $user->notifications()->paginate(10);
         
-        // A linha que marcava tudo como lido foi removida daqui.
         return view('notifications.index', compact('notifications'));
     }
 
