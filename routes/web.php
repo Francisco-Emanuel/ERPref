@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 // Controllers de Gerenciamento
-use App\Http\Controllers\AtivoTiController;
+use App\Http\Controllers\AtivoTIController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\UserController;
