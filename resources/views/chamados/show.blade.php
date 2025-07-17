@@ -207,21 +207,6 @@
                                             </button>
                                         </form>
                                     @endif
-                                    {{-- O formulário para alterar o status fica visível para todos que podem editar --}}
-                                    {{-- <form method="POST" action="{{ route('chamados.updateStatus', $chamado) }}"
-                                        class="flex items-center gap-2">
-                                        @csrf
-                                        @method('PATCH')
-                                        <select name="status" id="status"
-                                            class="flex-grow border-gray-300 rounded-md shadow-sm block w-full">
-                                            @foreach (App\Enums\ChamadoStatus::cases() as $status)
-                                            <option value="{{ $status->value }}" @selected($chamado->status === $status)>
-                                                {{ $status->value }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                        <x-primary-button>Salvar</x-primary-button>
-                                    </form> --}}
 
                                     {{-- Botões de Resolução e Escalação --}}
                                     @if(!in_array($chamado->status, [\App\Enums\ChamadoStatus::RESOLVIDO, \App\Enums\ChamadoStatus::FECHADO]))
@@ -245,16 +230,6 @@
                                                             class="flex-1 inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
                                                             Atribuir
                                                         </button>
-                                                    @else
-                                                        {{-- Para Técnicos normais: Botão para se auto-atribuir --}}
-                                                        <form method="POST" action="{{ route('chamados.assign', $chamado) }}"
-                                                            class="inline-block" @click.stop>
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit" class="flex-1 inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                                                                Atribuir a mim
-                                                            </button>
-                                                        </form>
                                                     @endif
                                                 @endif
 
@@ -264,6 +239,17 @@
                                                     Escalar
                                                 </button>
                                             </div>
+                                        @endif
+                                        @if (!$chamado->tecnico_id && Auth::user()->hasRole('Estagiário'))
+                                            {{-- Para Técnicos normais: Botão para se auto-atribuir --}}
+                                            <form method="POST" action="{{ route('chamados.assign', $chamado) }}"
+                                                class="inline-block" @click.stop>
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="flex-1 inline-flex items-center justify-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                                                    Atribuir a mim
+                                                </button>
+                                            </form>
                                         @endif
                                     @endif
                                 </div>

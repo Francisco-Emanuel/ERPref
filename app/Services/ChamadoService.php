@@ -55,7 +55,7 @@ class ChamadoService
             : "Chamado atribuído a {$novoTecnico->name} por {$autor->name}.";
 
         $chamado->tecnico_id = $novoTecnico->id;
-        $chamado->save(); // O save() já ocorre aqui
+        $chamado->save();
 
         $novoTecnico->notify(new ChamadoAtribuidoNotification($chamado, $autor));
 
