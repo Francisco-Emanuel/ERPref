@@ -48,9 +48,7 @@ class ChamadoController extends Controller
         $this->authorize('view-chamados');
         $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor']);
         $historyLogs = $chamado->atualizacoes()->where('is_system_log', true)->get();
-        $tecnicosDisponiveis = User::whereHas('roles', fn ($q) => $q->whereIn('name', ['Técnico de TI', 'Supervisor', 'Admin']))
-            ->when($chamado->tecnico_id, fn ($q) => $q->where('id', '!=', $chamado->tecnico_id))
-            ->orderBy('name')->get();
+        $tecnicosDisponiveis = User::whereHas('roles', fn ($q) => $q->whereIn('name', ['Técnico de TI', 'Supervisor', 'Admin', 'Estagiário']))->orderBy('name')->get();
         return view('chamados.show', compact('chamado', 'historyLogs', 'tecnicosDisponiveis'));
     }
 
