@@ -25,8 +25,6 @@
                         </x-nav-link>
                     @endcan
 
-
-
                     @hasanyrole('Admin|Supervisor')
                     <x-nav-link :href="route('departamentos.index')" :active="request()->routeIs('departamentos.*')">
                         {{ __('Departamentos') }}
@@ -44,12 +42,12 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 {{-- Ícone de Notificações com contador --}}
                 <div x-data="{
-        result: 0,
-        async retrieveData() {
-        const response = await axios.get('/notifications/count');
-        this.result = response.data;
-    }
-     }" class="relative me-4" x-init="retrieveData()">
+                    result: 0,
+                    async retrieveData() {
+                        const response = await axios.get('/notifications/count');
+                        this.result = response.data;
+                    }
+                }" class="relative me-4" x-init="retrieveData()">
                     <a href="{{ route('notifications.index') }}"
                         class="p-2 text-gray-500 hover:text-gray-700 relative focus:outline-none">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -80,7 +78,6 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        {{-- O link do perfil agora aponta para a nova rota de visualização --}}
                         <x-dropdown-link :href="route('profile.show')">
                             {{ __('Perfil') }}
                         </x-dropdown-link>
@@ -88,7 +85,7 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                                                        this.closest('form').submit();">
                                 {{ __('Sair') }}
                             </x-dropdown-link>
                         </form>
@@ -97,9 +94,9 @@
             </div>
 
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open"
+                <button @click="open = ! open" type="button"
                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <svg class="h-6 w-6 pointer-events-none" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
@@ -111,11 +108,44 @@
         </div>
     </div>
 
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div x-show="open"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="transform opacity-0 scale-95"
+         x-transition:enter-end="transform opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-75"
+         x-transition:leave-start="transform opacity-100 scale-100"
+         x-transition:leave-end="transform opacity-0 scale-95"
+         class="sm:hidden"
+         style="display: none;">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @can('view-chamados')
+                <x-responsive-nav-link :href="route('chamados.index')" :active="request()->routeIs('chamados.*')">
+                    {{ __('Chamados') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('view-ativos')
+                <x-responsive-nav-link :href="route('ativos.index')" :active="request()->routeIs('ativos.*')">
+                    {{ __('Ativos') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('edit-departamentos')
+                <x-responsive-nav-link :href="route('departamentos.index')" :active="request()->routeIs('departamentos.*')">
+                    {{ __('Departamentos') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('edit-categorias')
+                <x-responsive-nav-link :href="route('categorias.index')" :active="request()->routeIs('categorias.*')">
+                    {{ __('Categorias') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('edit-users')
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200">
@@ -123,12 +153,12 @@
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                 <div x-data="{
-        result: 0,
-        async retrieveData() {
-        const response = await axios.get('/notifications/count');
-        this.result = response.data;
-    }
-     }" class="relative" x-init="retrieveData()">
+                    result: 0,
+                    async retrieveData() {
+                        const response = await axios.get('/notifications/count');
+                        this.result = response.data;
+                    }
+                }" class="relative mt-2" x-init="retrieveData()">
                     <a href="{{ route('notifications.index') }}"
                         class=" text-gray-500 hover:text-gray-700 relative focus:outline-none">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -138,39 +168,12 @@
                             </path>
                         </svg>
                         <span x-transition x-text="result" x-show="result > 0"
-                            class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full relative bottom-5 left-3"></span>
+                            class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full absolute top-0 left-4"></span>
                     </a>
                 </div>
             </div>
 
-
             <div class="mt-3 space-y-1">
-                {{-- O link do perfil agora aponta para a nova rota de visualização --}}
-                @can('view-chamados')
-                    <x-responsive-nav-link :href="route('chamados.index')">
-                        {{ __('Chamados') }}
-                    </x-responsive-nav-link>
-                @endcan
-                @can('view-ativos')
-                    <x-responsive-nav-link :href="route('ativos.index')">
-                        {{ __('Ativos') }}
-                    </x-responsive-nav-link>
-                @endcan
-                @can('edit-departamentos')
-                    <x-responsive-nav-link :href="route('departamentos.index')">
-                        {{ __('Departamentos') }}
-                    </x-responsive-nav-link>
-                @endcan
-                @can('edit-categorias')
-                    <x-responsive-nav-link :href="route('categorias.index')">
-                        {{ __('Categorias') }}
-                    </x-responsive-nav-link>
-                @endcan
-                @can('edit-users')
-                    <x-responsive-nav-link :href="route('users.index')">
-                        {{ __('Users') }}
-                    </x-responsive-nav-link>
-                @endcan
                 <x-responsive-nav-link :href="route('profile.show')">
                     {{ __('Perfil') }}
                 </x-responsive-nav-link>

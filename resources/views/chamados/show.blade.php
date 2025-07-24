@@ -184,6 +184,15 @@
                                     {!! nl2br(e($chamado->problema->descricao)) !!}
                                 </dd>
                             </div>
+                            @if ($chamado->solucao_final)
+                                <div>
+                                <dt class="text-sm font-medium text-slate-500">Solução do Problema</dt>
+                                <dd class="mt-2 text-sm text-slate-700 bg-slate-50 p-4 rounded-lg break-words">
+                                    {{-- A função nl2br() preserva as quebras de linha do texto original --}}
+                                    {!! nl2br(e($chamado->solucao_final)) !!}
+                                </dd>
+                            </div>
+                            @endif
 
                         </dl>
 
@@ -240,7 +249,7 @@
                                                 </button>
                                             </div>
                                         @endif
-                                        @if (!$chamado->tecnico_id && Auth::user()->hasRole('Estagiário'))
+                                        @if (!$chamado->tecnico_id && Auth::user()->hasAnyRole(['Estagiário', 'Técnico de TI']))
                                             {{-- Para Técnicos normais: Botão para se auto-atribuir --}}
                                             <form method="POST" action="{{ route('chamados.assign', $chamado) }}"
                                                 class="inline-block" @click.stop>
@@ -274,7 +283,7 @@
                     @endif
 
                     {{-- Ações do Solicitante: Ações que SÓ o solicitante pode fazer. --}}
-                    @if(Auth::id() === $chamado->solicitante_id)
+                    @if(Auth::id() === $chamado->solicitante_id || Auth::user()->hasAnyRole(['Admin', 'Supervisor']))
                         <div class="bg-white p-6 rounded-xl shadow-sm no-print">
                             <h3 class="text-lg font-semibold text-slate-900 mb-4 no-print">Minhas Ações</h3>
                             @if($chamado->status === \App\Enums\ChamadoStatus::FECHADO)
