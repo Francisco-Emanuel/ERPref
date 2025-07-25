@@ -22,6 +22,7 @@ class Problema extends Model
      */
     protected $fillable = [
         'descricao',
+        'solucao',
         'ativo_ti_id',
         'autor_id',
     ];
