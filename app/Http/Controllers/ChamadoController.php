@@ -28,7 +28,7 @@ class ChamadoController extends Controller
     public function index()
     {
         $this->authorize('view-chamados');
-        $chamados = Chamado::with(['problema.ativo', 'solicitante', 'tecnico', 'categoria'])->filtroPrincipal()->paginate(15);
+        $chamados = Chamado::with(['solicitante'])->filtroPrincipal()->paginate(15);
         $tecnicosDisponiveis = User::whereHas('roles', fn ($q) => $q->whereIn('name', ['Técnico de TI', 'Supervisor', 'Admin', 'Estagiário']))->orderBy('name')->get();
         return view('chamados.index', compact('chamados', 'tecnicosDisponiveis'));
     }

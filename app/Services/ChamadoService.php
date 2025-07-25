@@ -23,7 +23,6 @@ class ChamadoService
 
         $problema = Problema::create([
             'descricao' => $validatedData['descricao_problema'],
-            'solucao' => null,
             'ativo_ti_id' => $validatedData['ativo_id'] ?? null,
             'autor_id' => $user->id,
         ]);
@@ -127,7 +126,6 @@ class ChamadoService
         }
 
         $chamado->solucao_final = $validatedData['solucao_final'];
-        $chamado->problema->solucao = $validatedData['solucao_final'] ;
         $chamado->status = ChamadoStatus::RESOLVIDO;
         $chamado->data_resolucao = now();
         $chamado->save();
@@ -154,7 +152,6 @@ class ChamadoService
         $chamado->status = ChamadoStatus::ABERTO;
         $chamado->tecnico_id = null;
         $chamado->solucao_final = null;
-        
         $chamado->data_resolucao = null;
         $chamado->data_fechamento = null;
         $chamado->assinatura_tecnico_path = null;
