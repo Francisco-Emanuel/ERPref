@@ -27,10 +27,10 @@ class Chamado extends Model
      */
     protected $casts = [
         'status' => ChamadoStatus::class,
-        'data_resolucao' => 'datetime',  
-        'data_fechamento' => 'datetime', 
+        'data_resolucao' => 'datetime',
+        'data_fechamento' => 'datetime',
         'prazo_sla' => 'datetime',
-        'data_inicio_sla' => 'datetime', 
+        'data_inicio_sla' => 'datetime',
     ];
 
     /**
@@ -68,17 +68,17 @@ class Chamado extends Model
     {
         $user = Auth::user();
 
+        $query->where('status', '!=', ChamadoStatus::FECHADO);
+
+        // 2. LÓGICA CONDICIONAL: Aplica o filtro de 'Resolvido' APENAS se o usuário NÃO for Admin.
+        $query->when(! $user->hasRole('Admin'), function (Builder $subQuery) use ($user) {
+            $subQuery->where(function (Builder $groupQuery) use ($user) {
+                $groupQuery->where('status', '!=', ChamadoStatus::RESOLVIDO)
+                    ->orWhere('solicitante_id', '=', $user->id);
+            });
+        });
+
         return $query
-            ->where('status', '!=', ChamadoStatus::FECHADO)
-
-            ->where(function ($subQuery) use ($user) {
-                $subQuery->where('status', '!=', ChamadoStatus::RESOLVIDO)
-                    ->orWhere(function ($q) use ($user) {
-                        $q->where('status', '=', ChamadoStatus::RESOLVIDO)
-                            ->where('solicitante_id', '=', $user->id);
-                    });
-            })
-
             ->orderByRaw("
                 CASE
                     WHEN status = 'Aberto' THEN 1
@@ -127,12 +127,12 @@ class Chamado extends Model
      */
     public function atualizacoes(): HasMany
     {
-        return $this->hasMany(AtualizacaoChamado::class, 'chamado_id')->latest(); 
+        return $this->hasMany(AtualizacaoChamado::class, 'chamado_id')->latest();
     }
 
     /**
      * Relacionamento departamento - chamado
-    */
+     */
     public function departamento(): BelongsTo
     {
         return $this->belongsTo(Departamento::class);
