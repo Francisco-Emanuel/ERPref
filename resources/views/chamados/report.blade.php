@@ -150,6 +150,9 @@
                         @if($chamado->data_fechamento)
                             Fechado em: {{ $chamado->data_fechamento->format('d/m/Y H:i') }}
                         @endif
+                        @if($chamado->data_resolucao)
+                            Resolvido em: {{ $chamado->data_resolucao->format('d/m/Y H:i') }}
+                        @endif
                     </td>
                 </tr>
                 <tr>
