@@ -1,10 +1,10 @@
-# ERPref - Sistema de Help Desk
+# PREF-DESK - Sistema de Help Desk
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
 </p>
 
-`ERPref` é um sistema de Help Desk para gestão de chamados de TI, desenvolvido como um projeto acadêmico. O sistema permite o gerenciamento de ativos, controle de chamados, gerenciamento de usuários e departamentos, tudo em uma interface simples e moderna.
+`PREF-DESK` é um sistema de Help Desk para gestão de chamados de TI, desenvolvido como um projeto acadêmico. O sistema permite o gerenciamento de ativos, controle de chamados, gerenciamento de usuários e departamentos, tudo em uma interface simples e moderna.
 
 ## ✨ Funcionalidades
 
@@ -29,8 +29,8 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente local
 
 1.  **Clone o repositório:**
     ```bash
-    git clone [https://github.com/francisco-emanuel/erpref.git](https://github.com/francisco-emanuel/erpref.git)
-    cd erpref
+    git clone [https://github.com/francisco-emanuel/PREF-DESK.git](https://github.com/francisco-emanuel/PREF-DESK.git)
+    cd PREF-DESK
     ```
 
 2.  **Instale as dependências do Composer:**
@@ -57,7 +57,7 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente local
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
-    DB_DATABASE=erpref
+    DB_DATABASE=PREF-DESK
     DB_USERNAME=root
     DB_PASSWORD=
     ```
