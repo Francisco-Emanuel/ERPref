@@ -93,6 +93,9 @@
                                         <div class="text-sm text-gray-500 mt-1">Solicitante: {{ $chamado->solicitante->name ?? 'N/A' }}</div>
                                         <div class="text-sm text-gray-500 mt-1">Técnico: {{ $chamado->tecnico->name ?? 'Não atribuído' }}</div>
                                     </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-gray-500">Descrição: {{ $chamado->descricao_inicial }}</p>
+                                    </div>
                                     <div class="mt-4 md:mt-0 md:w-48 md:text-right">
                                         <a href="{{ route('chamados.show', $chamado) }}" class="inline-block w-full md:w-auto px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md shadow-sm hover:bg-blue-700">
                                             Ver Detalhes
