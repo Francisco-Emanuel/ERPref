@@ -82,10 +82,10 @@ Siga os passos abaixo para configurar e executar o projeto em seu ambiente local
 Pronto! A aplicação estará rodando em `http://127.0.0.1:8000`.
 
 ## Em andamento
->  Remover ativos.
-><del>Deixar o código limpo.</del>
->  Aprimorar as regras de negócio.
->  Melhorar lógica dos chamados.
+>  Remover ativos. <br />
+><del>Deixar o código limpo.</del> <br />
+>  Aprimorar as regras de negócio. <br />
+>  Melhorar lógica dos chamados. <br />
 
 
 ## 📄 Licença
