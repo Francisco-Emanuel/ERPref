@@ -19,32 +19,6 @@
                     {{-- Grade de Estatísticas --}}
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         
-                        {{-- Card de Estatística 1: Total de Ativos --}}
-                        <div class="bg-white p-6 rounded-xl shadow-sm flex justify-between items-start">
-                            <div>
-                                <p class="text-sm font-medium text-slate-500">Total de Ativos</p>
-                                <p class="text-3xl font-bold text-slate-900 mt-1">{{ $totalAtivos ?? 0 }}</p>
-                            </div>
-                            <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
-                                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-1.621-.871A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" />
-                                </svg>
-                            </div>
-                        </div>
-                        
-                        {{-- Card de Estatística 2: Ativos com Defeito --}}
-                        <div class="bg-white p-6 rounded-xl shadow-sm flex justify-between items-start">
-                            <div>
-                                <p class="text-sm font-medium text-slate-500">Ativos com Defeito</p>
-                                <p class="text-3xl font-bold mt-1 {{ ($ativosDefeituosos ?? 0) > 0 ? 'text-red-600' : 'text-slate-900' }}">{{ $ativosDefeituosos ?? 0 }}</p>
-                            </div>
-                            <div class="bg-red-100 text-red-600 p-3 rounded-full">
-                                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
-                                </svg>
-                            </div>
-                        </div>
-
                         {{-- Card de Estatística 3: Chamados Abertos --}}
                         <div class="bg-white p-6 rounded-xl shadow-sm flex justify-between items-start">
                             <div>
@@ -67,12 +41,6 @@
                                 <a href="{{ route('chamados.create') }}" class="inline-flex items-center gap-2 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
                                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
                                     Abrir Novo Chamado
-                                </a>
-                            @endcan
-                            @can('create-ativos')
-                                <a href="{{ route('ativos.create') }}" class="inline-flex items-center gap-2 bg-slate-100 text-slate-700 font-semibold py-2 px-4 rounded-lg hover:bg-slate-200 transition-colors border border-slate-200">
-                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                    Cadastrar Novo Ativo
                                 </a>
                             @endcan
                         </div>

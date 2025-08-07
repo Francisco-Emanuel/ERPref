@@ -63,21 +63,6 @@
                 uma prioridade.</p>
 
             <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                <div class="sm:col-span-3">
-                    <x-input-label for="ativo_id" value="Equipamento Relacionado (Opcional)" />
-                    <div class="mt-1">
-                        <select id="ativo_id" name="ativo_id"
-                            class="block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                            <option value="">Nenhum / Não se aplica</option>
-                            @foreach($ativos as $ativo)
-                                <option value="{{ $ativo->id }}" @selected(old('ativo_id') == $ativo->id)>
-                                    {{ $ativo->nome_ativo }} (Nº Série: {{ $ativo->numero_serie }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <x-input-error :messages="$errors->get('ativo_id')" class="mt-2" />
-                </div>
 
                 <div class="sm:col-span-3">
                     <x-input-label for="categoria_id" value="Categoria (Opcional)" />
