@@ -10,7 +10,6 @@
 
 * **Dashboard:** Visão geral com estatísticas rápidas.
 * **Gestão de Chamados:** Abertura, atribuição, acompanhamento e fechamento de chamados.
-* **Controle de Ativos:** Cadastro e histórico de problemas por equipamento.
 * **Gestão de Usuários e Permissões:** Controle de acesso baseado em papéis (Admin, Supervisor, Técnico, etc.).
 * **Relatórios:** Geração de Ordens de Serviço em PDF.
 
@@ -84,7 +83,7 @@ Pronto! A aplicação estará rodando em `http://127.0.0.1:8000`.
 
 ## Em andamento
     >  Remover ativos.
-    >  Deixar o código limpo.
+    >  <s>Deixar o código limpo.</s>
     >  Aprimorar as regras de negócio.
     >  Melhorar lógica dos chamados.
 
