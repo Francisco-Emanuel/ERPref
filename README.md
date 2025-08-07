@@ -1,7 +1,7 @@
 # PREF-DESK - Sistema de Help Desk
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
+  <img src="https://raw.githubusercontent.com/Francisco-Emanuel/PREF-DESK/refs/heads/main/public/logo.svg" width="400" alt="Pref-desk Logo">
 </p>
 
 `PREF-DESK` é um sistema de Help Desk para gestão de chamados de TI, desenvolvido como um projeto acadêmico. O sistema permite o gerenciamento de ativos, controle de chamados, gerenciamento de usuários e departamentos, tudo em uma interface simples e moderna.
