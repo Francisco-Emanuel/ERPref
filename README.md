@@ -83,7 +83,7 @@ Pronto! A aplicação estará rodando em `http://127.0.0.1:8000`.
 
 ## Em andamento
     >  Remover ativos.
-    >  <del>Deixar o código limpo.</del>
+  <del>Deixar o código limpo.</del>
     >  Aprimorar as regras de negócio.
     >  Melhorar lógica dos chamados.
 
