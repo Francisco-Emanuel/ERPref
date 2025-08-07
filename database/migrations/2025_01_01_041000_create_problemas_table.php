@@ -13,16 +13,9 @@ return new class extends Migration {
         Schema::create('problemas', function (Blueprint $table) {
             $table->id();
             $table->text('descricao'); 
-
-            $table->foreignId('ativo_ti_id')
-                ->nullable()
-                ->constrained('ativos_ti')
-                ->onDelete('cascade'); 
-
             $table->foreignId('autor_id')
                 ->constrained('users')
                 ->onDelete('cascade'); 
-
             $table->timestamps(); 
         });
     }

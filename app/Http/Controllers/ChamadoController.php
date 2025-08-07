@@ -9,7 +9,6 @@ use App\Http\Requests\Chamado\ReopenChamadoRequest;
 use App\Http\Requests\Chamado\ResolveChamadoRequest;
 use App\Http\Requests\Chamado\StoreChamadoRequest;
 use App\Http\Requests\Chamado\UpdateStatusRequest;
-use App\Models\AtivoTI;
 use App\Models\Categoria;
 use App\Models\Chamado;
 use App\Models\Departamento;
@@ -36,17 +35,16 @@ class ChamadoController extends Controller
     public function create()
     {
         $this->authorize('create-chamados');
-        $ativos = AtivoTI::orderBy('nome_ativo')->get();
         $categorias = Categoria::orderBy('nome_amigavel')->get();
         $departamentos = Departamento::orderBy('nome')->get();
         $solicitantes = User::orderBy('name')->get();
-        return view('chamados.create', compact('ativos', 'categorias', 'solicitantes', 'departamentos'));
+        return view('chamados.create', compact( 'categorias', 'solicitantes', 'departamentos'));
     }
 
     public function show(Chamado $chamado)
     {
         $this->authorize('view-chamados');
-        $chamado->load(['problema.ativo', 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor']);
+        $chamado->load([ 'solicitante', 'tecnico', 'categoria', 'atualizacoes.autor']);
         $historyLogs = $chamado->atualizacoes()->where('is_system_log', true)->get();
         $tecnicosDisponiveis = User::whereHas('roles', fn ($q) => $q->whereIn('name', ['Técnico de TI', 'Supervisor', 'Admin', 'Estagiário']))->orderBy('name')->get();
         return view('chamados.show', compact('chamado', 'historyLogs', 'tecnicosDisponiveis'));
@@ -123,7 +121,7 @@ class ChamadoController extends Controller
     public function myChamados()
     {
         $this->authorize('view-chamados');
-        $meusChamados = Chamado::with(['problema.ativo', 'solicitante'])
+        $meusChamados = Chamado::with([ 'solicitante'])
             ->where('tecnico_id', Auth::id())
             ->filtroPrincipal()
             ->paginate(15);
@@ -133,7 +131,7 @@ class ChamadoController extends Controller
     public function closedIndex()
     {
         $this->authorize('view-chamados');
-        $chamadosFechados = Chamado::with(['problema.ativo', 'solicitante', 'tecnico'])
+        $chamadosFechados = Chamado::with([ 'solicitante', 'tecnico'])
             ->where('status', ChamadoStatus::FECHADO)
             ->latest('data_fechamento')
             ->paginate(15);

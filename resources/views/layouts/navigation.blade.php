@@ -13,12 +13,6 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @can('view-ativos')
-                        <x-nav-link :href="route('ativos.index')" :active="request()->routeIs('ativos.*')">
-                            {{ __('Ativos') }}
-                        </x-nav-link>
-                    @endcan
-
                     @can('view-chamados')
                         <x-nav-link :href="route('chamados.index')" :active="request()->routeIs('chamados.*')">
                             {{ __('Chamados') }}

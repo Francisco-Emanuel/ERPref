@@ -23,17 +23,8 @@ class Problema extends Model
     protected $fillable = [
         'descricao',
         'solucao',
-        'ativo_ti_id',
         'autor_id',
     ];
-
-    /**
-     * Define o relacionamento: Um Problema PERTENCE A um Ativo de TI.
-     */
-    public function ativo(): BelongsTo
-    {
-        return $this->belongsTo(AtivoTI::class, 'ativo_ti_id');
-    }
 
     /**
      * Define o relacionamento: Um Problema PERTENCE A um Usuário (o autor).

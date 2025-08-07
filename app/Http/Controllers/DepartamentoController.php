@@ -15,7 +15,7 @@ class DepartamentoController extends Controller
     public function index()
     {
         // 'withCount' é um método eficiente para contar registros em relacionamentos
-        $departamentos = Departamento::withCount(['users', 'ativos'])
+        $departamentos = Departamento::withCount(['users'])
                         ->orderBy('nome')
                         ->paginate(10);
                         
@@ -71,9 +71,9 @@ class DepartamentoController extends Controller
      */
     public function destroy(departamento $departamento)
     {
-        if ($departamento->users()->count() > 0 || $departamento->ativos()->count() > 0) {
+        if ($departamento->users()->count() > 0) {
             return redirect()->route('departamentos.index')
-                             ->with('error', 'Não é possível excluir este departamento, pois ele está associado a usuários ou ativos.');
+                             ->with('error', 'Não é possível excluir este departamento, pois ele está associado a usuários');
         }
 
         $departamento->delete();

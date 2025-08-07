@@ -23,7 +23,6 @@ class ChamadoService
 
         $problema = Problema::create([
             'descricao' => $validatedData['descricao_problema'],
-            'ativo_ti_id' => $validatedData['ativo_id'] ?? null,
             'autor_id' => $user->id,
         ]);
 
@@ -37,7 +36,6 @@ class ChamadoService
             'status' => ChamadoStatus::ABERTO,
             'prioridade' => $validatedData['prioridade'],
             'categoria_id' => $validatedData['categoria_id'] ?? null,
-            'ativo_id' => $validatedData['ativo_id'] ?? null,
         ]);
 
         $this->criarLog($chamado, $user, 'Chamado aberto.');

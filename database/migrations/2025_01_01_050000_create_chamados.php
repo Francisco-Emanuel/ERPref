@@ -40,10 +40,6 @@ return new class extends Migration {
                 ->nullable()
                 ->constrained('categorias')
                 ->onDelete('restrict'); 
-            $table->foreignId('ativo_id')
-                ->nullable()
-                ->constrained('ativos_ti')
-                ->onDelete('set null');
             $table->foreignId('departamento_id')
                 ->nullable()
                 ->constrained('departamentos')

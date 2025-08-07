@@ -18,11 +18,6 @@ class Departamento extends Model
         return $this->hasMany(User::class);
     }
 
-    public function ativos(): HasMany
-    {
-        return $this->hasMany(AtivoTI::class, 'departamento_id');
-    }
-
     public function chamados(): HasMany
     {
         return $this->hasMany(Chamado::class);
