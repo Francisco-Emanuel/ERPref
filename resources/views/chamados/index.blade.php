@@ -4,11 +4,11 @@
 
         {{-- Cabeçalho --}}
         <header class="bg-white shadow-sm">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
                 <h1 class="text-2xl font-bold text-slate-900">
                     Central de Chamados
                 </h1>
-                <div class="flex items-center gap-4">
+                <div class="flex flex-col md:flex-row items-center gap-4">
                     <x-nav-link :href="route('chamados.closed')" :active="request()->routeIs('chamados.closed')">
                         Chamados Fechados
                     </x-nav-link>
